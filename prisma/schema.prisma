@@ -7,28 +7,9 @@ datasource db {
   provider = "postgresql"
 }
 
-enum UserRole {
-  CUSTOMER
-  MAKER
-  CHECKER
-  ADMIN
-}
-
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-}
-
-enum KycStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  PENDING_MAKER_REVIEW
-  PENDING_CHECKER_REVIEW
-  APPROVED
-  REJECTED
-}
-
+// ============================================================
+// ENUMS
+// ============================================================
 enum VerificationChannel {
   EMAIL
   SMS
@@ -36,106 +17,732 @@ enum VerificationChannel {
 
 enum OtpPurpose {
   ACCOUNT_VERIFICATION
-  LOGIN
   PASSWORD_RESET
+  PHONE_VERIFICATION
+  EMAIL_VERIFICATION
 }
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BLOCKED
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  LOAN_OFFICER
+  FINANCE_OFFICER
+  SUPPORT
+  CUSTOMER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum EmploymentType {
+  EMPLOYED
+  SELF_EMPLOYED
+  BUSINESS_OWNER
+  STUDENT
+  UNEMPLOYED
+  OTHER
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  DOCUMENTS_REQUIRED
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CANCELLED
+  DISBURSED
+}
+
+enum LoanStatus {
+  PENDING_DISBURSEMENT
+  ACTIVE
+  PARTIALLY_PAID
+  FULLY_PAID
+  OVERDUE
+  DEFAULTED
+  WRITTEN_OFF
+  CANCELLED
+}
+
+enum RepaymentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  WAIVED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REVERSED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  MPESA
+  BANK_TRANSFER
+  CASH
+  CARD
+  MOBILE_MONEY
+  OTHER
+}
+
+enum TransactionType {
+  DISBURSEMENT
+  REPAYMENT
+  INTEREST
+  PENALTY
+  FEE
+  REFUND
+  ADJUSTMENT
+  WRITE_OFF
+}
+
+enum DocumentType {
+  NATIONAL_ID
+  PASSPORT
+  PAYSLIP
+  BANK_STATEMENT
+  BUSINESS_LICENSE
+  KRA_PIN
+  COLLATERAL_DOCUMENT
+  GUARANTOR_DOCUMENT
+  PROOF_OF_ADDRESS
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum NotificationType {
+  APPLICATION_SUBMITTED
+  APPLICATION_APPROVED
+  APPLICATION_REJECTED
+  LOAN_DISBURSED
+  REPAYMENT_DUE
+  REPAYMENT_OVERDUE
+  PAYMENT_RECEIVED
+  GENERAL
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum ConfigType {
+  STRING
+  INTEGER
+  DECIMAL
+  BOOLEAN
+  JSON
+  DATE
+}
+
+enum ApprovalAction {
+  SUBMIT
+  REVIEW
+  APPROVE
+  REJECT
+  CANCEL
+  REQUEST_DOCUMENTS
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  APPROVE
+  REJECT
+  DISBURSE
+  REPAY
+  OTHER
+}
+
+// ============================================================
+// USER
+// ============================================================
 
 model User {
-  id              String     @id @default(uuid())
-  email           String     @unique
-  phone           String     @unique
-  passwordHash    String
+  id String @id @default(uuid()) @db.Uuid
 
-  role            UserRole   @default(CUSTOMER)
-  status          UserStatus @default(ACTIVE)
+  firstName String
+  lastName  String
 
-  kycStatus       KycStatus  @default(NOT_STARTED)
+  email        String @unique
+  phone        String @unique
+  passwordHash String
 
-  emailVerified   Boolean    @default(false)
-  phoneVerified   Boolean    @default(false)
+  nationalId  String?   @unique
+  dateOfBirth DateTime?
+  gender      Gender?
 
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  employmentType EmploymentType?
+  employerName   String?
+  monthlyIncome  Decimal?        @db.Decimal(18, 2)
 
-  profile         CustomerProfile?
-  documents       Document[]
-  otpCodes        OtpCode[]
-  refreshTokens   RefreshToken[]
+  role   Role       @default(CUSTOMER)
+  status UserStatus @default(ACTIVE)
+
+  emailVerified Boolean @default(false)
+  phoneVerified Boolean @default(false)
+
+  lastLoginAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  refreshTokens    RefreshToken[]
+  otpCodes         OtpCode[]
+  loanApplications LoanApplication[]
+  loans            Loan[]
+  guarantor        Guarantor[]
+  documents        Document[]
+  notifications    Notification[]
+  auditLogs        AuditLog[]
+  approvals        LoanApproval[]
 }
 
-model CustomerProfile {
-  id             String   @id @default(uuid())
+// ============================================================
+// REFRESH TOKEN
+// ============================================================
 
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model RefreshToken {
+  id String @id @default(uuid()) @db.Uuid
 
-  firstName      String
-  lastName       String
-  nationalId     String?
-  dateOfBirth    DateTime?
+  userId    String @db.Uuid
+  tokenHash String @unique
 
-  address        String?
-  occupation     String?
-  employer       String?
-  monthlyIncome  Decimal? @db.Decimal(12, 2)
+  expiresAt DateTime
+  revokedAt DateTime?
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
+  createdAt DateTime @default(now())
 
-model Document {
-  id                 String   @id @default(uuid())
-
-  userId             String
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  documentType       String
-
-  originalFilename   String
-  mimeType           String
-
-  cloudinaryPublicId String
-  cloudinaryUrl      String
-
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model OtpCode {
-  id          String              @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
-  userId      String
-  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
 
-  codeHash    String
-  purpose     OtpPurpose
-  channel     VerificationChannel
+  codeHash String
 
-  expiresAt   DateTime
-  verifiedAt  DateTime?
+  purpose OtpPurpose
 
-  attempts    Int                 @default(0)
+  channel VerificationChannel
 
-  createdAt   DateTime            @default(now())
+  expiresAt DateTime
+
+  attempts Int @default(0)
+
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@index([userId, purpose])
+  @@index([purpose])
+  @@index([expiresAt])
+  @@index([verifiedAt])
 }
 
-model RefreshToken {
-  id          String    @id @default(uuid())
+// ============================================================
+// LOAN PRODUCT
+// ============================================================
 
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+model LoanProduct {
+  id String @id @default(uuid()) @db.Uuid
 
-  tokenHash   String    @unique
+  name        String
+  code        String  @unique
+  description String?
 
-  expiresAt   DateTime
-  revokedAt   DateTime?
+  minAmount Decimal @db.Decimal(18, 2)
+  maxAmount Decimal @db.Decimal(18, 2)
 
-  createdAt   DateTime  @default(now())
+  minRepaymentDays Int
+  maxRepaymentDays Int
+
+  interestRate Decimal @db.Decimal(10, 4)
+
+  processingFee   Decimal @default(0) @db.Decimal(18, 2)
+  latePenaltyRate Decimal @default(0) @db.Decimal(10, 4)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications LoanApplication[]
+  loans        Loan[]
+
+  @@index([isActive])
+}
+
+// ============================================================
+// LOAN APPLICATION
+// ============================================================
+
+model LoanApplication {
+  id String @id @default(uuid()) @db.Uuid
+
+  applicationNumber String @unique
+
+  userId        String @db.Uuid
+  loanProductId String @db.Uuid
+
+  requestedAmount Decimal @db.Decimal(18, 2)
+  requestedDays   Int
+
+  interestRate  Decimal @db.Decimal(10, 4)
+  processingFee Decimal @default(0) @db.Decimal(18, 2)
+
+  purpose     String?
+  description String?
+
+  status ApplicationStatus @default(DRAFT)
+
+  submittedAt DateTime?
+  reviewedAt  DateTime?
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  loanProduct LoanProduct @relation(fields: [loanProductId], references: [id])
+
+  loan Loan?
+
+  guarantors Guarantor[]
+  collateral Collateral[]
+  documents  Document[]
+  approvals  LoanApproval[]
 
   @@index([userId])
+  @@index([loanProductId])
+  @@index([status])
+}
+
+// ============================================================
+// LOAN
+// ============================================================
+
+model Loan {
+  id String @id @default(uuid()) @db.Uuid
+
+  loanNumber String @unique
+
+  applicationId String @unique @db.Uuid
+  userId        String @db.Uuid
+  loanProductId String @db.Uuid
+
+  principalAmount Decimal @db.Decimal(18, 2)
+  interestRate    Decimal @db.Decimal(10, 4)
+
+  interestAmount Decimal @default(0) @db.Decimal(18, 2)
+  processingFee  Decimal @default(0) @db.Decimal(18, 2)
+  penaltyAmount  Decimal @default(0) @db.Decimal(18, 2)
+
+  totalAmount Decimal @db.Decimal(18, 2)
+
+  amountPaid        Decimal @default(0) @db.Decimal(18, 2)
+  outstandingAmount Decimal @db.Decimal(18, 2)
+
+  repaymentDays Int
+
+  disbursedAt  DateTime?
+  maturityDate DateTime?
+
+  status LoanStatus @default(PENDING_DISBURSEMENT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application LoanApplication @relation(fields: [applicationId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
+
+  loanProduct LoanProduct @relation(fields: [loanProductId], references: [id])
+
+  repaymentSchedules RepaymentSchedule[]
+  payments           Payment[]
+  transactions       LoanTransaction[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ============================================================
+// LOAN APPROVAL
+// ============================================================
+
+model LoanApproval {
+  id String @id @default(uuid()) @db.Uuid
+
+  applicationId String @db.Uuid
+  approverId    String @db.Uuid
+
+  action ApprovalAction
+
+  comments String?
+
+  createdAt DateTime @default(now())
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  approver User @relation(fields: [approverId], references: [id])
+
+  @@index([applicationId])
+  @@index([approverId])
+}
+
+// ============================================================
+// REPAYMENT SCHEDULE
+// ============================================================
+
+model RepaymentSchedule {
+  id String @id @default(uuid()) @db.Uuid
+
+  loanId String @db.Uuid
+
+  installmentNumber Int
+
+  dueDate DateTime
+
+  principalAmount Decimal @db.Decimal(18, 2)
+  interestAmount  Decimal @db.Decimal(18, 2)
+  penaltyAmount   Decimal @default(0) @db.Decimal(18, 2)
+
+  totalAmount Decimal @db.Decimal(18, 2)
+
+  amountPaid        Decimal @default(0) @db.Decimal(18, 2)
+  outstandingAmount Decimal @db.Decimal(18, 2)
+
+  status RepaymentStatus @default(PENDING)
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  loan Loan @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
+  payments Payment[]
+
+  @@unique([loanId, installmentNumber])
+  @@index([loanId])
+  @@index([dueDate])
+  @@index([status])
+}
+
+// ============================================================
+// PAYMENT
+// ============================================================
+
+model Payment {
+  id String @id @default(uuid()) @db.Uuid
+
+  paymentReference String @unique
+
+  loanId     String  @db.Uuid
+  scheduleId String? @db.Uuid
+
+  amount Decimal @db.Decimal(18, 2)
+
+  paymentMethod PaymentMethod
+
+  transactionReference String?
+
+  status PaymentStatus @default(PENDING)
+
+  paymentDate DateTime?
+  processedAt DateTime?
+
+  failureReason String?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  loan Loan @relation(fields: [loanId], references: [id])
+
+  schedule RepaymentSchedule? @relation(fields: [scheduleId], references: [id])
+
+  transactions LoanTransaction[]
+
+  @@index([loanId])
+  @@index([scheduleId])
+  @@index([transactionReference])
+  @@index([status])
+}
+
+// ============================================================
+// LOAN TRANSACTION
+// ============================================================
+
+model LoanTransaction {
+  id String @id @default(uuid()) @db.Uuid
+
+  transactionNumber String @unique
+
+  loanId    String  @db.Uuid
+  paymentId String? @db.Uuid
+
+  type TransactionType
+
+  amount Decimal @db.Decimal(18, 2)
+
+  description String?
+  reference   String?
+
+  balanceBefore Decimal @db.Decimal(18, 2)
+  balanceAfter  Decimal @db.Decimal(18, 2)
+
+  createdAt DateTime @default(now())
+
+  loan Loan @relation(fields: [loanId], references: [id])
+
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@index([loanId])
+  @@index([paymentId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// ============================================================
+// GUARANTOR
+// ============================================================
+
+model Guarantor {
+  id String @id @default(uuid()) @db.Uuid
+
+  applicationId String  @db.Uuid
+  userId        String? @db.Uuid
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String?
+
+  nationalId String
+
+  relationship String?
+
+  guaranteedAmount Decimal? @db.Decimal(18, 2)
+
+  isVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  user User? @relation(fields: [userId], references: [id])
+
+  documents Document[]
+
+  @@index([applicationId])
+  @@index([nationalId])
+  @@index([phone])
+}
+
+// ============================================================
+// COLLATERAL
+// ============================================================
+
+model Collateral {
+  id String @id @default(uuid()) @db.Uuid
+
+  applicationId String @db.Uuid
+
+  type        String
+  description String
+
+  estimatedValue Decimal @db.Decimal(18, 2)
+
+  registrationNumber String?
+
+  ownershipDocument String?
+
+  verified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  documents Document[]
+
+  @@index([applicationId])
+  @@index([registrationNumber])
+}
+
+// ============================================================
+// DOCUMENT
+// ============================================================
+
+model Document {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+
+  applicationId String? @db.Uuid
+  guarantorId   String? @db.Uuid
+  collateralId  String? @db.Uuid
+
+  type DocumentType
+
+  fileName String
+  fileUrl  String
+  fileSize Int?
+  mimeType String?
+
+  status DocumentStatus @default(PENDING)
+
+  verifiedAt DateTime?
+  verifiedBy String?
+
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  application LoanApplication? @relation(fields: [applicationId], references: [id])
+
+  guarantor Guarantor? @relation(fields: [guarantorId], references: [id])
+
+  collateral Collateral? @relation(fields: [collateralId], references: [id])
+
+  @@index([userId])
+  @@index([applicationId])
+  @@index([guarantorId])
+  @@index([collateralId])
+  @@index([status])
+}
+
+// ============================================================
+// NOTIFICATION
+// ============================================================
+
+model Notification {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid
+
+  type    NotificationType
+  channel NotificationChannel
+
+  title   String
+  message String
+
+  isRead Boolean @default(false)
+
+  sentAt DateTime?
+  readAt DateTime?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+// ============================================================
+// SYSTEM CONFIGURATION
+// ============================================================
+
+model SystemConfig {
+  id String @id @default(uuid()) @db.Uuid
+
+  key String @unique
+
+  name        String
+  description String?
+
+  type ConfigType
+
+  value        String
+  defaultValue String?
+
+  category String?
+
+  isEditable Boolean @default(true)
+  isActive   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+
+model AuditLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String? @db.Uuid
+
+  action AuditAction
+
+  entity   String
+  entityId String?
+
+  oldValue Json?
+  newValue Json?
+
+  ipAddress String?
+  userAgent String?
+
+  description String?
+
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entity])
+  @@index([entityId])
+  @@index([action])
+  @@index([createdAt])
 }

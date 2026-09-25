@@ -41,8 +41,8 @@ export type OtpCodeMinAggregateOutputType = {
   purpose: $Enums.OtpPurpose | null
   channel: $Enums.VerificationChannel | null
   expiresAt: Date | null
-  verifiedAt: Date | null
   attempts: number | null
+  verifiedAt: Date | null
   createdAt: Date | null
 }
 
@@ -53,8 +53,8 @@ export type OtpCodeMaxAggregateOutputType = {
   purpose: $Enums.OtpPurpose | null
   channel: $Enums.VerificationChannel | null
   expiresAt: Date | null
-  verifiedAt: Date | null
   attempts: number | null
+  verifiedAt: Date | null
   createdAt: Date | null
 }
 
@@ -65,8 +65,8 @@ export type OtpCodeCountAggregateOutputType = {
   purpose: number
   channel: number
   expiresAt: number
-  verifiedAt: number
   attempts: number
+  verifiedAt: number
   createdAt: number
   _all: number
 }
@@ -87,8 +87,8 @@ export type OtpCodeMinAggregateInputType = {
   purpose?: true
   channel?: true
   expiresAt?: true
-  verifiedAt?: true
   attempts?: true
+  verifiedAt?: true
   createdAt?: true
 }
 
@@ -99,8 +99,8 @@ export type OtpCodeMaxAggregateInputType = {
   purpose?: true
   channel?: true
   expiresAt?: true
-  verifiedAt?: true
   attempts?: true
+  verifiedAt?: true
   createdAt?: true
 }
 
@@ -111,8 +111,8 @@ export type OtpCodeCountAggregateInputType = {
   purpose?: true
   channel?: true
   expiresAt?: true
-  verifiedAt?: true
   attempts?: true
+  verifiedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -210,8 +210,8 @@ export type OtpCodeGroupByOutputType = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date
-  verifiedAt: Date | null
   attempts: number
+  verifiedAt: Date | null
   createdAt: Date
   _count: OtpCodeCountAggregateOutputType | null
   _avg: OtpCodeAvgAggregateOutputType | null
@@ -239,14 +239,14 @@ export type OtpCodeWhereInput = {
   AND?: Prisma.OtpCodeWhereInput | Prisma.OtpCodeWhereInput[]
   OR?: Prisma.OtpCodeWhereInput[]
   NOT?: Prisma.OtpCodeWhereInput | Prisma.OtpCodeWhereInput[]
-  id?: Prisma.StringFilter<"OtpCode"> | string
-  userId?: Prisma.StringFilter<"OtpCode"> | string
+  id?: Prisma.UuidFilter<"OtpCode"> | string
+  userId?: Prisma.UuidFilter<"OtpCode"> | string
   codeHash?: Prisma.StringFilter<"OtpCode"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"OtpCode"> | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFilter<"OtpCode"> | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
-  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   attempts?: Prisma.IntFilter<"OtpCode"> | number
+  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -258,8 +258,8 @@ export type OtpCodeOrderByWithRelationInput = {
   purpose?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -269,13 +269,13 @@ export type OtpCodeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OtpCodeWhereInput | Prisma.OtpCodeWhereInput[]
   OR?: Prisma.OtpCodeWhereInput[]
   NOT?: Prisma.OtpCodeWhereInput | Prisma.OtpCodeWhereInput[]
-  userId?: Prisma.StringFilter<"OtpCode"> | string
+  userId?: Prisma.UuidFilter<"OtpCode"> | string
   codeHash?: Prisma.StringFilter<"OtpCode"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"OtpCode"> | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFilter<"OtpCode"> | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
-  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   attempts?: Prisma.IntFilter<"OtpCode"> | number
+  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
@@ -287,8 +287,8 @@ export type OtpCodeOrderByWithAggregationInput = {
   purpose?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OtpCodeCountOrderByAggregateInput
   _avg?: Prisma.OtpCodeAvgOrderByAggregateInput
@@ -301,14 +301,14 @@ export type OtpCodeScalarWhereWithAggregatesInput = {
   AND?: Prisma.OtpCodeScalarWhereWithAggregatesInput | Prisma.OtpCodeScalarWhereWithAggregatesInput[]
   OR?: Prisma.OtpCodeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OtpCodeScalarWhereWithAggregatesInput | Prisma.OtpCodeScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"OtpCode"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"OtpCode"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"OtpCode"> | string
+  userId?: Prisma.UuidWithAggregatesFilter<"OtpCode"> | string
   codeHash?: Prisma.StringWithAggregatesFilter<"OtpCode"> | string
   purpose?: Prisma.EnumOtpPurposeWithAggregatesFilter<"OtpCode"> | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelWithAggregatesFilter<"OtpCode"> | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"OtpCode"> | Date | string
-  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OtpCode"> | Date | string | null
   attempts?: Prisma.IntWithAggregatesFilter<"OtpCode"> | number
+  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OtpCode"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OtpCode"> | Date | string
 }
 
@@ -318,8 +318,8 @@ export type OtpCodeCreateInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutOtpCodesInput
 }
@@ -331,8 +331,8 @@ export type OtpCodeUncheckedCreateInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -342,8 +342,8 @@ export type OtpCodeUpdateInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutOtpCodesNestedInput
 }
@@ -355,8 +355,8 @@ export type OtpCodeUncheckedUpdateInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -367,8 +367,8 @@ export type OtpCodeCreateManyInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -378,8 +378,8 @@ export type OtpCodeUpdateManyMutationInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -390,8 +390,8 @@ export type OtpCodeUncheckedUpdateManyInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -412,8 +412,8 @@ export type OtpCodeCountOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -428,8 +428,8 @@ export type OtpCodeMaxOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -440,8 +440,8 @@ export type OtpCodeMinOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   channel?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  verifiedAt?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -513,8 +513,8 @@ export type OtpCodeCreateWithoutUserInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -524,8 +524,8 @@ export type OtpCodeUncheckedCreateWithoutUserInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -559,14 +559,14 @@ export type OtpCodeScalarWhereInput = {
   AND?: Prisma.OtpCodeScalarWhereInput | Prisma.OtpCodeScalarWhereInput[]
   OR?: Prisma.OtpCodeScalarWhereInput[]
   NOT?: Prisma.OtpCodeScalarWhereInput | Prisma.OtpCodeScalarWhereInput[]
-  id?: Prisma.StringFilter<"OtpCode"> | string
-  userId?: Prisma.StringFilter<"OtpCode"> | string
+  id?: Prisma.UuidFilter<"OtpCode"> | string
+  userId?: Prisma.UuidFilter<"OtpCode"> | string
   codeHash?: Prisma.StringFilter<"OtpCode"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"OtpCode"> | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFilter<"OtpCode"> | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
-  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   attempts?: Prisma.IntFilter<"OtpCode"> | number
+  verifiedAt?: Prisma.DateTimeNullableFilter<"OtpCode"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OtpCode"> | Date | string
 }
 
@@ -576,8 +576,8 @@ export type OtpCodeCreateManyUserInput = {
   purpose: $Enums.OtpPurpose
   channel: $Enums.VerificationChannel
   expiresAt: Date | string
-  verifiedAt?: Date | string | null
   attempts?: number
+  verifiedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -587,8 +587,8 @@ export type OtpCodeUpdateWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -598,8 +598,8 @@ export type OtpCodeUncheckedUpdateWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -609,8 +609,8 @@ export type OtpCodeUncheckedUpdateManyWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   channel?: Prisma.EnumVerificationChannelFieldUpdateOperationsInput | $Enums.VerificationChannel
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -623,8 +623,8 @@ export type OtpCodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   purpose?: boolean
   channel?: boolean
   expiresAt?: boolean
-  verifiedAt?: boolean
   attempts?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["otpCode"]>
@@ -636,8 +636,8 @@ export type OtpCodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   purpose?: boolean
   channel?: boolean
   expiresAt?: boolean
-  verifiedAt?: boolean
   attempts?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["otpCode"]>
@@ -649,8 +649,8 @@ export type OtpCodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   purpose?: boolean
   channel?: boolean
   expiresAt?: boolean
-  verifiedAt?: boolean
   attempts?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["otpCode"]>
@@ -662,12 +662,12 @@ export type OtpCodeSelectScalar = {
   purpose?: boolean
   channel?: boolean
   expiresAt?: boolean
-  verifiedAt?: boolean
   attempts?: boolean
+  verifiedAt?: boolean
   createdAt?: boolean
 }
 
-export type OtpCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "codeHash" | "purpose" | "channel" | "expiresAt" | "verifiedAt" | "attempts" | "createdAt", ExtArgs["result"]["otpCode"]>
+export type OtpCodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "codeHash" | "purpose" | "channel" | "expiresAt" | "attempts" | "verifiedAt" | "createdAt", ExtArgs["result"]["otpCode"]>
 export type OtpCodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -690,8 +690,8 @@ export type $OtpCodePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     purpose: $Enums.OtpPurpose
     channel: $Enums.VerificationChannel
     expiresAt: Date
-    verifiedAt: Date | null
     attempts: number
+    verifiedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["otpCode"]>
   composites: {}
@@ -1123,8 +1123,8 @@ export interface OtpCodeFieldRefs {
   readonly purpose: Prisma.FieldRef<"OtpCode", 'OtpPurpose'>
   readonly channel: Prisma.FieldRef<"OtpCode", 'VerificationChannel'>
   readonly expiresAt: Prisma.FieldRef<"OtpCode", 'DateTime'>
-  readonly verifiedAt: Prisma.FieldRef<"OtpCode", 'DateTime'>
   readonly attempts: Prisma.FieldRef<"OtpCode", 'Int'>
+  readonly verifiedAt: Prisma.FieldRef<"OtpCode", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"OtpCode", 'DateTime'>
 }
     

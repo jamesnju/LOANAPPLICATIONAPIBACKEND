@@ -1,159 +1,431 @@
-Authentication API documentation
+Sure. Below are **sample requests and responses for the Loan Platform authentication APIs** based on your current schema and auth code.
 
-Here is the documentation we can eventually put into Swagger/OpenAPI.
+## 1. Register User
 
-1. Register
-Request
-POST /api/v1/auth/register
-Content-Type: application/json
+**Endpoint**
+
+`POST /api/v1/auth/register`
+
+### Request
+
+```json
 {
-  "email": "james@example.com",
-  "phone": "+254712345678",
-  "password": "SecurePassword123!",
   "firstName": "James",
-  "lastName": "Njuguna",
-  "verificationChannel": "SMS"
+  "lastName": "Muniu",
+  "email": "james@example.com",
+  "phone": "0712345678",
+  "password": "SecurePass123!",
+  "verificationChannel": "EMAIL"
 }
-Response
+```
+
+### Response — 201 Created
+
+```json
 {
   "success": true,
   "message": "Account created. Verification code sent.",
   "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "id": "8f4c5d9e-8d21-4e7a-bf1b-8a4e4f3e9c12",
+    "firstName": "James",
+    "lastName": "Muniu",
     "email": "james@example.com",
-    "phone": "+254712345678",
-    "verified": false,
+    "phone": "0712345678",
+    "emailVerified": false,
+    "phoneVerified": false,
     "message": "Account created. Please verify your account using the verification code."
   }
 }
+```
 
-The SMS received by the user would contain something like:
+The OTP is **not returned in the API response**. It is sent through the selected channel.
 
-Your verification code is 583214.
+For example, if `verificationChannel` is `EMAIL`, the user receives something like:
+
+```text
+Your Loan Platform verification code is: 483921
+
 This code expires in 10 minutes.
-2. Verify account
-Request
-POST /api/v1/auth/verify
-Content-Type: application/json
+```
+
+---
+
+# 2. Verify Account
+
+**Endpoint**
+
+`POST /api/v1/auth/verify`
+
+### Request
+
+Use the `id` returned during registration:
+
+```json
 {
-  "userId": "550e8400-e29b-41d4-a716-446655440000",
-  "code": "583214"
+  "userId": "8f4c5d9e-8d21-4e7a-bf1b-8a4e4f3e9c12",
+  "code": "483921"
 }
-Successful response
+```
+
+### Response — 200 OK
+
+```json
 {
   "success": true,
   "message": "Account verified successfully.",
   "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "id": "8f4c5d9e-8d21-4e7a-bf1b-8a4e4f3e9c12",
+    "firstName": "James",
+    "lastName": "Muniu",
     "email": "james@example.com",
-    "phone": "+254712345678",
-    "emailVerified": false,
-    "phoneVerified": true
+    "phone": "0712345678",
+    "emailVerified": true,
+    "phoneVerified": false,
+    "role": "CUSTOMER",
+    "status": "ACTIVE"
   }
 }
-3. Login
-Request
+```
 
-The customer can use either email:
+Because the OTP was sent using `EMAIL`, `emailVerified` becomes `true`.
 
+If the user registered with:
+
+```json
+{
+  "verificationChannel": "SMS"
+}
+```
+
+then successful verification would result in:
+
+```json
+{
+  "emailVerified": false,
+  "phoneVerified": true
+}
+```
+
+---
+
+# 3. Login
+
+**Endpoint**
+
+`POST /api/v1/auth/login`
+
+### Request using email
+
+```json
 {
   "identifier": "james@example.com",
-  "password": "SecurePassword123!"
+  "password": "SecurePass123!"
 }
+```
 
-or phone:
+You can also use the phone number:
 
+```json
 {
-  "identifier": "+254712345678",
-  "password": "SecurePassword123!"
+  "identifier": "0712345678",
+  "password": "SecurePass123!"
 }
-Successful response
+```
+
+### Response — 200 OK
+
+```json
 {
   "success": true,
   "message": "Login successful.",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "a-long-random-refresh-token...",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZjRjNWQ5ZS04ZDIxLTRlN2EtYmYxYi04YTRlNGYzZTljMTIiLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NTg3OTAwMDB9.example",
+    "refreshToken": "9c5d6f1a8b3e7d2c4f6a9b1e8d5c7f3a2b4c6d8e1f9a7b5c3d2e4f6a8b0c1d",
     "user": {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "id": "8f4c5d9e-8d21-4e7a-bf1b-8a4e4f3e9c12",
+      "firstName": "James",
+      "lastName": "Muniu",
       "email": "james@example.com",
-      "phone": "+254712345678",
+      "phone": "0712345678",
       "role": "CUSTOMER",
-      "emailVerified": false,
-      "phoneVerified": true
+      "status": "ACTIVE",
+      "emailVerified": true,
+      "phoneVerified": false
     }
   }
 }
-4. Unverified login
+```
 
-If the user registers but doesn't verify their account and tries:
+> The tokens above are **sample values**, not real tokens.
 
-POST /api/v1/auth/login
+---
 
-they receive:
+# 4. Login — Unverified Account
 
+If the user hasn't verified either email or phone:
+
+### Request
+
+```json
+{
+  "identifier": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+### Response — 403 Forbidden
+
+```json
 {
   "success": false,
   "code": "ACCOUNT_NOT_VERIFIED",
   "message": "Please verify your account before logging in."
 }
+```
 
-No access token is issued.
+---
 
-5. Refresh token
-Request
-POST /api/v1/auth/refresh
-Content-Type: application/json
+# 5. Login — Wrong Password
+
+### Request
+
+```json
 {
-  "refreshToken": "a-long-random-refresh-token..."
+  "identifier": "james@example.com",
+  "password": "WrongPassword123!"
 }
-Response
+```
+
+### Response — 401 Unauthorized
+
+```json
+{
+  "success": false,
+  "message": "Invalid email/phone or password"
+}
+```
+
+---
+
+# 6. Refresh Access Token
+
+When the access token expires, the mobile/web application sends the refresh token.
+
+**Endpoint**
+
+`POST /api/v1/auth/refresh`
+
+### Request
+
+```json
+{
+  "refreshToken": "9c5d6f1a8b3e7d2c4f6a9b1e8d5c7f3a2b4c6d8e1f9a7b5c3d2e4f6a8b0c1d"
+}
+```
+
+### Response — 200 OK
+
+```json
 {
   "success": true,
   "message": "Access token refreshed.",
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIs..."
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.NEW_ACCESS_TOKEN_EXAMPLE"
   }
 }
-6. Logout
-Request
-POST /api/v1/auth/logout
-Content-Type: application/json
+```
+
+The refresh token itself is currently **not replaced**. Your current implementation only generates a new access token.
+
+---
+
+# 7. Invalid Refresh Token
+
+### Request
+
+```json
 {
-  "refreshToken": "a-long-random-refresh-token..."
+  "refreshToken": "invalid-refresh-token"
 }
-Response
+```
+
+### Response — 401 Unauthorized
+
+```json
+{
+  "success": false,
+  "message": "Invalid refresh token"
+}
+```
+
+---
+
+# 8. Logout
+
+**Endpoint**
+
+`POST /api/v1/auth/logout`
+
+### Request
+
+```json
+{
+  "refreshToken": "9c5d6f1a8b3e7d2c4f6a9b1e8d5c7f3a2b4c6d8e1f9a7b5c3d2e4f6a8b0c1d"
+}
+```
+
+### Response — 200 OK
+
+```json
 {
   "success": true,
   "message": "Logout successful."
 }
-One design point I recommend for this loan platform
+```
 
-We're allowing verification through either SMS or email, and the login check is:
+Behind the scenes, your system sets:
 
-const accountVerified =
-  user.emailVerified || user.phoneVerified;
+```text
+RefreshToken.revokedAt
+```
 
-So if the customer chooses SMS:
+to the current date/time.
 
-Registration
-    ↓
-SMS OTP
-    ↓
-phoneVerified = true
-    ↓
-LOGIN ALLOWED
+---
 
-If they choose email:
+# 9. Invalid OTP
 
-Registration
-    ↓
-Email OTP
-    ↓
-emailVerified = true
-    ↓
-LOGIN ALLOWED
+**Endpoint**
 
-This gives us the flexibility you requested without requiring the customer to verify both channels before they can use the platform.
+`POST /api/v1/auth/verify`
 
-One thing I would change before production: add a dedicated resend-verification-code endpoint with rate limiting, plus account lockout/rate limiting on login and OTP attempts. The basic authentication flow above is ready for development, but those protections should be added before exposing the API publicly.
+### Request
+
+```json
+{
+  "userId": "8f4c5d9e-8d21-4e7a-bf1b-8a4e4f3e9c12",
+  "code": "123456"
+}
+```
+
+### Response — 400 Bad Request
+
+```json
+{
+  "success": false,
+  "message": "Invalid verification code"
+}
+```
+
+The `attempts` field in `OtpCode` is incremented.
+
+---
+
+# 10. Expired OTP
+
+### Response
+
+```json
+{
+  "success": false,
+  "message": "Verification code has expired"
+}
+```
+
+---
+
+## Complete authentication flow
+
+Your frontend/mobile app will basically follow this sequence:
+
+```text
+                    ┌─────────────────┐
+                    │    REGISTER     │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    User created
+                    emailVerified=false
+                    phoneVerified=false
+                             │
+                             ▼
+                    Generate 6-digit OTP
+                             │
+                    ┌────────┴────────┐
+                    ▼                 ▼
+                  EMAIL              SMS
+                    │                 │
+                    └────────┬────────┘
+                             ▼
+                    ┌─────────────────┐
+                    │     VERIFY      │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    Account verified
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │      LOGIN      │
+                    └────────┬────────┘
+                             │
+                             ▼
+                 ┌───────────────────────┐
+                 │ Access Token          │
+                 │ Refresh Token         │
+                 └───────────┬───────────┘
+                             │
+                             ▼
+                       Use API
+                             │
+                             ▼
+                  Access token expires
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │     REFRESH     │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    New Access Token
+                             │
+                             ▼
+                    Continue using API
+```
+
+### One important thing for your Loan Platform
+
+The authentication is now only the **identity layer**. After this, we can build the actual loan APIs around the models we created:
+
+```text
+AUTH
+ ├── Register
+ ├── OTP Verification
+ ├── Login
+ ├── Refresh Token
+ └── Logout
+
+CUSTOMER
+ ├── Profile
+ ├── Documents
+ └── Guarantors
+
+LOAN
+ ├── Loan Products
+ ├── Applications
+ ├── Approvals
+ ├── Disbursement
+ ├── Repayment Schedule
+ ├── Payments
+ └── Loan Transactions
+
+ADMIN
+ ├── Users
+ ├── Loan Products
+ ├── System Config
+ ├── Applications
+ ├── Approvals
+ └── Reports
+```
+
+The **next logical step is the Loan Product + SystemConfig APIs**, because those determine things like minimum/maximum loan amount, interest rate, repayment days, processing fee, and late-payment penalty.

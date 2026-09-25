@@ -52,10 +52,21 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  CustomerProfile: 'CustomerProfile',
-  Document: 'Document',
+  RefreshToken: 'RefreshToken',
   OtpCode: 'OtpCode',
-  RefreshToken: 'RefreshToken'
+  LoanProduct: 'LoanProduct',
+  LoanApplication: 'LoanApplication',
+  Loan: 'Loan',
+  LoanApproval: 'LoanApproval',
+  RepaymentSchedule: 'RepaymentSchedule',
+  Payment: 'Payment',
+  LoanTransaction: 'LoanTransaction',
+  Guarantor: 'Guarantor',
+  Collateral: 'Collateral',
+  Document: 'Document',
+  Notification: 'Notification',
+  SystemConfig: 'SystemConfig',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -76,67 +87,27 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
   email: 'email',
   phone: 'phone',
   passwordHash: 'passwordHash',
+  nationalId: 'nationalId',
+  dateOfBirth: 'dateOfBirth',
+  gender: 'gender',
+  employmentType: 'employmentType',
+  employerName: 'employerName',
+  monthlyIncome: 'monthlyIncome',
   role: 'role',
   status: 'status',
-  kycStatus: 'kycStatus',
   emailVerified: 'emailVerified',
   phoneVerified: 'phoneVerified',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
-
-
-export const CustomerProfileScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  nationalId: 'nationalId',
-  dateOfBirth: 'dateOfBirth',
-  address: 'address',
-  occupation: 'occupation',
-  employer: 'employer',
-  monthlyIncome: 'monthlyIncome',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CustomerProfileScalarFieldEnum = (typeof CustomerProfileScalarFieldEnum)[keyof typeof CustomerProfileScalarFieldEnum]
-
-
-export const DocumentScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  documentType: 'documentType',
-  originalFilename: 'originalFilename',
-  mimeType: 'mimeType',
-  cloudinaryPublicId: 'cloudinaryPublicId',
-  cloudinaryUrl: 'cloudinaryUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
-
-
-export const OtpCodeScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  codeHash: 'codeHash',
-  purpose: 'purpose',
-  channel: 'channel',
-  expiresAt: 'expiresAt',
-  verifiedAt: 'verifiedAt',
-  attempts: 'attempts',
-  createdAt: 'createdAt'
-} as const
-
-export type OtpCodeScalarFieldEnum = (typeof OtpCodeScalarFieldEnum)[keyof typeof OtpCodeScalarFieldEnum]
 
 
 export const RefreshTokenScalarFieldEnum = {
@@ -151,12 +122,282 @@ export const RefreshTokenScalarFieldEnum = {
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
+export const OtpCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  purpose: 'purpose',
+  channel: 'channel',
+  expiresAt: 'expiresAt',
+  attempts: 'attempts',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OtpCodeScalarFieldEnum = (typeof OtpCodeScalarFieldEnum)[keyof typeof OtpCodeScalarFieldEnum]
+
+
+export const LoanProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  description: 'description',
+  minAmount: 'minAmount',
+  maxAmount: 'maxAmount',
+  minRepaymentDays: 'minRepaymentDays',
+  maxRepaymentDays: 'maxRepaymentDays',
+  interestRate: 'interestRate',
+  processingFee: 'processingFee',
+  latePenaltyRate: 'latePenaltyRate',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LoanProductScalarFieldEnum = (typeof LoanProductScalarFieldEnum)[keyof typeof LoanProductScalarFieldEnum]
+
+
+export const LoanApplicationScalarFieldEnum = {
+  id: 'id',
+  applicationNumber: 'applicationNumber',
+  userId: 'userId',
+  loanProductId: 'loanProductId',
+  requestedAmount: 'requestedAmount',
+  requestedDays: 'requestedDays',
+  interestRate: 'interestRate',
+  processingFee: 'processingFee',
+  purpose: 'purpose',
+  description: 'description',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  reviewedAt: 'reviewedAt',
+  approvedAt: 'approvedAt',
+  rejectedAt: 'rejectedAt',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LoanApplicationScalarFieldEnum = (typeof LoanApplicationScalarFieldEnum)[keyof typeof LoanApplicationScalarFieldEnum]
+
+
+export const LoanScalarFieldEnum = {
+  id: 'id',
+  loanNumber: 'loanNumber',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  loanProductId: 'loanProductId',
+  principalAmount: 'principalAmount',
+  interestRate: 'interestRate',
+  interestAmount: 'interestAmount',
+  processingFee: 'processingFee',
+  penaltyAmount: 'penaltyAmount',
+  totalAmount: 'totalAmount',
+  amountPaid: 'amountPaid',
+  outstandingAmount: 'outstandingAmount',
+  repaymentDays: 'repaymentDays',
+  disbursedAt: 'disbursedAt',
+  maturityDate: 'maturityDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
+
+
+export const LoanApprovalScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  approverId: 'approverId',
+  action: 'action',
+  comments: 'comments',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanApprovalScalarFieldEnum = (typeof LoanApprovalScalarFieldEnum)[keyof typeof LoanApprovalScalarFieldEnum]
+
+
+export const RepaymentScheduleScalarFieldEnum = {
+  id: 'id',
+  loanId: 'loanId',
+  installmentNumber: 'installmentNumber',
+  dueDate: 'dueDate',
+  principalAmount: 'principalAmount',
+  interestAmount: 'interestAmount',
+  penaltyAmount: 'penaltyAmount',
+  totalAmount: 'totalAmount',
+  amountPaid: 'amountPaid',
+  outstandingAmount: 'outstandingAmount',
+  status: 'status',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RepaymentScheduleScalarFieldEnum = (typeof RepaymentScheduleScalarFieldEnum)[keyof typeof RepaymentScheduleScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  paymentReference: 'paymentReference',
+  loanId: 'loanId',
+  scheduleId: 'scheduleId',
+  amount: 'amount',
+  paymentMethod: 'paymentMethod',
+  transactionReference: 'transactionReference',
+  status: 'status',
+  paymentDate: 'paymentDate',
+  processedAt: 'processedAt',
+  failureReason: 'failureReason',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const LoanTransactionScalarFieldEnum = {
+  id: 'id',
+  transactionNumber: 'transactionNumber',
+  loanId: 'loanId',
+  paymentId: 'paymentId',
+  type: 'type',
+  amount: 'amount',
+  description: 'description',
+  reference: 'reference',
+  balanceBefore: 'balanceBefore',
+  balanceAfter: 'balanceAfter',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanTransactionScalarFieldEnum = (typeof LoanTransactionScalarFieldEnum)[keyof typeof LoanTransactionScalarFieldEnum]
+
+
+export const GuarantorScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  email: 'email',
+  nationalId: 'nationalId',
+  relationship: 'relationship',
+  guaranteedAmount: 'guaranteedAmount',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GuarantorScalarFieldEnum = (typeof GuarantorScalarFieldEnum)[keyof typeof GuarantorScalarFieldEnum]
+
+
+export const CollateralScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  type: 'type',
+  description: 'description',
+  estimatedValue: 'estimatedValue',
+  registrationNumber: 'registrationNumber',
+  ownershipDocument: 'ownershipDocument',
+  verified: 'verified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CollateralScalarFieldEnum = (typeof CollateralScalarFieldEnum)[keyof typeof CollateralScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  applicationId: 'applicationId',
+  guarantorId: 'guarantorId',
+  collateralId: 'collateralId',
+  type: 'type',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  status: 'status',
+  verifiedAt: 'verifiedAt',
+  verifiedBy: 'verifiedBy',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  channel: 'channel',
+  title: 'title',
+  message: 'message',
+  isRead: 'isRead',
+  sentAt: 'sentAt',
+  readAt: 'readAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const SystemConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  value: 'value',
+  defaultValue: 'defaultValue',
+  category: 'category',
+  isEditable: 'isEditable',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemConfigScalarFieldEnum = (typeof SystemConfigScalarFieldEnum)[keyof typeof SystemConfigScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  entity: 'entity',
+  entityId: 'entityId',
+  oldValue: 'oldValue',
+  newValue: 'newValue',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -173,4 +414,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

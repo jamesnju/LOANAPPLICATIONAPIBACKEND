@@ -20,18 +20,35 @@ export type DocumentModel = runtime.Types.Result.DefaultSelection<Prisma.$Docume
 
 export type AggregateDocument = {
   _count: DocumentCountAggregateOutputType | null
+  _avg: DocumentAvgAggregateOutputType | null
+  _sum: DocumentSumAggregateOutputType | null
   _min: DocumentMinAggregateOutputType | null
   _max: DocumentMaxAggregateOutputType | null
+}
+
+export type DocumentAvgAggregateOutputType = {
+  fileSize: number | null
+}
+
+export type DocumentSumAggregateOutputType = {
+  fileSize: number | null
 }
 
 export type DocumentMinAggregateOutputType = {
   id: string | null
   userId: string | null
-  documentType: string | null
-  originalFilename: string | null
+  applicationId: string | null
+  guarantorId: string | null
+  collateralId: string | null
+  type: $Enums.DocumentType | null
+  fileName: string | null
+  fileUrl: string | null
+  fileSize: number | null
   mimeType: string | null
-  cloudinaryPublicId: string | null
-  cloudinaryUrl: string | null
+  status: $Enums.DocumentStatus | null
+  verifiedAt: Date | null
+  verifiedBy: string | null
+  rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -39,11 +56,18 @@ export type DocumentMinAggregateOutputType = {
 export type DocumentMaxAggregateOutputType = {
   id: string | null
   userId: string | null
-  documentType: string | null
-  originalFilename: string | null
+  applicationId: string | null
+  guarantorId: string | null
+  collateralId: string | null
+  type: $Enums.DocumentType | null
+  fileName: string | null
+  fileUrl: string | null
+  fileSize: number | null
   mimeType: string | null
-  cloudinaryPublicId: string | null
-  cloudinaryUrl: string | null
+  status: $Enums.DocumentStatus | null
+  verifiedAt: Date | null
+  verifiedBy: string | null
+  rejectionReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -51,25 +75,47 @@ export type DocumentMaxAggregateOutputType = {
 export type DocumentCountAggregateOutputType = {
   id: number
   userId: number
-  documentType: number
-  originalFilename: number
+  applicationId: number
+  guarantorId: number
+  collateralId: number
+  type: number
+  fileName: number
+  fileUrl: number
+  fileSize: number
   mimeType: number
-  cloudinaryPublicId: number
-  cloudinaryUrl: number
+  status: number
+  verifiedAt: number
+  verifiedBy: number
+  rejectionReason: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type DocumentAvgAggregateInputType = {
+  fileSize?: true
+}
+
+export type DocumentSumAggregateInputType = {
+  fileSize?: true
+}
+
 export type DocumentMinAggregateInputType = {
   id?: true
   userId?: true
-  documentType?: true
-  originalFilename?: true
+  applicationId?: true
+  guarantorId?: true
+  collateralId?: true
+  type?: true
+  fileName?: true
+  fileUrl?: true
+  fileSize?: true
   mimeType?: true
-  cloudinaryPublicId?: true
-  cloudinaryUrl?: true
+  status?: true
+  verifiedAt?: true
+  verifiedBy?: true
+  rejectionReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,11 +123,18 @@ export type DocumentMinAggregateInputType = {
 export type DocumentMaxAggregateInputType = {
   id?: true
   userId?: true
-  documentType?: true
-  originalFilename?: true
+  applicationId?: true
+  guarantorId?: true
+  collateralId?: true
+  type?: true
+  fileName?: true
+  fileUrl?: true
+  fileSize?: true
   mimeType?: true
-  cloudinaryPublicId?: true
-  cloudinaryUrl?: true
+  status?: true
+  verifiedAt?: true
+  verifiedBy?: true
+  rejectionReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -89,11 +142,18 @@ export type DocumentMaxAggregateInputType = {
 export type DocumentCountAggregateInputType = {
   id?: true
   userId?: true
-  documentType?: true
-  originalFilename?: true
+  applicationId?: true
+  guarantorId?: true
+  collateralId?: true
+  type?: true
+  fileName?: true
+  fileUrl?: true
+  fileSize?: true
   mimeType?: true
-  cloudinaryPublicId?: true
-  cloudinaryUrl?: true
+  status?: true
+  verifiedAt?: true
+  verifiedBy?: true
+  rejectionReason?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -137,6 +197,18 @@ export type DocumentAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DocumentAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DocumentSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DocumentMinAggregateInputType
@@ -167,6 +239,8 @@ export type DocumentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: DocumentCountAggregateInputType | true
+  _avg?: DocumentAvgAggregateInputType
+  _sum?: DocumentSumAggregateInputType
   _min?: DocumentMinAggregateInputType
   _max?: DocumentMaxAggregateInputType
 }
@@ -174,14 +248,23 @@ export type DocumentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type DocumentGroupByOutputType = {
   id: string
   userId: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  applicationId: string | null
+  guarantorId: string | null
+  collateralId: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize: number | null
+  mimeType: string | null
+  status: $Enums.DocumentStatus
+  verifiedAt: Date | null
+  verifiedBy: string | null
+  rejectionReason: string | null
   createdAt: Date
   updatedAt: Date
   _count: DocumentCountAggregateOutputType | null
+  _avg: DocumentAvgAggregateOutputType | null
+  _sum: DocumentSumAggregateOutputType | null
   _min: DocumentMinAggregateOutputType | null
   _max: DocumentMaxAggregateOutputType | null
 }
@@ -205,29 +288,49 @@ export type DocumentWhereInput = {
   AND?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
   OR?: Prisma.DocumentWhereInput[]
   NOT?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
-  id?: Prisma.StringFilter<"Document"> | string
-  userId?: Prisma.StringFilter<"Document"> | string
-  documentType?: Prisma.StringFilter<"Document"> | string
-  originalFilename?: Prisma.StringFilter<"Document"> | string
-  mimeType?: Prisma.StringFilter<"Document"> | string
-  cloudinaryPublicId?: Prisma.StringFilter<"Document"> | string
-  cloudinaryUrl?: Prisma.StringFilter<"Document"> | string
+  id?: Prisma.UuidFilter<"Document"> | string
+  userId?: Prisma.UuidFilter<"Document"> | string
+  applicationId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  guarantorId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  collateralId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+  fileName?: Prisma.StringFilter<"Document"> | string
+  fileUrl?: Prisma.StringFilter<"Document"> | string
+  fileSize?: Prisma.IntNullableFilter<"Document"> | number | null
+  mimeType?: Prisma.StringNullableFilter<"Document"> | string | null
+  status?: Prisma.EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+  verifiedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  verifiedBy?: Prisma.StringNullableFilter<"Document"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  application?: Prisma.XOR<Prisma.LoanApplicationNullableScalarRelationFilter, Prisma.LoanApplicationWhereInput> | null
+  guarantor?: Prisma.XOR<Prisma.GuarantorNullableScalarRelationFilter, Prisma.GuarantorWhereInput> | null
+  collateral?: Prisma.XOR<Prisma.CollateralNullableScalarRelationFilter, Prisma.CollateralWhereInput> | null
 }
 
 export type DocumentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  documentType?: Prisma.SortOrder
-  originalFilename?: Prisma.SortOrder
-  mimeType?: Prisma.SortOrder
-  cloudinaryPublicId?: Prisma.SortOrder
-  cloudinaryUrl?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  guarantorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  collateralId?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  application?: Prisma.LoanApplicationOrderByWithRelationInput
+  guarantor?: Prisma.GuarantorOrderByWithRelationInput
+  collateral?: Prisma.CollateralOrderByWithRelationInput
 }
 
 export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -235,91 +338,145 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
   OR?: Prisma.DocumentWhereInput[]
   NOT?: Prisma.DocumentWhereInput | Prisma.DocumentWhereInput[]
-  userId?: Prisma.StringFilter<"Document"> | string
-  documentType?: Prisma.StringFilter<"Document"> | string
-  originalFilename?: Prisma.StringFilter<"Document"> | string
-  mimeType?: Prisma.StringFilter<"Document"> | string
-  cloudinaryPublicId?: Prisma.StringFilter<"Document"> | string
-  cloudinaryUrl?: Prisma.StringFilter<"Document"> | string
+  userId?: Prisma.UuidFilter<"Document"> | string
+  applicationId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  guarantorId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  collateralId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+  fileName?: Prisma.StringFilter<"Document"> | string
+  fileUrl?: Prisma.StringFilter<"Document"> | string
+  fileSize?: Prisma.IntNullableFilter<"Document"> | number | null
+  mimeType?: Prisma.StringNullableFilter<"Document"> | string | null
+  status?: Prisma.EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+  verifiedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  verifiedBy?: Prisma.StringNullableFilter<"Document"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  application?: Prisma.XOR<Prisma.LoanApplicationNullableScalarRelationFilter, Prisma.LoanApplicationWhereInput> | null
+  guarantor?: Prisma.XOR<Prisma.GuarantorNullableScalarRelationFilter, Prisma.GuarantorWhereInput> | null
+  collateral?: Prisma.XOR<Prisma.CollateralNullableScalarRelationFilter, Prisma.CollateralWhereInput> | null
 }, "id">
 
 export type DocumentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  documentType?: Prisma.SortOrder
-  originalFilename?: Prisma.SortOrder
-  mimeType?: Prisma.SortOrder
-  cloudinaryPublicId?: Prisma.SortOrder
-  cloudinaryUrl?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  guarantorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  collateralId?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DocumentCountOrderByAggregateInput
+  _avg?: Prisma.DocumentAvgOrderByAggregateInput
   _max?: Prisma.DocumentMaxOrderByAggregateInput
   _min?: Prisma.DocumentMinOrderByAggregateInput
+  _sum?: Prisma.DocumentSumOrderByAggregateInput
 }
 
 export type DocumentScalarWhereWithAggregatesInput = {
   AND?: Prisma.DocumentScalarWhereWithAggregatesInput | Prisma.DocumentScalarWhereWithAggregatesInput[]
   OR?: Prisma.DocumentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DocumentScalarWhereWithAggregatesInput | Prisma.DocumentScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  documentType?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  originalFilename?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  mimeType?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  cloudinaryPublicId?: Prisma.StringWithAggregatesFilter<"Document"> | string
-  cloudinaryUrl?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"Document"> | string
+  userId?: Prisma.UuidWithAggregatesFilter<"Document"> | string
+  applicationId?: Prisma.UuidNullableWithAggregatesFilter<"Document"> | string | null
+  guarantorId?: Prisma.UuidNullableWithAggregatesFilter<"Document"> | string | null
+  collateralId?: Prisma.UuidNullableWithAggregatesFilter<"Document"> | string | null
+  type?: Prisma.EnumDocumentTypeWithAggregatesFilter<"Document"> | $Enums.DocumentType
+  fileName?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  fileUrl?: Prisma.StringWithAggregatesFilter<"Document"> | string
+  fileSize?: Prisma.IntNullableWithAggregatesFilter<"Document"> | number | null
+  mimeType?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
+  status?: Prisma.EnumDocumentStatusWithAggregatesFilter<"Document"> | $Enums.DocumentStatus
+  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
+  verifiedBy?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
 }
 
 export type DocumentCreateInput = {
   id?: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDocumentsInput
+  application?: Prisma.LoanApplicationCreateNestedOneWithoutDocumentsInput
+  guarantor?: Prisma.GuarantorCreateNestedOneWithoutDocumentsInput
+  collateral?: Prisma.CollateralCreateNestedOneWithoutDocumentsInput
 }
 
 export type DocumentUncheckedCreateInput = {
   id?: string
   userId: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type DocumentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
+  application?: Prisma.LoanApplicationUpdateOneWithoutDocumentsNestedInput
+  guarantor?: Prisma.GuarantorUpdateOneWithoutDocumentsNestedInput
+  collateral?: Prisma.CollateralUpdateOneWithoutDocumentsNestedInput
 }
 
 export type DocumentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -327,22 +484,33 @@ export type DocumentUncheckedUpdateInput = {
 export type DocumentCreateManyInput = {
   id?: string
   userId: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type DocumentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -350,11 +518,18 @@ export type DocumentUpdateManyMutationInput = {
 export type DocumentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -372,23 +547,41 @@ export type DocumentOrderByRelationAggregateInput = {
 export type DocumentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  documentType?: Prisma.SortOrder
-  originalFilename?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrder
+  guarantorId?: Prisma.SortOrder
+  collateralId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
-  cloudinaryPublicId?: Prisma.SortOrder
-  cloudinaryUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type DocumentAvgOrderByAggregateInput = {
+  fileSize?: Prisma.SortOrder
 }
 
 export type DocumentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  documentType?: Prisma.SortOrder
-  originalFilename?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrder
+  guarantorId?: Prisma.SortOrder
+  collateralId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
-  cloudinaryPublicId?: Prisma.SortOrder
-  cloudinaryUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -396,13 +589,24 @@ export type DocumentMaxOrderByAggregateInput = {
 export type DocumentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  documentType?: Prisma.SortOrder
-  originalFilename?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrder
+  guarantorId?: Prisma.SortOrder
+  collateralId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
   mimeType?: Prisma.SortOrder
-  cloudinaryPublicId?: Prisma.SortOrder
-  cloudinaryUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedBy?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type DocumentSumOrderByAggregateInput = {
+  fileSize?: Prisma.SortOrder
 }
 
 export type DocumentCreateNestedManyWithoutUserInput = {
@@ -447,24 +651,180 @@ export type DocumentUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
 }
 
+export type DocumentCreateNestedManyWithoutApplicationInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput> | Prisma.DocumentCreateWithoutApplicationInput[] | Prisma.DocumentUncheckedCreateWithoutApplicationInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutApplicationInput | Prisma.DocumentCreateOrConnectWithoutApplicationInput[]
+  createMany?: Prisma.DocumentCreateManyApplicationInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUncheckedCreateNestedManyWithoutApplicationInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput> | Prisma.DocumentCreateWithoutApplicationInput[] | Prisma.DocumentUncheckedCreateWithoutApplicationInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutApplicationInput | Prisma.DocumentCreateOrConnectWithoutApplicationInput[]
+  createMany?: Prisma.DocumentCreateManyApplicationInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUpdateManyWithoutApplicationNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput> | Prisma.DocumentCreateWithoutApplicationInput[] | Prisma.DocumentUncheckedCreateWithoutApplicationInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutApplicationInput | Prisma.DocumentCreateOrConnectWithoutApplicationInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutApplicationInput | Prisma.DocumentUpsertWithWhereUniqueWithoutApplicationInput[]
+  createMany?: Prisma.DocumentCreateManyApplicationInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutApplicationInput | Prisma.DocumentUpdateWithWhereUniqueWithoutApplicationInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutApplicationInput | Prisma.DocumentUpdateManyWithWhereWithoutApplicationInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentUncheckedUpdateManyWithoutApplicationNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput> | Prisma.DocumentCreateWithoutApplicationInput[] | Prisma.DocumentUncheckedCreateWithoutApplicationInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutApplicationInput | Prisma.DocumentCreateOrConnectWithoutApplicationInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutApplicationInput | Prisma.DocumentUpsertWithWhereUniqueWithoutApplicationInput[]
+  createMany?: Prisma.DocumentCreateManyApplicationInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutApplicationInput | Prisma.DocumentUpdateWithWhereUniqueWithoutApplicationInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutApplicationInput | Prisma.DocumentUpdateManyWithWhereWithoutApplicationInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentCreateNestedManyWithoutGuarantorInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput> | Prisma.DocumentCreateWithoutGuarantorInput[] | Prisma.DocumentUncheckedCreateWithoutGuarantorInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutGuarantorInput | Prisma.DocumentCreateOrConnectWithoutGuarantorInput[]
+  createMany?: Prisma.DocumentCreateManyGuarantorInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUncheckedCreateNestedManyWithoutGuarantorInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput> | Prisma.DocumentCreateWithoutGuarantorInput[] | Prisma.DocumentUncheckedCreateWithoutGuarantorInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutGuarantorInput | Prisma.DocumentCreateOrConnectWithoutGuarantorInput[]
+  createMany?: Prisma.DocumentCreateManyGuarantorInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUpdateManyWithoutGuarantorNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput> | Prisma.DocumentCreateWithoutGuarantorInput[] | Prisma.DocumentUncheckedCreateWithoutGuarantorInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutGuarantorInput | Prisma.DocumentCreateOrConnectWithoutGuarantorInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutGuarantorInput | Prisma.DocumentUpsertWithWhereUniqueWithoutGuarantorInput[]
+  createMany?: Prisma.DocumentCreateManyGuarantorInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutGuarantorInput | Prisma.DocumentUpdateWithWhereUniqueWithoutGuarantorInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutGuarantorInput | Prisma.DocumentUpdateManyWithWhereWithoutGuarantorInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentUncheckedUpdateManyWithoutGuarantorNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput> | Prisma.DocumentCreateWithoutGuarantorInput[] | Prisma.DocumentUncheckedCreateWithoutGuarantorInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutGuarantorInput | Prisma.DocumentCreateOrConnectWithoutGuarantorInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutGuarantorInput | Prisma.DocumentUpsertWithWhereUniqueWithoutGuarantorInput[]
+  createMany?: Prisma.DocumentCreateManyGuarantorInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutGuarantorInput | Prisma.DocumentUpdateWithWhereUniqueWithoutGuarantorInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutGuarantorInput | Prisma.DocumentUpdateManyWithWhereWithoutGuarantorInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentCreateNestedManyWithoutCollateralInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput> | Prisma.DocumentCreateWithoutCollateralInput[] | Prisma.DocumentUncheckedCreateWithoutCollateralInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutCollateralInput | Prisma.DocumentCreateOrConnectWithoutCollateralInput[]
+  createMany?: Prisma.DocumentCreateManyCollateralInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUncheckedCreateNestedManyWithoutCollateralInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput> | Prisma.DocumentCreateWithoutCollateralInput[] | Prisma.DocumentUncheckedCreateWithoutCollateralInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutCollateralInput | Prisma.DocumentCreateOrConnectWithoutCollateralInput[]
+  createMany?: Prisma.DocumentCreateManyCollateralInputEnvelope
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+}
+
+export type DocumentUpdateManyWithoutCollateralNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput> | Prisma.DocumentCreateWithoutCollateralInput[] | Prisma.DocumentUncheckedCreateWithoutCollateralInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutCollateralInput | Prisma.DocumentCreateOrConnectWithoutCollateralInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutCollateralInput | Prisma.DocumentUpsertWithWhereUniqueWithoutCollateralInput[]
+  createMany?: Prisma.DocumentCreateManyCollateralInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutCollateralInput | Prisma.DocumentUpdateWithWhereUniqueWithoutCollateralInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutCollateralInput | Prisma.DocumentUpdateManyWithWhereWithoutCollateralInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type DocumentUncheckedUpdateManyWithoutCollateralNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput> | Prisma.DocumentCreateWithoutCollateralInput[] | Prisma.DocumentUncheckedCreateWithoutCollateralInput[]
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutCollateralInput | Prisma.DocumentCreateOrConnectWithoutCollateralInput[]
+  upsert?: Prisma.DocumentUpsertWithWhereUniqueWithoutCollateralInput | Prisma.DocumentUpsertWithWhereUniqueWithoutCollateralInput[]
+  createMany?: Prisma.DocumentCreateManyCollateralInputEnvelope
+  set?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  disconnect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  delete?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  connect?: Prisma.DocumentWhereUniqueInput | Prisma.DocumentWhereUniqueInput[]
+  update?: Prisma.DocumentUpdateWithWhereUniqueWithoutCollateralInput | Prisma.DocumentUpdateWithWhereUniqueWithoutCollateralInput[]
+  updateMany?: Prisma.DocumentUpdateManyWithWhereWithoutCollateralInput | Prisma.DocumentUpdateManyWithWhereWithoutCollateralInput[]
+  deleteMany?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
+}
+
+export type EnumDocumentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.DocumentType
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type EnumDocumentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.DocumentStatus
+}
+
 export type DocumentCreateWithoutUserInput = {
   id?: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  application?: Prisma.LoanApplicationCreateNestedOneWithoutDocumentsInput
+  guarantor?: Prisma.GuarantorCreateNestedOneWithoutDocumentsInput
+  collateral?: Prisma.CollateralCreateNestedOneWithoutDocumentsInput
 }
 
 export type DocumentUncheckedCreateWithoutUserInput = {
   id?: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -499,57 +859,494 @@ export type DocumentScalarWhereInput = {
   AND?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
   OR?: Prisma.DocumentScalarWhereInput[]
   NOT?: Prisma.DocumentScalarWhereInput | Prisma.DocumentScalarWhereInput[]
-  id?: Prisma.StringFilter<"Document"> | string
-  userId?: Prisma.StringFilter<"Document"> | string
-  documentType?: Prisma.StringFilter<"Document"> | string
-  originalFilename?: Prisma.StringFilter<"Document"> | string
-  mimeType?: Prisma.StringFilter<"Document"> | string
-  cloudinaryPublicId?: Prisma.StringFilter<"Document"> | string
-  cloudinaryUrl?: Prisma.StringFilter<"Document"> | string
+  id?: Prisma.UuidFilter<"Document"> | string
+  userId?: Prisma.UuidFilter<"Document"> | string
+  applicationId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  guarantorId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  collateralId?: Prisma.UuidNullableFilter<"Document"> | string | null
+  type?: Prisma.EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+  fileName?: Prisma.StringFilter<"Document"> | string
+  fileUrl?: Prisma.StringFilter<"Document"> | string
+  fileSize?: Prisma.IntNullableFilter<"Document"> | number | null
+  mimeType?: Prisma.StringNullableFilter<"Document"> | string | null
+  status?: Prisma.EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+  verifiedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  verifiedBy?: Prisma.StringNullableFilter<"Document"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
 }
 
+export type DocumentCreateWithoutApplicationInput = {
+  id?: string
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDocumentsInput
+  guarantor?: Prisma.GuarantorCreateNestedOneWithoutDocumentsInput
+  collateral?: Prisma.CollateralCreateNestedOneWithoutDocumentsInput
+}
+
+export type DocumentUncheckedCreateWithoutApplicationInput = {
+  id?: string
+  userId: string
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentCreateOrConnectWithoutApplicationInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput>
+}
+
+export type DocumentCreateManyApplicationInputEnvelope = {
+  data: Prisma.DocumentCreateManyApplicationInput | Prisma.DocumentCreateManyApplicationInput[]
+  skipDuplicates?: boolean
+}
+
+export type DocumentUpsertWithWhereUniqueWithoutApplicationInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutApplicationInput, Prisma.DocumentUncheckedUpdateWithoutApplicationInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutApplicationInput, Prisma.DocumentUncheckedCreateWithoutApplicationInput>
+}
+
+export type DocumentUpdateWithWhereUniqueWithoutApplicationInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutApplicationInput, Prisma.DocumentUncheckedUpdateWithoutApplicationInput>
+}
+
+export type DocumentUpdateManyWithWhereWithoutApplicationInput = {
+  where: Prisma.DocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateManyMutationInput, Prisma.DocumentUncheckedUpdateManyWithoutApplicationInput>
+}
+
+export type DocumentCreateWithoutGuarantorInput = {
+  id?: string
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDocumentsInput
+  application?: Prisma.LoanApplicationCreateNestedOneWithoutDocumentsInput
+  collateral?: Prisma.CollateralCreateNestedOneWithoutDocumentsInput
+}
+
+export type DocumentUncheckedCreateWithoutGuarantorInput = {
+  id?: string
+  userId: string
+  applicationId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentCreateOrConnectWithoutGuarantorInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput>
+}
+
+export type DocumentCreateManyGuarantorInputEnvelope = {
+  data: Prisma.DocumentCreateManyGuarantorInput | Prisma.DocumentCreateManyGuarantorInput[]
+  skipDuplicates?: boolean
+}
+
+export type DocumentUpsertWithWhereUniqueWithoutGuarantorInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutGuarantorInput, Prisma.DocumentUncheckedUpdateWithoutGuarantorInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutGuarantorInput, Prisma.DocumentUncheckedCreateWithoutGuarantorInput>
+}
+
+export type DocumentUpdateWithWhereUniqueWithoutGuarantorInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutGuarantorInput, Prisma.DocumentUncheckedUpdateWithoutGuarantorInput>
+}
+
+export type DocumentUpdateManyWithWhereWithoutGuarantorInput = {
+  where: Prisma.DocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateManyMutationInput, Prisma.DocumentUncheckedUpdateManyWithoutGuarantorInput>
+}
+
+export type DocumentCreateWithoutCollateralInput = {
+  id?: string
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDocumentsInput
+  application?: Prisma.LoanApplicationCreateNestedOneWithoutDocumentsInput
+  guarantor?: Prisma.GuarantorCreateNestedOneWithoutDocumentsInput
+}
+
+export type DocumentUncheckedCreateWithoutCollateralInput = {
+  id?: string
+  userId: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentCreateOrConnectWithoutCollateralInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput>
+}
+
+export type DocumentCreateManyCollateralInputEnvelope = {
+  data: Prisma.DocumentCreateManyCollateralInput | Prisma.DocumentCreateManyCollateralInput[]
+  skipDuplicates?: boolean
+}
+
+export type DocumentUpsertWithWhereUniqueWithoutCollateralInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutCollateralInput, Prisma.DocumentUncheckedUpdateWithoutCollateralInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutCollateralInput, Prisma.DocumentUncheckedCreateWithoutCollateralInput>
+}
+
+export type DocumentUpdateWithWhereUniqueWithoutCollateralInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutCollateralInput, Prisma.DocumentUncheckedUpdateWithoutCollateralInput>
+}
+
+export type DocumentUpdateManyWithWhereWithoutCollateralInput = {
+  where: Prisma.DocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateManyMutationInput, Prisma.DocumentUncheckedUpdateManyWithoutCollateralInput>
+}
+
 export type DocumentCreateManyUserInput = {
   id?: string
-  documentType: string
-  originalFilename: string
-  mimeType: string
-  cloudinaryPublicId: string
-  cloudinaryUrl: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type DocumentUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  application?: Prisma.LoanApplicationUpdateOneWithoutDocumentsNestedInput
+  guarantor?: Prisma.GuarantorUpdateOneWithoutDocumentsNestedInput
+  collateral?: Prisma.CollateralUpdateOneWithoutDocumentsNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type DocumentUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  documentType?: Prisma.StringFieldUpdateOperationsInput | string
-  originalFilename?: Prisma.StringFieldUpdateOperationsInput | string
-  mimeType?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryPublicId?: Prisma.StringFieldUpdateOperationsInput | string
-  cloudinaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentCreateManyApplicationInput = {
+  id?: string
+  userId: string
+  guarantorId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentUpdateWithoutApplicationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
+  guarantor?: Prisma.GuarantorUpdateOneWithoutDocumentsNestedInput
+  collateral?: Prisma.CollateralUpdateOneWithoutDocumentsNestedInput
+}
+
+export type DocumentUncheckedUpdateWithoutApplicationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentUncheckedUpdateManyWithoutApplicationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentCreateManyGuarantorInput = {
+  id?: string
+  userId: string
+  applicationId?: string | null
+  collateralId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentUpdateWithoutGuarantorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
+  application?: Prisma.LoanApplicationUpdateOneWithoutDocumentsNestedInput
+  collateral?: Prisma.CollateralUpdateOneWithoutDocumentsNestedInput
+}
+
+export type DocumentUncheckedUpdateWithoutGuarantorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentUncheckedUpdateManyWithoutGuarantorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collateralId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentCreateManyCollateralInput = {
+  id?: string
+  userId: string
+  applicationId?: string | null
+  guarantorId?: string | null
+  type: $Enums.DocumentType
+  fileName: string
+  fileUrl: string
+  fileSize?: number | null
+  mimeType?: string | null
+  status?: $Enums.DocumentStatus
+  verifiedAt?: Date | string | null
+  verifiedBy?: string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DocumentUpdateWithoutCollateralInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
+  application?: Prisma.LoanApplicationUpdateOneWithoutDocumentsNestedInput
+  guarantor?: Prisma.GuarantorUpdateOneWithoutDocumentsNestedInput
+}
+
+export type DocumentUncheckedUpdateWithoutCollateralInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentUncheckedUpdateManyWithoutCollateralInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guarantorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -559,78 +1356,134 @@ export type DocumentUncheckedUpdateManyWithoutUserInput = {
 export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  documentType?: boolean
-  originalFilename?: boolean
+  applicationId?: boolean
+  guarantorId?: boolean
+  collateralId?: boolean
+  type?: boolean
+  fileName?: boolean
+  fileUrl?: boolean
+  fileSize?: boolean
   mimeType?: boolean
-  cloudinaryPublicId?: boolean
-  cloudinaryUrl?: boolean
+  status?: boolean
+  verifiedAt?: boolean
+  verifiedBy?: boolean
+  rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  documentType?: boolean
-  originalFilename?: boolean
+  applicationId?: boolean
+  guarantorId?: boolean
+  collateralId?: boolean
+  type?: boolean
+  fileName?: boolean
+  fileUrl?: boolean
+  fileSize?: boolean
   mimeType?: boolean
-  cloudinaryPublicId?: boolean
-  cloudinaryUrl?: boolean
+  status?: boolean
+  verifiedAt?: boolean
+  verifiedBy?: boolean
+  rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
-  documentType?: boolean
-  originalFilename?: boolean
+  applicationId?: boolean
+  guarantorId?: boolean
+  collateralId?: boolean
+  type?: boolean
+  fileName?: boolean
+  fileUrl?: boolean
+  fileSize?: boolean
   mimeType?: boolean
-  cloudinaryPublicId?: boolean
-  cloudinaryUrl?: boolean
+  status?: boolean
+  verifiedAt?: boolean
+  verifiedBy?: boolean
+  rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
 export type DocumentSelectScalar = {
   id?: boolean
   userId?: boolean
-  documentType?: boolean
-  originalFilename?: boolean
+  applicationId?: boolean
+  guarantorId?: boolean
+  collateralId?: boolean
+  type?: boolean
+  fileName?: boolean
+  fileUrl?: boolean
+  fileSize?: boolean
   mimeType?: boolean
-  cloudinaryPublicId?: boolean
-  cloudinaryUrl?: boolean
+  status?: boolean
+  verifiedAt?: boolean
+  verifiedBy?: boolean
+  rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "documentType" | "originalFilename" | "mimeType" | "cloudinaryPublicId" | "cloudinaryUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "applicationId" | "guarantorId" | "collateralId" | "type" | "fileName" | "fileUrl" | "fileSize" | "mimeType" | "status" | "verifiedAt" | "verifiedBy" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }
 export type DocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }
 export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.Document$applicationArgs<ExtArgs>
+  guarantor?: boolean | Prisma.Document$guarantorArgs<ExtArgs>
+  collateral?: boolean | Prisma.Document$collateralArgs<ExtArgs>
 }
 
 export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Document"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    application: Prisma.$LoanApplicationPayload<ExtArgs> | null
+    guarantor: Prisma.$GuarantorPayload<ExtArgs> | null
+    collateral: Prisma.$CollateralPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    documentType: string
-    originalFilename: string
-    mimeType: string
-    cloudinaryPublicId: string
-    cloudinaryUrl: string
+    applicationId: string | null
+    guarantorId: string | null
+    collateralId: string | null
+    type: $Enums.DocumentType
+    fileName: string
+    fileUrl: string
+    fileSize: number | null
+    mimeType: string | null
+    status: $Enums.DocumentStatus
+    verifiedAt: Date | null
+    verifiedBy: string | null
+    rejectionReason: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["document"]>
@@ -1028,6 +1881,9 @@ readonly fields: DocumentFieldRefs;
 export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  application<T extends Prisma.Document$applicationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$applicationArgs<ExtArgs>>): Prisma.Prisma__LoanApplicationClient<runtime.Types.Result.GetResult<Prisma.$LoanApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  guarantor<T extends Prisma.Document$guarantorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$guarantorArgs<ExtArgs>>): Prisma.Prisma__GuarantorClient<runtime.Types.Result.GetResult<Prisma.$GuarantorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  collateral<T extends Prisma.Document$collateralArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$collateralArgs<ExtArgs>>): Prisma.Prisma__CollateralClient<runtime.Types.Result.GetResult<Prisma.$CollateralPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1059,11 +1915,18 @@ export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime
 export interface DocumentFieldRefs {
   readonly id: Prisma.FieldRef<"Document", 'String'>
   readonly userId: Prisma.FieldRef<"Document", 'String'>
-  readonly documentType: Prisma.FieldRef<"Document", 'String'>
-  readonly originalFilename: Prisma.FieldRef<"Document", 'String'>
+  readonly applicationId: Prisma.FieldRef<"Document", 'String'>
+  readonly guarantorId: Prisma.FieldRef<"Document", 'String'>
+  readonly collateralId: Prisma.FieldRef<"Document", 'String'>
+  readonly type: Prisma.FieldRef<"Document", 'DocumentType'>
+  readonly fileName: Prisma.FieldRef<"Document", 'String'>
+  readonly fileUrl: Prisma.FieldRef<"Document", 'String'>
+  readonly fileSize: Prisma.FieldRef<"Document", 'Int'>
   readonly mimeType: Prisma.FieldRef<"Document", 'String'>
-  readonly cloudinaryPublicId: Prisma.FieldRef<"Document", 'String'>
-  readonly cloudinaryUrl: Prisma.FieldRef<"Document", 'String'>
+  readonly status: Prisma.FieldRef<"Document", 'DocumentStatus'>
+  readonly verifiedAt: Prisma.FieldRef<"Document", 'DateTime'>
+  readonly verifiedBy: Prisma.FieldRef<"Document", 'String'>
+  readonly rejectionReason: Prisma.FieldRef<"Document", 'String'>
   readonly createdAt: Prisma.FieldRef<"Document", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Document", 'DateTime'>
 }
@@ -1464,6 +2327,63 @@ export type DocumentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Documents to delete.
    */
   limit?: number
+}
+
+/**
+ * Document.application
+ */
+export type Document$applicationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanApplication
+   */
+  select?: Prisma.LoanApplicationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoanApplication
+   */
+  omit?: Prisma.LoanApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanApplicationInclude<ExtArgs> | null
+  where?: Prisma.LoanApplicationWhereInput
+}
+
+/**
+ * Document.guarantor
+ */
+export type Document$guarantorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Guarantor
+   */
+  select?: Prisma.GuarantorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Guarantor
+   */
+  omit?: Prisma.GuarantorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuarantorInclude<ExtArgs> | null
+  where?: Prisma.GuarantorWhereInput
+}
+
+/**
+ * Document.collateral
+ */
+export type Document$collateralArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Collateral
+   */
+  select?: Prisma.CollateralSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Collateral
+   */
+  omit?: Prisma.CollateralOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CollateralInclude<ExtArgs> | null
+  where?: Prisma.CollateralWhereInput
 }
 
 /**

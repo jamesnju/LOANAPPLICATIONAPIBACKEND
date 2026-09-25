@@ -23,22 +23,77 @@ export * from './enums.js';
  */
 export type User = Prisma.UserModel
 /**
- * Model CustomerProfile
+ * Model RefreshToken
  * 
  */
-export type CustomerProfile = Prisma.CustomerProfileModel
-/**
- * Model Document
- * 
- */
-export type Document = Prisma.DocumentModel
+export type RefreshToken = Prisma.RefreshTokenModel
 /**
  * Model OtpCode
  * 
  */
 export type OtpCode = Prisma.OtpCodeModel
 /**
- * Model RefreshToken
+ * Model LoanProduct
  * 
  */
-export type RefreshToken = Prisma.RefreshTokenModel
+export type LoanProduct = Prisma.LoanProductModel
+/**
+ * Model LoanApplication
+ * 
+ */
+export type LoanApplication = Prisma.LoanApplicationModel
+/**
+ * Model Loan
+ * 
+ */
+export type Loan = Prisma.LoanModel
+/**
+ * Model LoanApproval
+ * 
+ */
+export type LoanApproval = Prisma.LoanApprovalModel
+/**
+ * Model RepaymentSchedule
+ * 
+ */
+export type RepaymentSchedule = Prisma.RepaymentScheduleModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model LoanTransaction
+ * 
+ */
+export type LoanTransaction = Prisma.LoanTransactionModel
+/**
+ * Model Guarantor
+ * 
+ */
+export type Guarantor = Prisma.GuarantorModel
+/**
+ * Model Collateral
+ * 
+ */
+export type Collateral = Prisma.CollateralModel
+/**
+ * Model Document
+ * 
+ */
+export type Document = Prisma.DocumentModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model SystemConfig
+ * 
+ */
+export type SystemConfig = Prisma.SystemConfigModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

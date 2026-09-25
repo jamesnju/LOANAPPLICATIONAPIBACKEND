@@ -20,92 +20,158 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
 
+export type UserAvgAggregateOutputType = {
+  monthlyIncome: runtime.Decimal | null
+}
+
+export type UserSumAggregateOutputType = {
+  monthlyIncome: runtime.Decimal | null
+}
+
 export type UserMinAggregateOutputType = {
   id: string | null
+  firstName: string | null
+  lastName: string | null
   email: string | null
   phone: string | null
   passwordHash: string | null
-  role: $Enums.UserRole | null
+  nationalId: string | null
+  dateOfBirth: Date | null
+  gender: $Enums.Gender | null
+  employmentType: $Enums.EmploymentType | null
+  employerName: string | null
+  monthlyIncome: runtime.Decimal | null
+  role: $Enums.Role | null
   status: $Enums.UserStatus | null
-  kycStatus: $Enums.KycStatus | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
+  lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
+  firstName: string | null
+  lastName: string | null
   email: string | null
   phone: string | null
   passwordHash: string | null
-  role: $Enums.UserRole | null
+  nationalId: string | null
+  dateOfBirth: Date | null
+  gender: $Enums.Gender | null
+  employmentType: $Enums.EmploymentType | null
+  employerName: string | null
+  monthlyIncome: runtime.Decimal | null
+  role: $Enums.Role | null
   status: $Enums.UserStatus | null
-  kycStatus: $Enums.KycStatus | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
+  lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
+  firstName: number
+  lastName: number
   email: number
   phone: number
   passwordHash: number
+  nationalId: number
+  dateOfBirth: number
+  gender: number
+  employmentType: number
+  employerName: number
+  monthlyIncome: number
   role: number
   status: number
-  kycStatus: number
   emailVerified: number
   phoneVerified: number
+  lastLoginAt: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type UserAvgAggregateInputType = {
+  monthlyIncome?: true
+}
+
+export type UserSumAggregateInputType = {
+  monthlyIncome?: true
+}
+
 export type UserMinAggregateInputType = {
   id?: true
+  firstName?: true
+  lastName?: true
   email?: true
   phone?: true
   passwordHash?: true
+  nationalId?: true
+  dateOfBirth?: true
+  gender?: true
+  employmentType?: true
+  employerName?: true
+  monthlyIncome?: true
   role?: true
   status?: true
-  kycStatus?: true
   emailVerified?: true
   phoneVerified?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
+  firstName?: true
+  lastName?: true
   email?: true
   phone?: true
   passwordHash?: true
+  nationalId?: true
+  dateOfBirth?: true
+  gender?: true
+  employmentType?: true
+  employerName?: true
+  monthlyIncome?: true
   role?: true
   status?: true
-  kycStatus?: true
   emailVerified?: true
   phoneVerified?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
+  firstName?: true
+  lastName?: true
   email?: true
   phone?: true
   passwordHash?: true
+  nationalId?: true
+  dateOfBirth?: true
+  gender?: true
+  employmentType?: true
+  employerName?: true
+  monthlyIncome?: true
   role?: true
   status?: true
-  kycStatus?: true
   emailVerified?: true
   phoneVerified?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -149,6 +215,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -179,23 +257,35 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
 
 export type UserGroupByOutputType = {
   id: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role: $Enums.UserRole
+  nationalId: string | null
+  dateOfBirth: Date | null
+  gender: $Enums.Gender | null
+  employmentType: $Enums.EmploymentType | null
+  employerName: string | null
+  monthlyIncome: runtime.Decimal | null
+  role: $Enums.Role
   status: $Enums.UserStatus
-  kycStatus: $Enums.KycStatus
   emailVerified: boolean
   phoneVerified: boolean
+  lastLoginAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -219,250 +309,415 @@ export type UserWhereInput = {
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  id?: Prisma.StringFilter<"User"> | string
+  id?: Prisma.UuidFilter<"User"> | string
+  firstName?: Prisma.StringFilter<"User"> | string
+  lastName?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
-  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  nationalId?: Prisma.StringNullableFilter<"User"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  gender?: Prisma.EnumGenderNullableFilter<"User"> | $Enums.Gender | null
+  employmentType?: Prisma.EnumEmploymentTypeNullableFilter<"User"> | $Enums.EmploymentType | null
+  employerName?: Prisma.StringNullableFilter<"User"> | string | null
+  monthlyIncome?: Prisma.DecimalNullableFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFilter<"User"> | $Enums.KycStatus
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
+  lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  profile?: Prisma.XOR<Prisma.CustomerProfileNullableScalarRelationFilter, Prisma.CustomerProfileWhereInput> | null
-  documents?: Prisma.DocumentListRelationFilter
-  otpCodes?: Prisma.OtpCodeListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  otpCodes?: Prisma.OtpCodeListRelationFilter
+  loanApplications?: Prisma.LoanApplicationListRelationFilter
+  loans?: Prisma.LoanListRelationFilter
+  guarantor?: Prisma.GuarantorListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
+  auditLogs?: Prisma.AuditLogListRelationFilter
+  approvals?: Prisma.LoanApprovalListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  nationalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  employmentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  employerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  monthlyIncome?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  kycStatus?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  profile?: Prisma.CustomerProfileOrderByWithRelationInput
-  documents?: Prisma.DocumentOrderByRelationAggregateInput
-  otpCodes?: Prisma.OtpCodeOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  otpCodes?: Prisma.OtpCodeOrderByRelationAggregateInput
+  loanApplications?: Prisma.LoanApplicationOrderByRelationAggregateInput
+  loans?: Prisma.LoanOrderByRelationAggregateInput
+  guarantor?: Prisma.GuarantorOrderByRelationAggregateInput
+  documents?: Prisma.DocumentOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  approvals?: Prisma.LoanApprovalOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
   phone?: string
+  nationalId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
+  firstName?: Prisma.StringFilter<"User"> | string
+  lastName?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
-  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  gender?: Prisma.EnumGenderNullableFilter<"User"> | $Enums.Gender | null
+  employmentType?: Prisma.EnumEmploymentTypeNullableFilter<"User"> | $Enums.EmploymentType | null
+  employerName?: Prisma.StringNullableFilter<"User"> | string | null
+  monthlyIncome?: Prisma.DecimalNullableFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFilter<"User"> | $Enums.KycStatus
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
+  lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  profile?: Prisma.XOR<Prisma.CustomerProfileNullableScalarRelationFilter, Prisma.CustomerProfileWhereInput> | null
-  documents?: Prisma.DocumentListRelationFilter
-  otpCodes?: Prisma.OtpCodeListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
-}, "id" | "email" | "phone">
+  otpCodes?: Prisma.OtpCodeListRelationFilter
+  loanApplications?: Prisma.LoanApplicationListRelationFilter
+  loans?: Prisma.LoanListRelationFilter
+  guarantor?: Prisma.GuarantorListRelationFilter
+  documents?: Prisma.DocumentListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
+  auditLogs?: Prisma.AuditLogListRelationFilter
+  approvals?: Prisma.LoanApprovalListRelationFilter
+}, "id" | "email" | "phone" | "nationalId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  nationalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  employmentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  employerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  monthlyIncome?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  kycStatus?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
   AND?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   OR?: Prisma.UserScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"User"> | string
+  id?: Prisma.UuidWithAggregatesFilter<"User"> | string
+  firstName?: Prisma.StringWithAggregatesFilter<"User"> | string
+  lastName?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
-  role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+  nationalId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  gender?: Prisma.EnumGenderNullableWithAggregatesFilter<"User"> | $Enums.Gender | null
+  employmentType?: Prisma.EnumEmploymentTypeNullableWithAggregatesFilter<"User"> | $Enums.EmploymentType | null
+  employerName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  monthlyIncome?: Prisma.DecimalNullableWithAggregatesFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusWithAggregatesFilter<"User"> | $Enums.KycStatus
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
 export type UserCreateInput = {
   id?: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role?: $Enums.UserRole
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
   status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
-  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role?: $Enums.UserRole
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
   status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
-  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role?: $Enums.UserRole
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
   status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  nationalId?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  employmentType?: Prisma.SortOrder
+  employerName?: Prisma.SortOrder
+  monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  kycStatus?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
+export type UserAvgOrderByAggregateInput = {
+  monthlyIncome?: Prisma.SortOrder
+}
+
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  nationalId?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  employmentType?: Prisma.SortOrder
+  employerName?: Prisma.SortOrder
+  monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  kycStatus?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  nationalId?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  employmentType?: Prisma.SortOrder
+  employerName?: Prisma.SortOrder
+  monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  kycStatus?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  monthlyIncome?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -470,20 +725,45 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type EnumUserRoleFieldUpdateOperationsInput = {
-  set?: $Enums.UserRole
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type NullableEnumGenderFieldUpdateOperationsInput = {
+  set?: $Enums.Gender | null
+}
+
+export type NullableEnumEmploymentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentType | null
+}
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
 }
 
 export type EnumUserStatusFieldUpdateOperationsInput = {
   set?: $Enums.UserStatus
-}
-
-export type EnumKycStatusFieldUpdateOperationsInput = {
-  set?: $Enums.KycStatus
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -492,48 +772,6 @@ export type BoolFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type UserCreateNestedOneWithoutProfileInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileInput, Prisma.UserUncheckedCreateWithoutProfileInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutProfileNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutProfileInput, Prisma.UserUncheckedCreateWithoutProfileInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProfileInput
-  upsert?: Prisma.UserUpsertWithoutProfileInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProfileInput, Prisma.UserUpdateWithoutProfileInput>, Prisma.UserUncheckedUpdateWithoutProfileInput>
-}
-
-export type UserCreateNestedOneWithoutDocumentsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput
-  upsert?: Prisma.UserUpsertWithoutDocumentsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDocumentsInput, Prisma.UserUpdateWithoutDocumentsInput>, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
-}
-
-export type UserCreateNestedOneWithoutOtpCodesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOtpCodesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutOtpCodesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOtpCodesInput
-  upsert?: Prisma.UserUpsertWithoutOtpCodesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOtpCodesInput, Prisma.UserUpdateWithoutOtpCodesInput>, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
 }
 
 export type UserCreateNestedOneWithoutRefreshTokensInput = {
@@ -550,290 +788,180 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
-export type UserCreateWithoutProfileInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
-  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+export type UserCreateNestedOneWithoutOtpCodesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOtpCodesInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUncheckedCreateWithoutProfileInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
-  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+export type UserUpdateOneRequiredWithoutOtpCodesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOtpCodesInput
+  upsert?: Prisma.UserUpsertWithoutOtpCodesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOtpCodesInput, Prisma.UserUpdateWithoutOtpCodesInput>, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
 }
 
-export type UserCreateOrConnectWithoutProfileInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutProfileInput, Prisma.UserUncheckedCreateWithoutProfileInput>
+export type UserCreateNestedOneWithoutLoanApplicationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoanApplicationsInput, Prisma.UserUncheckedCreateWithoutLoanApplicationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoanApplicationsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpsertWithoutProfileInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutProfileInput, Prisma.UserUncheckedUpdateWithoutProfileInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutProfileInput, Prisma.UserUncheckedCreateWithoutProfileInput>
-  where?: Prisma.UserWhereInput
+export type UserUpdateOneRequiredWithoutLoanApplicationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoanApplicationsInput, Prisma.UserUncheckedCreateWithoutLoanApplicationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoanApplicationsInput
+  upsert?: Prisma.UserUpsertWithoutLoanApplicationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLoanApplicationsInput, Prisma.UserUpdateWithoutLoanApplicationsInput>, Prisma.UserUncheckedUpdateWithoutLoanApplicationsInput>
 }
 
-export type UserUpdateToOneWithWhereWithoutProfileInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutProfileInput, Prisma.UserUncheckedUpdateWithoutProfileInput>
+export type UserCreateNestedOneWithoutLoansInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoansInput, Prisma.UserUncheckedCreateWithoutLoansInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoansInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateWithoutProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+export type UserUpdateOneRequiredWithoutLoansNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoansInput, Prisma.UserUncheckedCreateWithoutLoansInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoansInput
+  upsert?: Prisma.UserUpsertWithoutLoansInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLoansInput, Prisma.UserUpdateWithoutLoansInput>, Prisma.UserUncheckedUpdateWithoutLoansInput>
 }
 
-export type UserUncheckedUpdateWithoutProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+export type UserCreateNestedOneWithoutApprovalsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovalsInput, Prisma.UserUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovalsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserCreateWithoutDocumentsInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
-  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+export type UserUpdateOneRequiredWithoutApprovalsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovalsInput, Prisma.UserUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovalsInput
+  upsert?: Prisma.UserUpsertWithoutApprovalsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovalsInput, Prisma.UserUpdateWithoutApprovalsInput>, Prisma.UserUncheckedUpdateWithoutApprovalsInput>
 }
 
-export type UserUncheckedCreateWithoutDocumentsInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+export type UserCreateNestedOneWithoutGuarantorInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuarantorInput, Prisma.UserUncheckedCreateWithoutGuarantorInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuarantorInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserCreateOrConnectWithoutDocumentsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
+export type UserUpdateOneWithoutGuarantorNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGuarantorInput, Prisma.UserUncheckedCreateWithoutGuarantorInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGuarantorInput
+  upsert?: Prisma.UserUpsertWithoutGuarantorInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGuarantorInput, Prisma.UserUpdateWithoutGuarantorInput>, Prisma.UserUncheckedUpdateWithoutGuarantorInput>
 }
 
-export type UserUpsertWithoutDocumentsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutDocumentsInput, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
-  where?: Prisma.UserWhereInput
+export type UserCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutDocumentsInput, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
+export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDocumentsInput, Prisma.UserUpdateWithoutDocumentsInput>, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
 }
 
-export type UserUpdateWithoutDocumentsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUncheckedUpdateWithoutDocumentsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
-export type UserCreateWithoutOtpCodesInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+export type UserCreateNestedOneWithoutAuditLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUncheckedCreateWithoutOtpCodesInput = {
-  id?: string
-  email: string
-  phone: string
-  passwordHash: string
-  role?: $Enums.UserRole
-  status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
-  emailVerified?: boolean
-  phoneVerified?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutOtpCodesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
-}
-
-export type UserUpsertWithoutOtpCodesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutOtpCodesInput, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutOtpCodesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutOtpCodesInput, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
-}
-
-export type UserUpdateWithoutOtpCodesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutOtpCodesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+export type UserUpdateOneWithoutAuditLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
+  upsert?: Prisma.UserUpsertWithoutAuditLogsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.UserUpdateWithoutAuditLogsInput>, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
   id?: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role?: $Enums.UserRole
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
   status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
   id?: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   passwordHash: string
-  role?: $Enums.UserRole
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
   status?: $Enums.UserStatus
-  kycStatus?: $Enums.KycStatus
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  profile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -854,36 +982,1150 @@ export type UserUpdateToOneWithWhereWithoutRefreshTokensInput = {
 
 export type UserUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-  kycStatus?: Prisma.EnumKycStatusFieldUpdateOperationsInput | $Enums.KycStatus
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutOtpCodesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutOtpCodesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutOtpCodesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
+}
+
+export type UserUpsertWithoutOtpCodesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOtpCodesInput, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOtpCodesInput, Prisma.UserUncheckedCreateWithoutOtpCodesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOtpCodesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOtpCodesInput, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
+}
+
+export type UserUpdateWithoutOtpCodesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOtpCodesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutLoanApplicationsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutLoanApplicationsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutLoanApplicationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoanApplicationsInput, Prisma.UserUncheckedCreateWithoutLoanApplicationsInput>
+}
+
+export type UserUpsertWithoutLoanApplicationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLoanApplicationsInput, Prisma.UserUncheckedUpdateWithoutLoanApplicationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoanApplicationsInput, Prisma.UserUncheckedCreateWithoutLoanApplicationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLoanApplicationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLoanApplicationsInput, Prisma.UserUncheckedUpdateWithoutLoanApplicationsInput>
+}
+
+export type UserUpdateWithoutLoanApplicationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutLoansInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutLoansInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutLoansInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoansInput, Prisma.UserUncheckedCreateWithoutLoansInput>
+}
+
+export type UserUpsertWithoutLoansInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLoansInput, Prisma.UserUncheckedUpdateWithoutLoansInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoansInput, Prisma.UserUncheckedCreateWithoutLoansInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLoansInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLoansInput, Prisma.UserUncheckedUpdateWithoutLoansInput>
+}
+
+export type UserUpdateWithoutLoansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLoansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutApprovalsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutApprovalsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutApprovalsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovalsInput, Prisma.UserUncheckedCreateWithoutApprovalsInput>
+}
+
+export type UserUpsertWithoutApprovalsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutApprovalsInput, Prisma.UserUncheckedUpdateWithoutApprovalsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovalsInput, Prisma.UserUncheckedCreateWithoutApprovalsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutApprovalsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutApprovalsInput, Prisma.UserUncheckedUpdateWithoutApprovalsInput>
+}
+
+export type UserUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGuarantorInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutGuarantorInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutGuarantorInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuarantorInput, Prisma.UserUncheckedCreateWithoutGuarantorInput>
+}
+
+export type UserUpsertWithoutGuarantorInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGuarantorInput, Prisma.UserUncheckedUpdateWithoutGuarantorInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGuarantorInput, Prisma.UserUncheckedCreateWithoutGuarantorInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGuarantorInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGuarantorInput, Prisma.UserUncheckedUpdateWithoutGuarantorInput>
+}
+
+export type UserUpdateWithoutGuarantorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGuarantorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutDocumentsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutDocumentsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
+}
+
+export type UserUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDocumentsInput, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDocumentsInput, Prisma.UserUncheckedCreateWithoutDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDocumentsInput, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type UserUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutAuditLogsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutAuditLogsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutAuditLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+}
+
+export type UserUpsertWithoutAuditLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuditLogsInput, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuditLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuditLogsInput, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
+}
+
+export type UserUpdateWithoutAuditLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuditLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
 }
 
 
@@ -892,15 +2134,27 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
  */
 
 export type UserCountOutputType = {
-  documents: number
-  otpCodes: number
   refreshTokens: number
+  otpCodes: number
+  loanApplications: number
+  loans: number
+  guarantor: number
+  documents: number
+  notifications: number
+  auditLogs: number
+  approvals: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  documents?: boolean | UserCountOutputTypeCountDocumentsArgs
-  otpCodes?: boolean | UserCountOutputTypeCountOtpCodesArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+  otpCodes?: boolean | UserCountOutputTypeCountOtpCodesArgs
+  loanApplications?: boolean | UserCountOutputTypeCountLoanApplicationsArgs
+  loans?: boolean | UserCountOutputTypeCountLoansArgs
+  guarantor?: boolean | UserCountOutputTypeCountGuarantorArgs
+  documents?: boolean | UserCountOutputTypeCountDocumentsArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+  approvals?: boolean | UserCountOutputTypeCountApprovalsArgs
 }
 
 /**
@@ -916,8 +2170,8 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DocumentWhereInput
+export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefreshTokenWhereInput
 }
 
 /**
@@ -930,78 +2184,162 @@ export type UserCountOutputTypeCountOtpCodesArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RefreshTokenWhereInput
+export type UserCountOutputTypeCountLoanApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoanApplicationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLoansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoanWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGuarantorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GuarantorWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoanApprovalWhereInput
 }
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   phone?: boolean
   passwordHash?: boolean
+  nationalId?: boolean
+  dateOfBirth?: boolean
+  gender?: boolean
+  employmentType?: boolean
+  employerName?: boolean
+  monthlyIncome?: boolean
   role?: boolean
   status?: boolean
-  kycStatus?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  profile?: boolean | Prisma.User$profileArgs<ExtArgs>
-  documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
-  otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
+  loanApplications?: boolean | Prisma.User$loanApplicationsArgs<ExtArgs>
+  loans?: boolean | Prisma.User$loansArgs<ExtArgs>
+  guarantor?: boolean | Prisma.User$guarantorArgs<ExtArgs>
+  documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   phone?: boolean
   passwordHash?: boolean
+  nationalId?: boolean
+  dateOfBirth?: boolean
+  gender?: boolean
+  employmentType?: boolean
+  employerName?: boolean
+  monthlyIncome?: boolean
   role?: boolean
   status?: boolean
-  kycStatus?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   phone?: boolean
   passwordHash?: boolean
+  nationalId?: boolean
+  dateOfBirth?: boolean
+  gender?: boolean
+  employmentType?: boolean
+  employerName?: boolean
+  monthlyIncome?: boolean
   role?: boolean
   status?: boolean
-  kycStatus?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
+  firstName?: boolean
+  lastName?: boolean
   email?: boolean
   phone?: boolean
   passwordHash?: boolean
+  nationalId?: boolean
+  dateOfBirth?: boolean
+  gender?: boolean
+  employmentType?: boolean
+  employerName?: boolean
+  monthlyIncome?: boolean
   role?: boolean
   status?: boolean
-  kycStatus?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "phone" | "passwordHash" | "role" | "status" | "kycStatus" | "emailVerified" | "phoneVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "emailVerified" | "phoneVerified" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.User$profileArgs<ExtArgs>
-  documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
-  otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
+  loanApplications?: boolean | Prisma.User$loanApplicationsArgs<ExtArgs>
+  loans?: boolean | Prisma.User$loansArgs<ExtArgs>
+  guarantor?: boolean | Prisma.User$guarantorArgs<ExtArgs>
+  documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1010,21 +2348,34 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    profile: Prisma.$CustomerProfilePayload<ExtArgs> | null
-    documents: Prisma.$DocumentPayload<ExtArgs>[]
-    otpCodes: Prisma.$OtpCodePayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    otpCodes: Prisma.$OtpCodePayload<ExtArgs>[]
+    loanApplications: Prisma.$LoanApplicationPayload<ExtArgs>[]
+    loans: Prisma.$LoanPayload<ExtArgs>[]
+    guarantor: Prisma.$GuarantorPayload<ExtArgs>[]
+    documents: Prisma.$DocumentPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    approvals: Prisma.$LoanApprovalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    firstName: string
+    lastName: string
     email: string
     phone: string
     passwordHash: string
-    role: $Enums.UserRole
+    nationalId: string | null
+    dateOfBirth: Date | null
+    gender: $Enums.Gender | null
+    employmentType: $Enums.EmploymentType | null
+    employerName: string | null
+    monthlyIncome: runtime.Decimal | null
+    role: $Enums.Role
     status: $Enums.UserStatus
-    kycStatus: $Enums.KycStatus
     emailVerified: boolean
     phoneVerified: boolean
+    lastLoginAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1421,10 +2772,15 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  profile<T extends Prisma.User$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileArgs<ExtArgs>>): Prisma.Prisma__CustomerProfileClient<runtime.Types.Result.GetResult<Prisma.$CustomerProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  documents<T extends Prisma.User$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  otpCodes<T extends Prisma.User$otpCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$otpCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OtpCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  otpCodes<T extends Prisma.User$otpCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$otpCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OtpCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loanApplications<T extends Prisma.User$loanApplicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loanApplicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loans<T extends Prisma.User$loansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guarantor<T extends Prisma.User$guarantorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guarantorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuarantorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documents<T extends Prisma.User$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvals<T extends Prisma.User$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1455,14 +2811,22 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
+  readonly firstName: Prisma.FieldRef<"User", 'String'>
+  readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
-  readonly role: Prisma.FieldRef<"User", 'UserRole'>
+  readonly nationalId: Prisma.FieldRef<"User", 'String'>
+  readonly dateOfBirth: Prisma.FieldRef<"User", 'DateTime'>
+  readonly gender: Prisma.FieldRef<"User", 'Gender'>
+  readonly employmentType: Prisma.FieldRef<"User", 'EmploymentType'>
+  readonly employerName: Prisma.FieldRef<"User", 'String'>
+  readonly monthlyIncome: Prisma.FieldRef<"User", 'Decimal'>
+  readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly status: Prisma.FieldRef<"User", 'UserStatus'>
-  readonly kycStatus: Prisma.FieldRef<"User", 'KycStatus'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly phoneVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1858,46 +3222,27 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.profile
+ * User.refreshTokens
  */
-export type User$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the CustomerProfile
+   * Select specific fields to fetch from the RefreshToken
    */
-  select?: Prisma.CustomerProfileSelect<ExtArgs> | null
+  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the CustomerProfile
+   * Omit specific fields from the RefreshToken
    */
-  omit?: Prisma.CustomerProfileOmit<ExtArgs> | null
+  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.CustomerProfileInclude<ExtArgs> | null
-  where?: Prisma.CustomerProfileWhereInput
-}
-
-/**
- * User.documents
- */
-export type User$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Document
-   */
-  select?: Prisma.DocumentSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Document
-   */
-  omit?: Prisma.DocumentOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DocumentInclude<ExtArgs> | null
-  where?: Prisma.DocumentWhereInput
-  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[]
-  cursor?: Prisma.DocumentWhereUniqueInput
+  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+  where?: Prisma.RefreshTokenWhereInput
+  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
+  cursor?: Prisma.RefreshTokenWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
+  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
 }
 
 /**
@@ -1925,27 +3270,171 @@ export type User$otpCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.refreshTokens
+ * User.loanApplications
  */
-export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$loanApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the RefreshToken
+   * Select specific fields to fetch from the LoanApplication
    */
-  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+  select?: Prisma.LoanApplicationSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the RefreshToken
+   * Omit specific fields from the LoanApplication
    */
-  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+  omit?: Prisma.LoanApplicationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
-  where?: Prisma.RefreshTokenWhereInput
-  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
-  cursor?: Prisma.RefreshTokenWhereUniqueInput
+  include?: Prisma.LoanApplicationInclude<ExtArgs> | null
+  where?: Prisma.LoanApplicationWhereInput
+  orderBy?: Prisma.LoanApplicationOrderByWithRelationInput | Prisma.LoanApplicationOrderByWithRelationInput[]
+  cursor?: Prisma.LoanApplicationWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+  distinct?: Prisma.LoanApplicationScalarFieldEnum | Prisma.LoanApplicationScalarFieldEnum[]
+}
+
+/**
+ * User.loans
+ */
+export type User$loansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Loan
+   */
+  select?: Prisma.LoanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Loan
+   */
+  omit?: Prisma.LoanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanInclude<ExtArgs> | null
+  where?: Prisma.LoanWhereInput
+  orderBy?: Prisma.LoanOrderByWithRelationInput | Prisma.LoanOrderByWithRelationInput[]
+  cursor?: Prisma.LoanWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoanScalarFieldEnum | Prisma.LoanScalarFieldEnum[]
+}
+
+/**
+ * User.guarantor
+ */
+export type User$guarantorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Guarantor
+   */
+  select?: Prisma.GuarantorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Guarantor
+   */
+  omit?: Prisma.GuarantorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuarantorInclude<ExtArgs> | null
+  where?: Prisma.GuarantorWhereInput
+  orderBy?: Prisma.GuarantorOrderByWithRelationInput | Prisma.GuarantorOrderByWithRelationInput[]
+  cursor?: Prisma.GuarantorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GuarantorScalarFieldEnum | Prisma.GuarantorScalarFieldEnum[]
+}
+
+/**
+ * User.documents
+ */
+export type User$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
+  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.auditLogs
+ */
+export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditLog
+   */
+  select?: Prisma.AuditLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditLog
+   */
+  omit?: Prisma.AuditLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditLogInclude<ExtArgs> | null
+  where?: Prisma.AuditLogWhereInput
+  orderBy?: Prisma.AuditLogOrderByWithRelationInput | Prisma.AuditLogOrderByWithRelationInput[]
+  cursor?: Prisma.AuditLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.approvals
+ */
+export type User$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanApproval
+   */
+  select?: Prisma.LoanApprovalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoanApproval
+   */
+  omit?: Prisma.LoanApprovalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanApprovalInclude<ExtArgs> | null
+  where?: Prisma.LoanApprovalWhereInput
+  orderBy?: Prisma.LoanApprovalOrderByWithRelationInput | Prisma.LoanApprovalOrderByWithRelationInput[]
+  cursor?: Prisma.LoanApprovalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoanApprovalScalarFieldEnum | Prisma.LoanApprovalScalarFieldEnum[]
 }
 
 /**

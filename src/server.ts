@@ -1,25 +1,45 @@
 import app from "./app.js";
+
 import { env } from "./config/env.js";
-import { prisma } from "./config/database.js";
+
+import {
+  verifyEmailConnection,
+} from "./services/email.service.js";
+
 
 async function startServer() {
+
   try {
-    await prisma.$connect();
 
-    console.log("✅ Database connected");
+    /*
+     * Verify Gmail SMTP before
+     * starting the API.
+     */
+    await verifyEmailConnection();
 
-    app.listen(env.PORT, () => {
-      console.log(
-        `🚀 Server running at http://localhost:${env.PORT}`
-      );
-    });
+
+    app.listen(
+      env.PORT,
+      () => {
+
+        console.log(
+          `🚀 Loan Platform API running on port ${env.PORT}`
+        );
+
+      }
+    );
+
   } catch (error) {
-    console.error("❌ Failed to start server:", error);
 
-    await prisma.$disconnect();
+    console.error(
+      "❌ Failed to start server"
+    );
+
+    console.error(error);
 
     process.exit(1);
   }
 }
+
 
 startServer();

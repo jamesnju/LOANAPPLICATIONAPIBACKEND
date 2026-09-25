@@ -9,37 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const UserRole = {
-  CUSTOMER: 'CUSTOMER',
-  MAKER: 'MAKER',
-  CHECKER: 'CHECKER',
-  ADMIN: 'ADMIN'
-} as const
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
-export const UserStatus = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  SUSPENDED: 'SUSPENDED'
-} as const
-
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
-
-
-export const KycStatus = {
-  NOT_STARTED: 'NOT_STARTED',
-  IN_PROGRESS: 'IN_PROGRESS',
-  PENDING_MAKER_REVIEW: 'PENDING_MAKER_REVIEW',
-  PENDING_CHECKER_REVIEW: 'PENDING_CHECKER_REVIEW',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-} as const
-
-export type KycStatus = (typeof KycStatus)[keyof typeof KycStatus]
-
-
 export const VerificationChannel = {
   EMAIL: 'EMAIL',
   SMS: 'SMS'
@@ -50,8 +19,218 @@ export type VerificationChannel = (typeof VerificationChannel)[keyof typeof Veri
 
 export const OtpPurpose = {
   ACCOUNT_VERIFICATION: 'ACCOUNT_VERIFICATION',
-  LOGIN: 'LOGIN',
-  PASSWORD_RESET: 'PASSWORD_RESET'
+  PASSWORD_RESET: 'PASSWORD_RESET',
+  PHONE_VERIFICATION: 'PHONE_VERIFICATION',
+  EMAIL_VERIFICATION: 'EMAIL_VERIFICATION'
 } as const
 
 export type OtpPurpose = (typeof OtpPurpose)[keyof typeof OtpPurpose]
+
+
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  BLOCKED: 'BLOCKED'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const Role = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  ADMIN: 'ADMIN',
+  LOAN_OFFICER: 'LOAN_OFFICER',
+  FINANCE_OFFICER: 'FINANCE_OFFICER',
+  SUPPORT: 'SUPPORT',
+  CUSTOMER: 'CUSTOMER'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const Gender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+  OTHER: 'OTHER'
+} as const
+
+export type Gender = (typeof Gender)[keyof typeof Gender]
+
+
+export const EmploymentType = {
+  EMPLOYED: 'EMPLOYED',
+  SELF_EMPLOYED: 'SELF_EMPLOYED',
+  BUSINESS_OWNER: 'BUSINESS_OWNER',
+  STUDENT: 'STUDENT',
+  UNEMPLOYED: 'UNEMPLOYED',
+  OTHER: 'OTHER'
+} as const
+
+export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const ApplicationStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  DOCUMENTS_REQUIRED: 'DOCUMENTS_REQUIRED',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  DISBURSED: 'DISBURSED'
+} as const
+
+export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const LoanStatus = {
+  PENDING_DISBURSEMENT: 'PENDING_DISBURSEMENT',
+  ACTIVE: 'ACTIVE',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  FULLY_PAID: 'FULLY_PAID',
+  OVERDUE: 'OVERDUE',
+  DEFAULTED: 'DEFAULTED',
+  WRITTEN_OFF: 'WRITTEN_OFF',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LoanStatus = (typeof LoanStatus)[keyof typeof LoanStatus]
+
+
+export const RepaymentStatus = {
+  PENDING: 'PENDING',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  WAIVED: 'WAIVED'
+} as const
+
+export type RepaymentStatus = (typeof RepaymentStatus)[keyof typeof RepaymentStatus]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  REVERSED: 'REVERSED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const PaymentMethod = {
+  MPESA: 'MPESA',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CASH: 'CASH',
+  CARD: 'CARD',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  OTHER: 'OTHER'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const TransactionType = {
+  DISBURSEMENT: 'DISBURSEMENT',
+  REPAYMENT: 'REPAYMENT',
+  INTEREST: 'INTEREST',
+  PENALTY: 'PENALTY',
+  FEE: 'FEE',
+  REFUND: 'REFUND',
+  ADJUSTMENT: 'ADJUSTMENT',
+  WRITE_OFF: 'WRITE_OFF'
+} as const
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
+
+export const DocumentType = {
+  NATIONAL_ID: 'NATIONAL_ID',
+  PASSPORT: 'PASSPORT',
+  PAYSLIP: 'PAYSLIP',
+  BANK_STATEMENT: 'BANK_STATEMENT',
+  BUSINESS_LICENSE: 'BUSINESS_LICENSE',
+  KRA_PIN: 'KRA_PIN',
+  COLLATERAL_DOCUMENT: 'COLLATERAL_DOCUMENT',
+  GUARANTOR_DOCUMENT: 'GUARANTOR_DOCUMENT',
+  PROOF_OF_ADDRESS: 'PROOF_OF_ADDRESS',
+  OTHER: 'OTHER'
+} as const
+
+export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
+
+
+export const DocumentStatus = {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus]
+
+
+export const NotificationType = {
+  APPLICATION_SUBMITTED: 'APPLICATION_SUBMITTED',
+  APPLICATION_APPROVED: 'APPLICATION_APPROVED',
+  APPLICATION_REJECTED: 'APPLICATION_REJECTED',
+  LOAN_DISBURSED: 'LOAN_DISBURSED',
+  REPAYMENT_DUE: 'REPAYMENT_DUE',
+  REPAYMENT_OVERDUE: 'REPAYMENT_OVERDUE',
+  PAYMENT_RECEIVED: 'PAYMENT_RECEIVED',
+  GENERAL: 'GENERAL'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const NotificationChannel = {
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  PUSH: 'PUSH',
+  IN_APP: 'IN_APP'
+} as const
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]
+
+
+export const ConfigType = {
+  STRING: 'STRING',
+  INTEGER: 'INTEGER',
+  DECIMAL: 'DECIMAL',
+  BOOLEAN: 'BOOLEAN',
+  JSON: 'JSON',
+  DATE: 'DATE'
+} as const
+
+export type ConfigType = (typeof ConfigType)[keyof typeof ConfigType]
+
+
+export const ApprovalAction = {
+  SUBMIT: 'SUBMIT',
+  REVIEW: 'REVIEW',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  CANCEL: 'CANCEL',
+  REQUEST_DOCUMENTS: 'REQUEST_DOCUMENTS'
+} as const
+
+export type ApprovalAction = (typeof ApprovalAction)[keyof typeof ApprovalAction]
+
+
+export const AuditAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  DISBURSE: 'DISBURSE',
+  REPAY: 'REPAY',
+  OTHER: 'OTHER'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

@@ -1,52 +1,147 @@
 import { z } from "zod";
 
-export const registerSchema = z.object({
-  email: z.string().email(),
 
-  phone: z
-    .string()
-    .min(10)
-    .max(20),
+/**
+ * REGISTER
+ */
+export const registerSchema =
+  z.object({
 
-  password: z
-    .string()
-    .min(8)
-    .max(100),
+    firstName:
+      z.string()
+        .trim()
+        .min(
+          2,
+          "First name is required"
+        ),
 
-  firstName: z
-    .string()
-    .min(2)
-    .max(50),
+    lastName:
+      z.string()
+        .trim()
+        .min(
+          2,
+          "Last name is required"
+        ),
 
-  lastName: z
-    .string()
-    .min(2)
-    .max(50),
+    email:
+      z.string()
+        .trim()
+        .email(
+          "Invalid email address"
+        ),
 
-  verificationChannel: z.enum([
-    "EMAIL",
-    "SMS",
-  ]),
-});
+    phone:
+      z.string()
+        .trim()
+        .min(
+          10,
+          "Invalid phone number"
+        ),
 
-export const verifyAccountSchema = z.object({
-  userId: z.string().uuid(),
+    password:
+      z.string()
+        .min(
+          8,
+          "Password must be at least 8 characters"
+        ),
 
-  code: z
-    .string()
-    .regex(/^\d{6}$/, "Verification code must be 6 digits"),
-});
+    verificationChannel:
+      z.enum([
+        "EMAIL",
+        "SMS",
+      ]),
+  });
 
-export const loginSchema = z.object({
-  identifier: z.string().min(1),
 
-  password: z.string().min(1),
-});
+/**
+ * VERIFY ACCOUNT
+ */
+export const verifyAccountSchema =
+  z.object({
 
-export const refreshTokenSchema = z.object({
-  refreshToken: z.string().min(1),
-});
+    userId:
+      z.string()
+        .uuid(
+          "Invalid user ID"
+        ),
 
-export const logoutSchema = z.object({
-  refreshToken: z.string().min(1),
-});
+    code:
+      z.string()
+        .regex(
+          /^\d{6}$/,
+          "Verification code must be 6 digits"
+        ),
+  });
+
+
+/**
+ * LOGIN
+ */
+export const loginSchema =
+  z.object({
+
+    identifier:
+      z.string()
+        .trim()
+        .min(
+          1,
+          "Email or phone is required"
+        ),
+
+    password:
+      z.string()
+        .min(
+          1,
+          "Password is required"
+        ),
+  });
+
+
+/**
+ * REFRESH TOKEN
+ */
+export const refreshTokenSchema =
+  z.object({
+
+    refreshToken:
+      z.string()
+        .min(
+          1,
+          "Refresh token is required"
+        ),
+  });
+
+
+/**
+ * LOGOUT
+ */
+export const logoutSchema =
+  z.object({
+
+    refreshToken:
+      z.string()
+        .min(
+          1,
+          "Refresh token is required"
+        ),
+  });
+
+
+/**
+ * RESEND OTP
+ */
+export const resendOtpSchema =
+  z.object({
+
+    userId:
+      z.string()
+        .uuid(
+          "Invalid user ID"
+        ),
+
+    verificationChannel:
+      z.enum([
+        "EMAIL",
+        "SMS",
+      ]),
+  });
