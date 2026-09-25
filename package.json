@@ -16,6 +16,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "7.10.0",
+    "@types/node": "^26.6.2",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.11.0",
     "cors": "^2.8.6",
@@ -34,7 +35,6 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
-    "@types/node": "^26.6.2",
     "@types/nodemailer": "^8.0.2",
     "prisma": "7.10.0",
     "tsx": "^4.23.15",
