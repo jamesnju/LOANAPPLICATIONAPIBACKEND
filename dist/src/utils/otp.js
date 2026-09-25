@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 export function generateOtp() {
-    return crypto.randomInt(100000, 1000000).toString();
+    return crypto
+        .randomInt(100000, 1000000)
+        .toString();
 }
 export async function hashOtp(code) {
     return bcrypt.hash(code, 10);

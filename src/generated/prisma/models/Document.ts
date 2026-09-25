@@ -781,18 +781,6 @@ export type EnumDocumentTypeFieldUpdateOperationsInput = {
   set?: $Enums.DocumentType
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type EnumDocumentStatusFieldUpdateOperationsInput = {
-  set?: $Enums.DocumentStatus
-}
-
 export type DocumentCreateWithoutUserInput = {
   id?: string
   type: $Enums.DocumentType

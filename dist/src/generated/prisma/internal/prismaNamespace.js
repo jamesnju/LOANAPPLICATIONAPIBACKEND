@@ -68,10 +68,24 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
     User: 'User',
-    CustomerProfile: 'CustomerProfile',
-    Document: 'Document',
+    RefreshToken: 'RefreshToken',
     OtpCode: 'OtpCode',
-    RefreshToken: 'RefreshToken'
+    LoanProduct: 'LoanProduct',
+    Kyc: 'Kyc',
+    KycDocument: 'KycDocument',
+    KycReview: 'KycReview',
+    LoanApplication: 'LoanApplication',
+    Loan: 'Loan',
+    LoanApproval: 'LoanApproval',
+    RepaymentSchedule: 'RepaymentSchedule',
+    Payment: 'Payment',
+    LoanTransaction: 'LoanTransaction',
+    Guarantor: 'Guarantor',
+    Collateral: 'Collateral',
+    Document: 'Document',
+    Notification: 'Notification',
+    SystemConfig: 'SystemConfig',
+    AuditLog: 'AuditLog'
 };
 /**
  * Enums
@@ -84,52 +98,24 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 });
 export const UserScalarFieldEnum = {
     id: 'id',
+    firstName: 'firstName',
+    lastName: 'lastName',
     email: 'email',
     phone: 'phone',
     passwordHash: 'passwordHash',
-    role: 'role',
-    status: 'status',
-    kycStatus: 'kycStatus',
-    emailVerified: 'emailVerified',
-    phoneVerified: 'phoneVerified',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-};
-export const CustomerProfileScalarFieldEnum = {
-    id: 'id',
-    userId: 'userId',
-    firstName: 'firstName',
-    lastName: 'lastName',
     nationalId: 'nationalId',
     dateOfBirth: 'dateOfBirth',
-    address: 'address',
-    occupation: 'occupation',
-    employer: 'employer',
+    gender: 'gender',
+    employmentType: 'employmentType',
+    employerName: 'employerName',
     monthlyIncome: 'monthlyIncome',
+    role: 'role',
+    status: 'status',
+    emailVerified: 'emailVerified',
+    phoneVerified: 'phoneVerified',
+    lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
-};
-export const DocumentScalarFieldEnum = {
-    id: 'id',
-    userId: 'userId',
-    documentType: 'documentType',
-    originalFilename: 'originalFilename',
-    mimeType: 'mimeType',
-    cloudinaryPublicId: 'cloudinaryPublicId',
-    cloudinaryUrl: 'cloudinaryUrl',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-};
-export const OtpCodeScalarFieldEnum = {
-    id: 'id',
-    userId: 'userId',
-    codeHash: 'codeHash',
-    purpose: 'purpose',
-    channel: 'channel',
-    expiresAt: 'expiresAt',
-    verifiedAt: 'verifiedAt',
-    attempts: 'attempts',
-    createdAt: 'createdAt'
 };
 export const RefreshTokenScalarFieldEnum = {
     id: 'id',
@@ -139,9 +125,265 @@ export const RefreshTokenScalarFieldEnum = {
     revokedAt: 'revokedAt',
     createdAt: 'createdAt'
 };
+export const OtpCodeScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    codeHash: 'codeHash',
+    purpose: 'purpose',
+    channel: 'channel',
+    expiresAt: 'expiresAt',
+    attempts: 'attempts',
+    verifiedAt: 'verifiedAt',
+    createdAt: 'createdAt'
+};
+export const LoanProductScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    code: 'code',
+    description: 'description',
+    minAmount: 'minAmount',
+    maxAmount: 'maxAmount',
+    minRepaymentDays: 'minRepaymentDays',
+    maxRepaymentDays: 'maxRepaymentDays',
+    interestRate: 'interestRate',
+    processingFee: 'processingFee',
+    latePenaltyRate: 'latePenaltyRate',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const KycScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    nationality: 'nationality',
+    address: 'address',
+    city: 'city',
+    county: 'county',
+    country: 'country',
+    postalCode: 'postalCode',
+    identificationType: 'identificationType',
+    identificationNumber: 'identificationNumber',
+    identificationCountry: 'identificationCountry',
+    incomeSource: 'incomeSource',
+    status: 'status',
+    submittedAt: 'submittedAt',
+    reviewedAt: 'reviewedAt',
+    approvedAt: 'approvedAt',
+    rejectedAt: 'rejectedAt',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const KycDocumentScalarFieldEnum = {
+    id: 'id',
+    kycId: 'kycId',
+    type: 'type',
+    documentNumber: 'documentNumber',
+    fileName: 'fileName',
+    fileUrl: 'fileUrl',
+    fileSize: 'fileSize',
+    mimeType: 'mimeType',
+    status: 'status',
+    verifiedAt: 'verifiedAt',
+    verifiedBy: 'verifiedBy',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const KycReviewScalarFieldEnum = {
+    id: 'id',
+    kycId: 'kycId',
+    reviewerId: 'reviewerId',
+    status: 'status',
+    reviewNotes: 'reviewNotes',
+    createdAt: 'createdAt'
+};
+export const LoanApplicationScalarFieldEnum = {
+    id: 'id',
+    applicationNumber: 'applicationNumber',
+    userId: 'userId',
+    loanProductId: 'loanProductId',
+    requestedAmount: 'requestedAmount',
+    requestedDays: 'requestedDays',
+    interestRate: 'interestRate',
+    processingFee: 'processingFee',
+    purpose: 'purpose',
+    description: 'description',
+    status: 'status',
+    submittedAt: 'submittedAt',
+    reviewedAt: 'reviewedAt',
+    approvedAt: 'approvedAt',
+    rejectedAt: 'rejectedAt',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const LoanScalarFieldEnum = {
+    id: 'id',
+    loanNumber: 'loanNumber',
+    applicationId: 'applicationId',
+    userId: 'userId',
+    loanProductId: 'loanProductId',
+    principalAmount: 'principalAmount',
+    interestRate: 'interestRate',
+    interestAmount: 'interestAmount',
+    processingFee: 'processingFee',
+    penaltyAmount: 'penaltyAmount',
+    totalAmount: 'totalAmount',
+    amountPaid: 'amountPaid',
+    outstandingAmount: 'outstandingAmount',
+    repaymentDays: 'repaymentDays',
+    disbursedAt: 'disbursedAt',
+    maturityDate: 'maturityDate',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const LoanApprovalScalarFieldEnum = {
+    id: 'id',
+    applicationId: 'applicationId',
+    approverId: 'approverId',
+    action: 'action',
+    comments: 'comments',
+    createdAt: 'createdAt'
+};
+export const RepaymentScheduleScalarFieldEnum = {
+    id: 'id',
+    loanId: 'loanId',
+    installmentNumber: 'installmentNumber',
+    dueDate: 'dueDate',
+    principalAmount: 'principalAmount',
+    interestAmount: 'interestAmount',
+    penaltyAmount: 'penaltyAmount',
+    totalAmount: 'totalAmount',
+    amountPaid: 'amountPaid',
+    outstandingAmount: 'outstandingAmount',
+    status: 'status',
+    paidAt: 'paidAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const PaymentScalarFieldEnum = {
+    id: 'id',
+    paymentReference: 'paymentReference',
+    loanId: 'loanId',
+    scheduleId: 'scheduleId',
+    amount: 'amount',
+    paymentMethod: 'paymentMethod',
+    transactionReference: 'transactionReference',
+    status: 'status',
+    paymentDate: 'paymentDate',
+    processedAt: 'processedAt',
+    failureReason: 'failureReason',
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const LoanTransactionScalarFieldEnum = {
+    id: 'id',
+    transactionNumber: 'transactionNumber',
+    loanId: 'loanId',
+    paymentId: 'paymentId',
+    type: 'type',
+    amount: 'amount',
+    description: 'description',
+    reference: 'reference',
+    balanceBefore: 'balanceBefore',
+    balanceAfter: 'balanceAfter',
+    createdAt: 'createdAt'
+};
+export const GuarantorScalarFieldEnum = {
+    id: 'id',
+    applicationId: 'applicationId',
+    userId: 'userId',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    phone: 'phone',
+    email: 'email',
+    nationalId: 'nationalId',
+    relationship: 'relationship',
+    guaranteedAmount: 'guaranteedAmount',
+    isVerified: 'isVerified',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const CollateralScalarFieldEnum = {
+    id: 'id',
+    applicationId: 'applicationId',
+    type: 'type',
+    description: 'description',
+    estimatedValue: 'estimatedValue',
+    registrationNumber: 'registrationNumber',
+    ownershipDocument: 'ownershipDocument',
+    verified: 'verified',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const DocumentScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    applicationId: 'applicationId',
+    guarantorId: 'guarantorId',
+    collateralId: 'collateralId',
+    type: 'type',
+    fileName: 'fileName',
+    fileUrl: 'fileUrl',
+    fileSize: 'fileSize',
+    mimeType: 'mimeType',
+    status: 'status',
+    verifiedAt: 'verifiedAt',
+    verifiedBy: 'verifiedBy',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const NotificationScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    channel: 'channel',
+    title: 'title',
+    message: 'message',
+    isRead: 'isRead',
+    sentAt: 'sentAt',
+    readAt: 'readAt',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+};
+export const SystemConfigScalarFieldEnum = {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    description: 'description',
+    type: 'type',
+    value: 'value',
+    defaultValue: 'defaultValue',
+    category: 'category',
+    isEditable: 'isEditable',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const AuditLogScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    action: 'action',
+    entity: 'entity',
+    entityId: 'entityId',
+    oldValue: 'oldValue',
+    newValue: 'newValue',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    description: 'description',
+    createdAt: 'createdAt'
+};
 export const SortOrder = {
     asc: 'asc',
     desc: 'desc'
+};
+export const NullableJsonNullValueInput = {
+    DbNull: DbNull,
+    JsonNull: JsonNull
 };
 export const QueryMode = {
     default: 'default',
@@ -150,6 +392,11 @@ export const QueryMode = {
 export const NullsOrder = {
     first: 'first',
     last: 'last'
+};
+export const JsonNullValueFilter = {
+    DbNull: DbNull,
+    JsonNull: JsonNull,
+    AnyNull: AnyNull
 };
 export const defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

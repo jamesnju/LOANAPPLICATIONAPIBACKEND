@@ -55,6 +55,9 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   OtpCode: 'OtpCode',
   LoanProduct: 'LoanProduct',
+  Kyc: 'Kyc',
+  KycDocument: 'KycDocument',
+  KycReview: 'KycReview',
   LoanApplication: 'LoanApplication',
   Loan: 'Loan',
   LoanApproval: 'LoanApproval',
@@ -155,6 +158,64 @@ export const LoanProductScalarFieldEnum = {
 } as const
 
 export type LoanProductScalarFieldEnum = (typeof LoanProductScalarFieldEnum)[keyof typeof LoanProductScalarFieldEnum]
+
+
+export const KycScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  nationality: 'nationality',
+  address: 'address',
+  city: 'city',
+  county: 'county',
+  country: 'country',
+  postalCode: 'postalCode',
+  identificationType: 'identificationType',
+  identificationNumber: 'identificationNumber',
+  identificationCountry: 'identificationCountry',
+  incomeSource: 'incomeSource',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  reviewedAt: 'reviewedAt',
+  approvedAt: 'approvedAt',
+  rejectedAt: 'rejectedAt',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KycScalarFieldEnum = (typeof KycScalarFieldEnum)[keyof typeof KycScalarFieldEnum]
+
+
+export const KycDocumentScalarFieldEnum = {
+  id: 'id',
+  kycId: 'kycId',
+  type: 'type',
+  documentNumber: 'documentNumber',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  status: 'status',
+  verifiedAt: 'verifiedAt',
+  verifiedBy: 'verifiedBy',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KycDocumentScalarFieldEnum = (typeof KycDocumentScalarFieldEnum)[keyof typeof KycDocumentScalarFieldEnum]
+
+
+export const KycReviewScalarFieldEnum = {
+  id: 'id',
+  kycId: 'kycId',
+  reviewerId: 'reviewerId',
+  status: 'status',
+  reviewNotes: 'reviewNotes',
+  createdAt: 'createdAt'
+} as const
+
+export type KycReviewScalarFieldEnum = (typeof KycReviewScalarFieldEnum)[keyof typeof KycReviewScalarFieldEnum]
 
 
 export const LoanApplicationScalarFieldEnum = {

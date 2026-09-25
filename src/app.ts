@@ -5,6 +5,10 @@ import helmet from "helmet";
 import authRoutes from "./routes/auth.routes.js";
 import loanProductRoutes from "./routes/loan-product.routes.js";
 import systemConfigRoutes from "./routes/system-config.routes.js";
+import adminKycRoutes from "./routes/adminKyc.routes.js";
+import adminLoanApplicationRoutes from "./routes/adminLoanApplication.routes.js";
+import kycRoutes from "./routes/kyc.routes.js";
+import loanApplicationRoutes from "./routes/loanApplication.routes.js";
 // import systemConfigRoutes from "./routes/systemconfig.routes.js";
 const app = express();
 
@@ -54,6 +58,25 @@ app.use(
 app.use(
   "/api/v1/loan-products",
   loanProductRoutes
+);
+app.use(
+  "/api/v1/kyc",
+  kycRoutes,
+);
+
+app.use(
+  "/api/v1/admin/kyc",
+  adminKycRoutes,
+);
+
+app.use(
+  "/api/v1/loan-applications",
+  loanApplicationRoutes,
+);
+
+app.use(
+  "/api/v1/admin/loan-applications",
+  adminLoanApplicationRoutes,
 );
 
 export default app;

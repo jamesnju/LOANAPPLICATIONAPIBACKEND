@@ -7,7 +7,9 @@ export function generateAccessToken(payload) {
     });
 }
 export function generateRefreshToken() {
-    return crypto.randomBytes(64).toString("hex");
+    return crypto
+        .randomBytes(64)
+        .toString("hex");
 }
 export function hashRefreshToken(token) {
     return crypto

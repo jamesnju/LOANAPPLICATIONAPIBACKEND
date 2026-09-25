@@ -9,27 +9,49 @@ const transporter = nodemailer.createTransport({
         pass: env.SMTP_PASSWORD,
     },
 });
+export async function verifyEmailConnection() {
+    await transporter.verify();
+    console.log("✅ Gmail SMTP connection successful");
+}
 export async function sendVerificationEmail(email, otp) {
     await transporter.sendMail({
         from: env.EMAIL_FROM,
         to: email,
         subject: "Verify your Loan Platform account",
-        text: `Your verification code is ${otp}. This code expires in ${env.OTP_EXPIRES_IN_MINUTES} minutes.`,
+        text: `Your verification code is ${otp}. ` +
+            `This code expires in ` +
+            `${env.OTP_EXPIRES_IN_MINUTES} minutes.`,
         html: `
-      <h2>Verify your account</h2>
+      <!DOCTYPE html>
 
-      <p>Your verification code is:</p>
+      <html>
+        <body>
 
-      <h1>${otp}</h1>
+          <h2>
+            Verify your Loan Platform account
+          </h2>
 
-      <p>
-        This code expires in
-        ${env.OTP_EXPIRES_IN_MINUTES} minutes.
-      </p>
+          <p>
+            Your verification code is:
+          </p>
 
-      <p>
-        If you did not create this account, please ignore this email.
-      </p>
+          <h1>
+            ${otp}
+          </h1>
+
+          <p>
+            This code expires in
+            ${env.OTP_EXPIRES_IN_MINUTES}
+            minutes.
+          </p>
+
+          <p>
+            If you did not create this
+            account, please ignore this email.
+          </p>
+
+        </body>
+      </html>
     `,
     });
 }

@@ -112,6 +112,26 @@ enum TransactionType {
   WRITE_OFF
 }
 
+enum KycIdentificationType {
+  NATIONAL_ID
+  PASSPORT
+  DRIVING_LICENSE
+}
+
+enum KycDocumentType {
+  NATIONAL_ID
+  PASSPORT
+  DRIVING_LICENSE
+  SELFIE
+  PROOF_OF_ADDRESS
+  PAYSLIP
+  BANK_STATEMENT
+  EMPLOYMENT_LETTER
+  BUSINESS_LICENSE
+  KRA_PIN
+  OTHER
+}
+
 enum DocumentType {
   NATIONAL_ID
   PASSPORT
@@ -167,6 +187,13 @@ enum ApprovalAction {
   REQUEST_DOCUMENTS
 }
 
+enum KycStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
 enum AuditAction {
   CREATE
   UPDATE
@@ -205,16 +232,17 @@ model User {
   role   Role       @default(CUSTOMER)
   status UserStatus @default(ACTIVE)
 
-  emailVerified Boolean @default(false)
-  phoneVerified Boolean @default(false)
-
-  lastLoginAt DateTime?
+  emailVerified Boolean   @default(false)
+  phoneVerified Boolean   @default(false)
+  kyc           Kyc?
+  lastLoginAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   refreshTokens    RefreshToken[]
   otpCodes         OtpCode[]
+  kycReviews       KycReview[]
   loanApplications LoanApplication[]
   loans            Loan[]
   guarantor        Guarantor[]
@@ -302,6 +330,107 @@ model LoanProduct {
   loans        Loan[]
 
   @@index([isActive])
+}
+
+// ============================================================
+// ============================================================
+// KYC
+// ============================================================
+
+model Kyc {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @unique @db.Uuid
+
+  nationality String?
+
+  address    String?
+  city       String?
+  county     String?
+  country    String?
+  postalCode String?
+
+  identificationType    KycIdentificationType?
+  identificationNumber  String?
+  identificationCountry String?
+
+  incomeSource String?
+
+  status KycStatus @default(PENDING)
+
+  submittedAt DateTime?
+  reviewedAt  DateTime?
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents KycDocument[]
+  reviews   KycReview[]
+
+  @@index([status])
+  @@index([identificationNumber])
+}
+
+// ============================================================
+// KYC DOCUMENT
+// ============================================================
+
+model KycDocument {
+  id String @id @default(uuid()) @db.Uuid
+
+  kycId String @db.Uuid
+
+  type KycDocumentType
+
+  documentNumber String?
+
+  fileName String
+  fileUrl  String
+
+  fileSize Int?
+  mimeType String?
+
+  status DocumentStatus @default(PENDING)
+
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  kyc Kyc @relation(fields: [kycId], references: [id], onDelete: Cascade)
+
+  @@index([kycId])
+  @@index([status])
+}
+
+// ============================================================
+// KYC REVIEW
+// ============================================================
+
+model KycReview {
+  id String @id @default(uuid()) @db.Uuid
+
+  kycId      String @db.Uuid
+  reviewerId String @db.Uuid
+
+  status KycStatus
+
+  reviewNotes String?
+
+  createdAt DateTime @default(now())
+
+  kyc      Kyc  @relation(fields: [kycId], references: [id], onDelete: Cascade)
+  reviewer User @relation(fields: [reviewerId], references: [id])
+
+  @@index([kycId])
+  @@index([reviewerId])
 }
 
 // ============================================================

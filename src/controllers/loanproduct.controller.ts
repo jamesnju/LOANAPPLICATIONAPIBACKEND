@@ -1,393 +1,305 @@
 import type {
-  Request,
-  Response,
+Request,
+Response,
+NextFunction,
 } from "express";
 
-
 import {
-  createLoanProduct as createProduct,
-  getLoanProducts,
-  getActiveLoanProducts,
-  getLoanProductById,
-  updateLoanProduct as updateProduct,
-  deleteLoanProduct as deleteProduct,
+createLoanProduct as createProduct,
+getLoanProducts,
+getActiveLoanProducts,
+getLoanProductById,
+updateLoanProduct as updateProduct,
+deleteLoanProduct as deleteProduct,
 } from "../services/loan-product.service.js";
 
-
 import {
-  createLoanProductSchema,
-  updateLoanProductSchema,
+createLoanProductSchema,
+updateLoanProductSchema,
 } from "../schemas/loanproduct.schema.js";
 
-
 /*
- * ============================================================
- * ROUTE PARAMETER HELPER
- * ============================================================
- *
- * Express can type route parameters as:
- *
- * string | string[]
- *
- * Our service requires a normal string.
- *
- * This helper safely converts the value to a string.
- */
-function getRouteParam(
-  value: string | string[] | undefined
-): string | null {
 
-  if (!value) {
-    return null;
-  }
-
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
-  }
-
-  return value;
-}
-
-
-/*
- * ============================================================
- * CREATE LOAN PRODUCT
- * ============================================================
- */
-export async function createLoanProduct(
+* ============================================================
+* GET ID PARAMETER
+* ============================================================
+  */
+  const getIdParam = (
   req: Request,
   res: Response
-): Promise<void> {
+  ): string | null => {
 
-  try {
+const id = req.params.id;
 
-    const data =
-      createLoanProductSchema.parse(
-        req.body
-      );
+/*
 
-
-    const product =
-      await createProduct(data);
-
-
-    res.status(201).json({
-      success: true,
-      message: "Loan product created successfully",
-      data: product,
-    });
-
-  } catch (error) {
-
-    console.error(error);
+* Express may type this as string | string[].
+*
+* We only accept a single string.
+  */
+  if (typeof id !== "string" || id.trim() === "") {
 
 
-    if (
-      error instanceof Error &&
-      error.message ===
-        "LOAN_PRODUCT_ALREADY_EXISTS"
-    ) {
+res.status(400).json({
 
-      res.status(409).json({
-        success: false,
-        message: "Loan product already exists",
-      });
+  success: false,
+  message: "Invalid loan product ID",
+});
 
-      return;
-    }
+return null;
 
-
-    res.status(400).json({
-      success: false,
-      message: "Unable to create loan product",
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unknown error",
-    });
-
-  }
 
 }
 
+return id;
+};
 
 /*
- * ============================================================
- * GET ALL LOAN PRODUCTS
- * ============================================================
- */
-export async function getAllLoanProducts(
-  _req: Request,
-  res: Response
-): Promise<void> {
 
-  try {
-
-    const products =
-      await getLoanProducts();
-
-
-    res.status(200).json({
-      success: true,
-      data: products,
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to retrieve loan products",
-    });
-
-  }
-
-}
-
-
-/*
- * ============================================================
- * GET ACTIVE LOAN PRODUCTS
- * ============================================================
- */
-export async function getActiveProducts(
-  _req: Request,
-  res: Response
-): Promise<void> {
-
-  try {
-
-    const products =
-      await getActiveLoanProducts();
-
-
-    res.status(200).json({
-      success: true,
-      data: products,
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to retrieve active loan products",
-    });
-
-  }
-
-}
-
-
-/*
- * ============================================================
- * GET ONE LOAN PRODUCT
- * ============================================================
- */
-export async function getOneLoanProduct(
+* ============================================================
+* CREATE LOAN PRODUCT
+* ============================================================
+*
+* POST /api/v1/loan-products
+  */
+  export const createLoanProduct = async (
   req: Request,
-  res: Response
-): Promise<void> {
+  res: Response,
+  next: NextFunction
+  ) => {
 
-  try {
-
-    const id =
-      getRouteParam(req.params.id);
-
-
-    /*
-     * Make sure an ID was actually supplied.
-     */
-    if (!id) {
-
-      res.status(400).json({
-        success: false,
-        message: "Loan product ID is required",
-      });
-
-      return;
-    }
-
-
-    const product =
-      await getLoanProductById(id);
-
-
-    if (!product) {
-
-      res.status(404).json({
-        success: false,
-        message: "Loan product not found",
-      });
-
-      return;
-    }
-
-
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to retrieve loan product",
-    });
-
-  }
-
-}
+try {
 
 
 /*
- * ============================================================
- * UPDATE LOAN PRODUCT
- * ============================================================
+ * Validate request body.
  */
-export async function updateLoanProduct(
-  req: Request,
-  res: Response
-): Promise<void> {
-
-  try {
-
-    const id =
-      getRouteParam(req.params.id);
-
-
-    if (!id) {
-
-      res.status(400).json({
-        success: false,
-        message: "Loan product ID is required",
-      });
-
-      return;
-    }
-
-
-    const data =
-      updateLoanProductSchema.parse(
-        req.body
-      );
-
-
-    const product =
-      await updateProduct(
-        id,
-        data
-      );
-
-
-    res.status(200).json({
-      success: true,
-      message: "Loan product updated successfully",
-      data: product,
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    if (
-      error instanceof Error &&
-      error.message ===
-        "LOAN_PRODUCT_NOT_FOUND"
-    ) {
-
-      res.status(404).json({
-        success: false,
-        message: "Loan product not found",
-      });
-
-      return;
-    }
-
-
-    res.status(400).json({
-      success: false,
-      message: "Unable to update loan product",
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unknown error",
-    });
-
-  }
-
-}
-
+const data =
+  createLoanProductSchema.parse(req.body);
 
 /*
- * ============================================================
- * DELETE LOAN PRODUCT
- * ============================================================
+ * Create product.
  */
-export async function deleteLoanProduct(
-  req: Request,
-  res: Response
-): Promise<void> {
+const product =
+  await createProduct(data);
 
-  try {
-
-    const id =
-      getRouteParam(req.params.id);
-
-
-    if (!id) {
-
-      res.status(400).json({
-        success: false,
-        message: "Loan product ID is required",
-      });
-
-      return;
-    }
+return res.status(201).json({
+  success: true,
+  message:
+    "Loan product created successfully",
+  data: product,
+});
 
 
-    await deleteProduct(id);
+} catch (error) {
 
 
-    res.status(200).json({
-      success: true,
-      message: "Loan product deleted successfully",
-    });
+next(error);
 
-  } catch (error) {
-
-    console.error(error);
-
-
-    if (
-      error instanceof Error &&
-      error.message ===
-        "LOAN_PRODUCT_NOT_FOUND"
-    ) {
-
-      res.status(404).json({
-        success: false,
-        message: "Loan product not found",
-      });
-
-      return;
-    }
-
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to delete loan product",
-    });
-
-  }
 
 }
+};
+
+/*
+
+* ============================================================
+* GET ACTIVE LOAN PRODUCTS
+* ============================================================
+*
+* GET /api/v1/loan-products/active
+  */
+  export const getActiveProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+  ) => {
+
+try {
+
+
+const products =
+  await getActiveLoanProducts();
+
+return res.status(200).json({
+  success: true,
+  data: products,
+});
+
+
+} catch (error) {
+
+
+next(error);
+
+
+}
+};
+
+/*
+
+* ============================================================
+* GET ALL LOAN PRODUCTS
+* ============================================================
+*
+* GET /api/v1/loan-products
+  */
+  export const getAllLoanProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+  ) => {
+
+try {
+
+
+const products =
+  await getLoanProducts();
+
+return res.status(200).json({
+  success: true,
+  data: products,
+});
+
+
+} catch (error) {
+
+next(error);
+
+
+}
+};
+
+/*
+
+* ============================================================
+* GET ONE LOAN PRODUCT
+* ============================================================
+*
+* GET /api/v1/loan-products/:id
+  */
+  export const getOneLoanProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+  ) => {
+
+try {
+
+
+const id =
+  getIdParam(req, res);
+
+if (!id) {
+  return;
+}
+
+const product =
+  await getLoanProductById(id);
+
+return res.status(200).json({
+  success: true,
+  data: product,
+});
+
+
+} catch (error) {
+
+next(error);
+
+}
+};
+
+/*
+
+* ============================================================
+* UPDATE LOAN PRODUCT
+* ============================================================
+*
+* PUT /api/v1/loan-products/:id
+  */
+  export const updateLoanProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+  ) => {
+
+try {
+
+
+const id =
+  getIdParam(req, res);
+
+if (!id) {
+  return;
+}
+
+/*
+ * Validate request body.
+ */
+const data =
+  updateLoanProductSchema.parse(req.body);
+
+/*
+ * Update product.
+ */
+const product =
+  await updateProduct(id, data);
+
+return res.status(200).json({
+  success: true,
+  message:
+    "Loan product updated successfully",
+  data: product,
+});
+
+} catch (error) {
+
+
+next(error);
+
+}
+};
+
+/*
+
+* ============================================================
+* DELETE LOAN PRODUCT
+* ============================================================
+*
+* DELETE /api/v1/loan-products/:id
+  */
+  export const deleteLoanProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+  ) => {
+
+try {
+
+
+const id =
+  getIdParam(req, res);
+
+if (!id) {
+  return;
+}
+
+/*
+ * Delete product.
+ */
+await deleteProduct(id);
+
+return res.status(200).json({
+  success: true,
+  message:
+    "Loan product deleted successfully",
+});
+
+
+} catch (error) {
+
+next(error);
+
+
+}
+};

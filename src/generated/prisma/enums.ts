@@ -147,6 +147,32 @@ export const TransactionType = {
 export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
 
 
+export const KycIdentificationType = {
+  NATIONAL_ID: 'NATIONAL_ID',
+  PASSPORT: 'PASSPORT',
+  DRIVING_LICENSE: 'DRIVING_LICENSE'
+} as const
+
+export type KycIdentificationType = (typeof KycIdentificationType)[keyof typeof KycIdentificationType]
+
+
+export const KycDocumentType = {
+  NATIONAL_ID: 'NATIONAL_ID',
+  PASSPORT: 'PASSPORT',
+  DRIVING_LICENSE: 'DRIVING_LICENSE',
+  SELFIE: 'SELFIE',
+  PROOF_OF_ADDRESS: 'PROOF_OF_ADDRESS',
+  PAYSLIP: 'PAYSLIP',
+  BANK_STATEMENT: 'BANK_STATEMENT',
+  EMPLOYMENT_LETTER: 'EMPLOYMENT_LETTER',
+  BUSINESS_LICENSE: 'BUSINESS_LICENSE',
+  KRA_PIN: 'KRA_PIN',
+  OTHER: 'OTHER'
+} as const
+
+export type KycDocumentType = (typeof KycDocumentType)[keyof typeof KycDocumentType]
+
+
 export const DocumentType = {
   NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
@@ -218,6 +244,16 @@ export const ApprovalAction = {
 } as const
 
 export type ApprovalAction = (typeof ApprovalAction)[keyof typeof ApprovalAction]
+
+
+export const KycStatus = {
+  PENDING: 'PENDING',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type KycStatus = (typeof KycStatus)[keyof typeof KycStatus]
 
 
 export const AuditAction = {

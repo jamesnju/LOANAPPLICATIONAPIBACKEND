@@ -38,6 +38,21 @@ export type OtpCode = Prisma.OtpCodeModel
  */
 export type LoanProduct = Prisma.LoanProductModel
 /**
+ * Model Kyc
+ * 
+ */
+export type Kyc = Prisma.KycModel
+/**
+ * Model KycDocument
+ * 
+ */
+export type KycDocument = Prisma.KycDocumentModel
+/**
+ * Model KycReview
+ * 
+ */
+export type KycReview = Prisma.KycReviewModel
+/**
  * Model LoanApplication
  * 
  */

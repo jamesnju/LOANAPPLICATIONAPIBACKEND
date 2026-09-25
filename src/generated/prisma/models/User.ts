@@ -328,8 +328,10 @@ export type UserWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  kyc?: Prisma.XOR<Prisma.KycNullableScalarRelationFilter, Prisma.KycWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   otpCodes?: Prisma.OtpCodeListRelationFilter
+  kycReviews?: Prisma.KycReviewListRelationFilter
   loanApplications?: Prisma.LoanApplicationListRelationFilter
   loans?: Prisma.LoanListRelationFilter
   guarantor?: Prisma.GuarantorListRelationFilter
@@ -359,8 +361,10 @@ export type UserOrderByWithRelationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  kyc?: Prisma.KycOrderByWithRelationInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   otpCodes?: Prisma.OtpCodeOrderByRelationAggregateInput
+  kycReviews?: Prisma.KycReviewOrderByRelationAggregateInput
   loanApplications?: Prisma.LoanApplicationOrderByRelationAggregateInput
   loans?: Prisma.LoanOrderByRelationAggregateInput
   guarantor?: Prisma.GuarantorOrderByRelationAggregateInput
@@ -393,8 +397,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  kyc?: Prisma.XOR<Prisma.KycNullableScalarRelationFilter, Prisma.KycWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   otpCodes?: Prisma.OtpCodeListRelationFilter
+  kycReviews?: Prisma.KycReviewListRelationFilter
   loanApplications?: Prisma.LoanApplicationListRelationFilter
   loans?: Prisma.LoanListRelationFilter
   guarantor?: Prisma.GuarantorListRelationFilter
@@ -476,8 +482,10 @@ export type UserCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -507,8 +515,10 @@ export type UserUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -538,8 +548,10 @@ export type UserUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -569,8 +581,10 @@ export type UserUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -802,6 +816,34 @@ export type UserUpdateOneRequiredWithoutOtpCodesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOtpCodesInput, Prisma.UserUpdateWithoutOtpCodesInput>, Prisma.UserUncheckedUpdateWithoutOtpCodesInput>
 }
 
+export type UserCreateNestedOneWithoutKycInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKycInput, Prisma.UserUncheckedCreateWithoutKycInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKycInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutKycNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKycInput, Prisma.UserUncheckedCreateWithoutKycInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKycInput
+  upsert?: Prisma.UserUpsertWithoutKycInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutKycInput, Prisma.UserUpdateWithoutKycInput>, Prisma.UserUncheckedUpdateWithoutKycInput>
+}
+
+export type UserCreateNestedOneWithoutKycReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKycReviewsInput, Prisma.UserUncheckedCreateWithoutKycReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKycReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutKycReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKycReviewsInput, Prisma.UserUncheckedCreateWithoutKycReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKycReviewsInput
+  upsert?: Prisma.UserUpsertWithoutKycReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutKycReviewsInput, Prisma.UserUpdateWithoutKycReviewsInput>, Prisma.UserUncheckedUpdateWithoutKycReviewsInput>
+}
+
 export type UserCreateNestedOneWithoutLoanApplicationsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutLoanApplicationsInput, Prisma.UserUncheckedCreateWithoutLoanApplicationsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoanApplicationsInput
@@ -924,7 +966,9 @@ export type UserCreateWithoutRefreshTokensInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -954,7 +998,9 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -1000,7 +1046,9 @@ export type UserUpdateWithoutRefreshTokensInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -1030,7 +1078,9 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -1060,7 +1110,9 @@ export type UserCreateWithoutOtpCodesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -1090,7 +1142,9 @@ export type UserUncheckedCreateWithoutOtpCodesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -1136,7 +1190,9 @@ export type UserUpdateWithoutOtpCodesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -1166,7 +1222,297 @@ export type UserUncheckedUpdateWithoutOtpCodesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutKycInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutKycInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutKycInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutKycInput, Prisma.UserUncheckedCreateWithoutKycInput>
+}
+
+export type UserUpsertWithoutKycInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutKycInput, Prisma.UserUncheckedUpdateWithoutKycInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutKycInput, Prisma.UserUncheckedCreateWithoutKycInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutKycInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutKycInput, Prisma.UserUncheckedUpdateWithoutKycInput>
+}
+
+export type UserUpdateWithoutKycInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutKycInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+}
+
+export type UserCreateWithoutKycReviewsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+}
+
+export type UserUncheckedCreateWithoutKycReviewsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  passwordHash: string
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+}
+
+export type UserCreateOrConnectWithoutKycReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutKycReviewsInput, Prisma.UserUncheckedCreateWithoutKycReviewsInput>
+}
+
+export type UserUpsertWithoutKycReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutKycReviewsInput, Prisma.UserUncheckedUpdateWithoutKycReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutKycReviewsInput, Prisma.UserUncheckedCreateWithoutKycReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutKycReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutKycReviewsInput, Prisma.UserUncheckedUpdateWithoutKycReviewsInput>
+}
+
+export type UserUpdateWithoutKycReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutKycReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -1196,8 +1542,10 @@ export type UserCreateWithoutLoanApplicationsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
@@ -1226,8 +1574,10 @@ export type UserUncheckedCreateWithoutLoanApplicationsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -1272,8 +1622,10 @@ export type UserUpdateWithoutLoanApplicationsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
@@ -1302,8 +1654,10 @@ export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -1332,8 +1686,10 @@ export type UserCreateWithoutLoansInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
@@ -1362,8 +1718,10 @@ export type UserUncheckedCreateWithoutLoansInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -1408,8 +1766,10 @@ export type UserUpdateWithoutLoansInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
@@ -1438,8 +1798,10 @@ export type UserUncheckedUpdateWithoutLoansInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -1468,8 +1830,10 @@ export type UserCreateWithoutApprovalsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -1498,8 +1862,10 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -1544,8 +1910,10 @@ export type UserUpdateWithoutApprovalsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -1574,8 +1942,10 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -1604,8 +1974,10 @@ export type UserCreateWithoutGuarantorInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
@@ -1634,8 +2006,10 @@ export type UserUncheckedCreateWithoutGuarantorInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -1680,8 +2054,10 @@ export type UserUpdateWithoutGuarantorInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
@@ -1710,8 +2086,10 @@ export type UserUncheckedUpdateWithoutGuarantorInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -1740,8 +2118,10 @@ export type UserCreateWithoutDocumentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -1770,8 +2150,10 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -1816,8 +2198,10 @@ export type UserUpdateWithoutDocumentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -1846,8 +2230,10 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -1876,8 +2262,10 @@ export type UserCreateWithoutNotificationsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -1906,8 +2294,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -1952,8 +2342,10 @@ export type UserUpdateWithoutNotificationsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -1982,8 +2374,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -2012,8 +2406,10 @@ export type UserCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
@@ -2042,8 +2438,10 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
   loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
   guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
@@ -2088,8 +2486,10 @@ export type UserUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
@@ -2118,8 +2518,10 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
   loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
   loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
   guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
@@ -2136,6 +2538,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
 export type UserCountOutputType = {
   refreshTokens: number
   otpCodes: number
+  kycReviews: number
   loanApplications: number
   loans: number
   guarantor: number
@@ -2148,6 +2551,7 @@ export type UserCountOutputType = {
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   otpCodes?: boolean | UserCountOutputTypeCountOtpCodesArgs
+  kycReviews?: boolean | UserCountOutputTypeCountKycReviewsArgs
   loanApplications?: boolean | UserCountOutputTypeCountLoanApplicationsArgs
   loans?: boolean | UserCountOutputTypeCountLoansArgs
   guarantor?: boolean | UserCountOutputTypeCountGuarantorArgs
@@ -2179,6 +2583,13 @@ export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Ty
  */
 export type UserCountOutputTypeCountOtpCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OtpCodeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountKycReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KycReviewWhereInput
 }
 
 /**
@@ -2251,8 +2662,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  kyc?: boolean | Prisma.User$kycArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
+  kycReviews?: boolean | Prisma.User$kycReviewsArgs<ExtArgs>
   loanApplications?: boolean | Prisma.User$loanApplicationsArgs<ExtArgs>
   loans?: boolean | Prisma.User$loansArgs<ExtArgs>
   guarantor?: boolean | Prisma.User$guarantorArgs<ExtArgs>
@@ -2331,8 +2744,10 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "emailVerified" | "phoneVerified" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  kyc?: boolean | Prisma.User$kycArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   otpCodes?: boolean | Prisma.User$otpCodesArgs<ExtArgs>
+  kycReviews?: boolean | Prisma.User$kycReviewsArgs<ExtArgs>
   loanApplications?: boolean | Prisma.User$loanApplicationsArgs<ExtArgs>
   loans?: boolean | Prisma.User$loansArgs<ExtArgs>
   guarantor?: boolean | Prisma.User$guarantorArgs<ExtArgs>
@@ -2348,8 +2763,10 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    kyc: Prisma.$KycPayload<ExtArgs> | null
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     otpCodes: Prisma.$OtpCodePayload<ExtArgs>[]
+    kycReviews: Prisma.$KycReviewPayload<ExtArgs>[]
     loanApplications: Prisma.$LoanApplicationPayload<ExtArgs>[]
     loans: Prisma.$LoanPayload<ExtArgs>[]
     guarantor: Prisma.$GuarantorPayload<ExtArgs>[]
@@ -2772,8 +3189,10 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  kyc<T extends Prisma.User$kycArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$kycArgs<ExtArgs>>): Prisma.Prisma__KycClient<runtime.Types.Result.GetResult<Prisma.$KycPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   otpCodes<T extends Prisma.User$otpCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$otpCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OtpCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kycReviews<T extends Prisma.User$kycReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$kycReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KycReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   loanApplications<T extends Prisma.User$loanApplicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loanApplicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   loans<T extends Prisma.User$loansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   guarantor<T extends Prisma.User$guarantorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$guarantorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuarantorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3222,6 +3641,25 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.kyc
+ */
+export type User$kycArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Kyc
+   */
+  select?: Prisma.KycSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Kyc
+   */
+  omit?: Prisma.KycOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KycInclude<ExtArgs> | null
+  where?: Prisma.KycWhereInput
+}
+
+/**
  * User.refreshTokens
  */
 export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3267,6 +3705,30 @@ export type User$otpCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.OtpCodeScalarFieldEnum | Prisma.OtpCodeScalarFieldEnum[]
+}
+
+/**
+ * User.kycReviews
+ */
+export type User$kycReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KycReview
+   */
+  select?: Prisma.KycReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KycReview
+   */
+  omit?: Prisma.KycReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KycReviewInclude<ExtArgs> | null
+  where?: Prisma.KycReviewWhereInput
+  orderBy?: Prisma.KycReviewOrderByWithRelationInput | Prisma.KycReviewOrderByWithRelationInput[]
+  cursor?: Prisma.KycReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KycReviewScalarFieldEnum | Prisma.KycReviewScalarFieldEnum[]
 }
 
 /**
