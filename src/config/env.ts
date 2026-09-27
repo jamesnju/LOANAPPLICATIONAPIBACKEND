@@ -46,14 +46,16 @@ const envSchema = z.object({
     .string()
     .default("console"),
 
-  // ✅ NEW: comma-separated string → string[]
+  // ✅ Comma-separated string → string[]
   ALLOWED_ORIGINS: z
     .string()
-    .default("*")
+    .default(
+      "https://loanappbackendapis.vercel.app,http://localhost:3000,https://kopaflex.vercel.app"
+    )
     .transform((val) =>
       val
         .split(",")
-        .map((o) => o.trim())
+        .map((o) => o.trim().replace(/\/$/, "")) // strip trailing slash
         .filter(Boolean)
     ),
 });
@@ -64,7 +66,7 @@ const result = envSchema.safeParse(
 
 if (!result.success) {
   console.error(
-    "❌ Invalid environment variables:"
+    " Invalid environment variables:"
   );
 
   console.error(
