@@ -1,14 +1,8 @@
 import { prisma } from "../config/database.js";
 
-import {
-  Role,
-  VerificationChannel,
-} from "../generated/prisma/client.js";
+import { Role, VerificationChannel } from "../generated/prisma/client.js";
 
-import {
-  hashPassword,
-  comparePassword,
-} from "../utils/password.js";
+import { hashPassword, comparePassword } from "../utils/password.js";
 
 import {
   generateAccessToken,
@@ -23,266 +17,178 @@ import {
 
 import { env } from "../config/env.js";
 
-
 interface RegisterInput {
   email: string;
   phone: string;
   password: string;
   firstName: string;
   lastName: string;
-  verificationChannel:
-    VerificationChannel;
+  verificationChannel: VerificationChannel;
 }
-
 
 /**
  * REGISTER
  */
-export async function registerUser(
-  input: RegisterInput
-) {
-
+export async function registerUser(input: RegisterInput) {
   /*
    * Check email.
    */
-  const existingEmail =
-    await prisma.user.findUnique({
-      where: {
-        email: input.email,
-      },
-    });
+  const existingEmail = await prisma.user.findUnique({
+    where: {
+      email: input.email,
+    },
+  });
 
   if (existingEmail) {
-    throw new Error(
-      "Email is already registered"
-    );
+    throw new Error("Email is already registered");
   }
-
 
   /*
    * Check phone.
    */
-  const existingPhone =
-    await prisma.user.findUnique({
-      where: {
-        phone: input.phone,
-      },
-    });
+  const existingPhone = await prisma.user.findUnique({
+    where: {
+      phone: input.phone,
+    },
+  });
 
   if (existingPhone) {
-    throw new Error(
-      "Phone number is already registered"
-    );
+    throw new Error("Phone number is already registered");
   }
-
 
   /*
    * Hash password.
    */
-  const passwordHash =
-    await hashPassword(
-      input.password
-    );
-
+  const passwordHash = await hashPassword(input.password);
 
   /*
    * Create customer.
    */
-  const user =
-    await prisma.user.create({
+  const user = await prisma.user.create({
+    data: {
+      firstName: input.firstName,
 
-      data: {
+      lastName: input.lastName,
 
-        firstName:
-          input.firstName,
+      email: input.email,
 
-        lastName:
-          input.lastName,
+      phone: input.phone,
 
-        email:
-          input.email,
+      passwordHash,
 
-        phone:
-          input.phone,
+      role: Role.CUSTOMER,
 
-        passwordHash,
+      status: "ACTIVE",
 
-        role:
-          Role.CUSTOMER,
+      emailVerified: false,
 
-        status:
-          "ACTIVE",
-
-        emailVerified:
-          false,
-
-        phoneVerified:
-          false,
-      },
-    });
-
+      phoneVerified: false,
+    },
+  });
 
   /*
    * Send verification OTP.
    */
-  await createAndSendVerificationOtp(
-    user.id,
-    input.verificationChannel
-  );
-
+  await createAndSendVerificationOtp(user.id, input.verificationChannel);
 
   /*
    * Return safe information.
    */
   return {
+    id: user.id,
 
-    id:
-      user.id,
+    firstName: user.firstName,
 
-    firstName:
-      user.firstName,
+    lastName: user.lastName,
 
-    lastName:
-      user.lastName,
+    email: user.email,
 
-    email:
-      user.email,
+    phone: user.phone,
 
-    phone:
-      user.phone,
+    emailVerified: user.emailVerified,
 
-    emailVerified:
-      user.emailVerified,
-
-    phoneVerified:
-      user.phoneVerified,
+    phoneVerified: user.phoneVerified,
 
     message:
       "Account created. Please verify your account using the verification code.",
   };
 }
 
-
 /**
  * VERIFY ACCOUNT
  */
-export async function verifyUserAccount(
-  userId: string,
-  code: string
-) {
+export async function verifyUserAccount(userId: string, code: string) {
+  await verifyAccountOtp(userId, code);
 
-  await verifyAccountOtp(
-    userId,
-    code
-  );
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
 
+    select: {
+      id: true,
 
-  const user =
-    await prisma.user.findUnique({
+      firstName: true,
 
-      where: {
-        id: userId,
-      },
+      lastName: true,
 
-      select: {
+      email: true,
 
-        id: true,
+      phone: true,
 
-        firstName: true,
+      emailVerified: true,
 
-        lastName: true,
+      phoneVerified: true,
 
-        email: true,
+      role: true,
 
-        phone: true,
-
-        emailVerified: true,
-
-        phoneVerified: true,
-
-        role: true,
-
-        status: true,
-      },
-    });
-
+      status: true,
+    },
+  });
 
   if (!user) {
-    throw new Error(
-      "User not found"
-    );
+    throw new Error("User not found");
   }
-
 
   return user;
 }
-
 
 /**
  * RESEND VERIFICATION OTP
  */
 export async function resendVerificationOtp(
   userId: string,
-  channel: VerificationChannel
+  channel: VerificationChannel,
 ) {
-
-  const user =
-    await prisma.user.findUnique({
-
-      where: {
-        id: userId,
-      },
-    });
-
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
 
   if (!user) {
-    throw new Error(
-      "User not found"
-    );
+    throw new Error("User not found");
   }
-
 
   /*
    * Don't resend if already
    * verified through requested
    * channel.
    */
-  if (
-    channel ===
-      VerificationChannel.EMAIL &&
-    user.emailVerified
-  ) {
-
-    throw new Error(
-      "Email is already verified"
-    );
+  if (channel === VerificationChannel.EMAIL && user.emailVerified) {
+    throw new Error("Email is already verified");
   }
 
-
-  if (
-    channel ===
-      VerificationChannel.SMS &&
-    user.phoneVerified
-  ) {
-
-    throw new Error(
-      "Phone number is already verified"
-    );
+  if (channel === VerificationChannel.SMS && user.phoneVerified) {
+    throw new Error("Phone number is already verified");
   }
 
-
-  await createAndSendVerificationOtp(
-    userId,
-    channel
-  );
-
+  await createAndSendVerificationOtp(userId, channel);
 
   return {
-    message:
-      "Verification code sent successfully",
+    message: "Verification code sent successfully",
   };
 }
-
 
 /**
  * LOGIN
@@ -294,6 +200,11 @@ export async function loginUser(
 
   /*
    * Find by email OR phone.
+   *
+   * Also load the user's KYC record
+   * so the login response can tell
+   * the frontend whether KYC has
+   * been completed.
    */
   const user =
     await prisma.user.findFirst({
@@ -310,6 +221,10 @@ export async function loginUser(
             phone: identifier,
           },
         ],
+      },
+
+      include: {
+        kyc: true,
       },
     });
 
@@ -370,6 +285,24 @@ export async function loginUser(
 
 
   /*
+   * Determine KYC status.
+   *
+   * If the user has never started
+   * KYC, there will be no Kyc record.
+   */
+  const kycStatus =
+    user.kyc?.status ?? "NOT_STARTED";
+
+
+  /*
+   * KYC is considered completed
+   * only after it has been approved.
+   */
+  const kycCompleted =
+    kycStatus === "APPROVED";
+
+
+  /*
    * Update last login.
    */
   await prisma.user.update({
@@ -386,7 +319,7 @@ export async function loginUser(
 
 
   /*
-   * Access token.
+   * Generate access token.
    */
   const accessToken =
     generateAccessToken({
@@ -400,7 +333,7 @@ export async function loginUser(
 
 
   /*
-   * Refresh token.
+   * Generate refresh token.
    */
   const refreshToken =
     generateRefreshToken();
@@ -419,9 +352,6 @@ export async function loginUser(
   /*
    * Calculate refresh
    * token expiration.
-   *
-   * Uses configured
-   * REFRESH_TOKEN_EXPIRES_IN.
    */
   const refreshTokenExpiresAt =
     calculateExpiration(
@@ -485,148 +415,100 @@ export async function loginUser(
 
       phoneVerified:
         user.phoneVerified,
+
+      /*
+       * KYC information.
+       */
+      kycStatus,
+
+      kycCompleted,
     },
   };
 }
 
-
 /**
  * REFRESH ACCESS TOKEN
  */
-export async function refreshAccessToken(
-  refreshToken: string
-) {
-
+export async function refreshAccessToken(refreshToken: string) {
   /*
    * Hash supplied token.
    */
-  const tokenHash =
-    hashRefreshToken(
-      refreshToken
-    );
-
+  const tokenHash = hashRefreshToken(refreshToken);
 
   /*
    * Find token and user.
    */
-  const storedToken =
-    await prisma.refreshToken.findUnique({
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: {
+      tokenHash,
+    },
 
-      where: {
-        tokenHash,
-      },
-
-      include: {
-        user: true,
-      },
-    });
-
+    include: {
+      user: true,
+    },
+  });
 
   if (!storedToken) {
-
-    throw new Error(
-      "Invalid refresh token"
-    );
+    throw new Error("Invalid refresh token");
   }
-
 
   /*
    * Check revocation.
    */
-  if (
-    storedToken.revokedAt
-  ) {
-
-    throw new Error(
-      "Refresh token has been revoked"
-    );
+  if (storedToken.revokedAt) {
+    throw new Error("Refresh token has been revoked");
   }
-
 
   /*
    * Check expiration.
    */
-  if (
-    storedToken.expiresAt <
-    new Date()
-  ) {
-
-    throw new Error(
-      "Refresh token has expired"
-    );
+  if (storedToken.expiresAt < new Date()) {
+    throw new Error("Refresh token has expired");
   }
-
 
   /*
    * Check user account.
    */
-  if (
-    storedToken.user.status !==
-    "ACTIVE"
-  ) {
-
-    throw new Error(
-      "Account is not active"
-    );
+  if (storedToken.user.status !== "ACTIVE") {
+    throw new Error("Account is not active");
   }
-
 
   /*
    * Generate new access token.
    */
-  const accessToken =
-    generateAccessToken({
+  const accessToken = generateAccessToken({
+    userId: storedToken.user.id,
 
-      userId:
-        storedToken.user.id,
-
-      role:
-        storedToken.user.role,
-    });
-
+    role: storedToken.user.role,
+  });
 
   return {
     accessToken,
   };
 }
 
-
 /**
  * LOGOUT
  */
-export async function logoutUser(
-  refreshToken: string
-) {
-
-  const tokenHash =
-    hashRefreshToken(
-      refreshToken
-    );
-
+export async function logoutUser(refreshToken: string) {
+  const tokenHash = hashRefreshToken(refreshToken);
 
   await prisma.refreshToken.updateMany({
-
     where: {
-
       tokenHash,
 
       revokedAt: null,
     },
 
     data: {
-
-      revokedAt:
-        new Date(),
+      revokedAt: new Date(),
     },
   });
 
-
   return {
-    message:
-      "Logout successful",
+    message: "Logout successful",
   };
 }
-
 
 /**
  * Convert values such as:
@@ -637,69 +519,36 @@ export async function logoutUser(
  *
  * into a future Date.
  */
-function calculateExpiration(
-  value: string
-): Date {
-
-  const match =
-    value.match(
-      /^(\d+)([smhd])$/
-    );
-
+function calculateExpiration(value: string): Date {
+  const match = value.match(/^(\d+)([smhd])$/);
 
   if (!match) {
-
-    throw new Error(
-      `Invalid expiration format: ${value}`
-    );
+    throw new Error(`Invalid expiration format: ${value}`);
   }
 
+  const amount = Number(match[1]);
 
-  const amount =
-    Number(match[1]);
-
-  const unit =
-    match[2];
-
+  const unit = match[2];
 
   let milliseconds = 0;
 
-
   switch (unit) {
-
     case "s":
-      milliseconds =
-        amount * 1000;
+      milliseconds = amount * 1000;
       break;
 
     case "m":
-      milliseconds =
-        amount *
-        60 *
-        1000;
+      milliseconds = amount * 60 * 1000;
       break;
 
     case "h":
-      milliseconds =
-        amount *
-        60 *
-        60 *
-        1000;
+      milliseconds = amount * 60 * 60 * 1000;
       break;
 
     case "d":
-      milliseconds =
-        amount *
-        24 *
-        60 *
-        60 *
-        1000;
+      milliseconds = amount * 24 * 60 * 60 * 1000;
       break;
   }
 
-
-  return new Date(
-    Date.now() +
-      milliseconds
-  );
+  return new Date(Date.now() + milliseconds);
 }

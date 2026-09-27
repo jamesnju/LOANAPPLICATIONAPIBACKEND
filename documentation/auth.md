@@ -413,7 +413,7 @@ CUSTOMER
 LOAN
  ├── Loan Products
  ├── Applications
- ├── Approvals
+ ├── Approvals  
  ├── Disbursement
  ├── Repayment Schedule
  ├── Payments
