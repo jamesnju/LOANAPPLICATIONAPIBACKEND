@@ -45,6 +45,17 @@ const envSchema = z.object({
   SMS_PROVIDER: z
     .string()
     .default("console"),
+
+  // ✅ NEW: comma-separated string → string[]
+  ALLOWED_ORIGINS: z
+    .string()
+    .default("*")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((o) => o.trim())
+        .filter(Boolean)
+    ),
 });
 
 const result = envSchema.safeParse(
