@@ -46,6 +46,12 @@ const envSchema = z.object({
     .string()
     .default("console"),
 
+  CLOUDINARYCLOUDNAME: z.string().min(1),
+
+  CLOUDINARYAPIKEY: z.string().min(1),
+
+  CLOUDINARYAPISECRET: z.string().min(1),
+
   // ✅ Comma-separated string → string[]
   ALLOWED_ORIGINS: z
     .string()

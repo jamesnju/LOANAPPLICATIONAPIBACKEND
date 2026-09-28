@@ -21,6 +21,11 @@ import adminDashboardRoutes from './routes/adminDashboard.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import reportRoutes from './routes/report.routes.js';
 import auditLogRoutes from './routes/auditLog.routes.js';
+import userRoutes from './routes/user.routes.js';
+import guarantorRoutes from './routes/guarantor.routes.js';
+import collateralRoutes from './routes/collateral.routes.js';
+import documentRoutes from './routes/document.routes.js';
+import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 // ✅ Explicitly type the app
 const app = express();
 // ✅ CORS configuration with proper origin handling
@@ -55,8 +60,15 @@ const corsOptions = {
 app.use(helmet());
 app.use(cors(corsOptions));
 // Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+app.use(express.json({
+    limit: "2mb",
+}));
+app.use(express.urlencoded({
+    extended: true,
+    limit: "2mb",
+}));
 // Health check
 app.get('/api/v1/health', (_req, res) => {
     return res.status(200).json({
@@ -89,10 +101,18 @@ app.use(`${apiPrefix}/notifications`, notificationRoutes);
 app.use(`${apiPrefix}/audit-logs`, auditLogRoutes);
 app.use(`${apiPrefix}/admin/dashboard`, adminDashboardRoutes);
 app.use(`${apiPrefix}/reports`, reportRoutes);
+app.use(`${apiPrefix}/users`, userRoutes);
+app.use(`${apiPrefix}/guarantors`, guarantorRoutes);
+app.use(`${apiPrefix}/collateral`, collateralRoutes);
+app.use(`${apiPrefix}/documents`, documentRoutes);
 /*
- * YOUR EXISTING SYSTEM CONFIG ROUTE
+ * 404 handler.
  */
-app.use("/api/v1/system-config", systemConfigRoutes);
+app.use(notFoundHandler);
+/*
+ * Global error handler.
+ */
+app.use(errorHandler);
 // 404 handler
 app.use((_req, res) => {
     res.status(404).json({

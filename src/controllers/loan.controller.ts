@@ -7,7 +7,7 @@ import {
   getLoanTransactions,
   getMyLoans,
 } from "../services/loan.service.js";
-import { applicationIdSchema, disburseLoanSchema, loanIdSchema } from "./loan.schema.js";
+import { applicationIdSchema, disburseLoanSchema, loanIdSchema } from "../schemas/loan.schema.js";
 
 // import {
 //   applicationIdSchema,

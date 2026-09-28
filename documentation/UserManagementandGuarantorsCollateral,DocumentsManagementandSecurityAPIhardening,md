@@ -1,0 +1,1263 @@
+Below is a consolidated **API documentation section** for the four remaining modules in your loan platform. It follows the architecture we've been building: JWT authentication, role-based authorization, Prisma/PostgreSQL, KYC, loan applications, documents, guarantors, collateral, and audit logging.
+
+# Loan Platform API Documentation
+
+Base URL:
+
+```text
+/api/v1
+```
+
+Authentication:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+---
+
+# 1. User Management API
+
+User management is primarily for administrators. Customers should not be able to modify sensitive account fields such as their role, status, or verification state.
+
+## Roles
+
+```text
+SUPER_ADMIN
+ADMIN
+LOAN_OFFICER
+FINANCE_OFFICER
+SUPPORT
+CUSTOMER
+```
+
+### 1.1 Get Users
+
+```http
+GET /api/v1/users
+```
+
+**Access:** `ADMIN`, `SUPER_ADMIN`
+
+### Query parameters
+
+```text
+?page=1
+&limit=20
+&search=james
+&role=CUSTOMER
+&status=ACTIVE
+```
+
+### Sample request
+
+```http
+GET /api/v1/users?page=1&limit=20&role=CUSTOMER
+Authorization: Bearer <access_token>
+```
+
+### Sample response
+
+```json
+{
+  "success": true,
+  "message": "Users retrieved successfully",
+  "data": [
+    {
+      "id": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+      "firstName": "James",
+      "lastName": "Muniu",
+      "email": "james@example.com",
+      "phone": "+254700000000",
+      "role": "CUSTOMER",
+      "status": "ACTIVE",
+      "emailVerified": true,
+      "phoneVerified": true,
+      "createdAt": "2026-09-28T08:30:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 1,
+    "totalPages": 1
+  }
+}
+```
+
+---
+
+## 1.2 Get User
+
+```http
+GET /api/v1/users/:id
+```
+
+**Access:** `ADMIN`, `SUPER_ADMIN`
+
+### Sample response
+
+```json
+{
+  "success": true,
+  "message": "User retrieved successfully",
+  "data": {
+    "id": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+    "firstName": "James",
+    "lastName": "Muniu",
+    "email": "james@example.com",
+    "phone": "+254700000000",
+    "role": "CUSTOMER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "phoneVerified": true,
+    "createdAt": "2026-09-28T08:30:00.000Z"
+  }
+}
+```
+
+---
+
+## 1.3 Update User
+
+```http
+PUT /api/v1/users/:id
+```
+
+**Access:** `ADMIN`, `SUPER_ADMIN`
+
+### Request
+
+```json
+{
+  "firstName": "James",
+  "lastName": "Njuguna",
+  "phone": "+254711111111"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "User updated successfully",
+  "data": {
+    "id": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+    "firstName": "James",
+    "lastName": "Njuguna",
+    "phone": "+254711111111"
+  }
+}
+```
+
+---
+
+## 1.4 Change User Role
+
+```http
+PATCH /api/v1/users/:id/role
+```
+
+**Access:** `SUPER_ADMIN`
+
+### Request
+
+```json
+{
+  "role": "LOAN_OFFICER"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "User role updated successfully",
+  "data": {
+    "id": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+    "role": "LOAN_OFFICER"
+  }
+}
+```
+
+---
+
+## 1.5 Change User Status
+
+```http
+PATCH /api/v1/users/:id/status
+```
+
+**Access:** `ADMIN`, `SUPER_ADMIN`
+
+### Request
+
+```json
+{
+  "status": "SUSPENDED"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "User status updated successfully",
+  "data": {
+    "id": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+    "status": "SUSPENDED"
+  }
+}
+```
+
+---
+
+# 2. Guarantors API
+
+Guarantors are associated with a loan application.
+
+A customer can provide guarantor information before the application is submitted.
+
+## 2.1 Add Guarantor
+
+```http
+POST /api/v1/guarantors
+```
+
+**Access:** `CUSTOMER`
+
+### Request
+
+```json
+{
+  "loanApplicationId": "8a72b5c1-23d4-4a1c-91de-123456789abc",
+  "fullName": "John Kamau",
+  "phone": "+254722222222",
+  "nationalId": "12345678",
+  "relationship": "Friend",
+  "address": "Nairobi",
+  "occupation": "Business Owner"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Guarantor added successfully",
+  "data": {
+    "id": "g1234567-89ab-4cde-9012-345678901234",
+    "loanApplicationId": "8a72b5c1-23d4-4a1c-91de-123456789abc",
+    "fullName": "John Kamau",
+    "phone": "+254722222222",
+    "nationalId": "12345678",
+    "relationship": "Friend",
+    "address": "Nairobi",
+    "occupation": "Business Owner",
+    "createdAt": "2026-09-28T10:00:00.000Z"
+  }
+}
+```
+
+---
+
+## 2.2 Get Application Guarantors
+
+```http
+GET /api/v1/guarantors/application/:applicationId
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Guarantors retrieved successfully",
+  "data": [
+    {
+      "id": "g1234567-89ab-4cde-9012-345678901234",
+      "fullName": "John Kamau",
+      "phone": "+254722222222",
+      "relationship": "Friend",
+      "occupation": "Business Owner"
+    }
+  ]
+}
+```
+
+---
+
+## 2.3 Get Guarantor
+
+```http
+GET /api/v1/guarantors/:id
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "g1234567-89ab-4cde-9012-345678901234",
+    "fullName": "John Kamau",
+    "phone": "+254722222222",
+    "relationship": "Friend",
+    "occupation": "Business Owner"
+  }
+}
+```
+
+---
+
+## 2.4 Update Guarantor
+
+```http
+PUT /api/v1/guarantors/:id
+```
+
+### Request
+
+```json
+{
+  "phone": "+254733333333",
+  "occupation": "Trader"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Guarantor updated successfully",
+  "data": {
+    "id": "g1234567-89ab-4cde-9012-345678901234",
+    "phone": "+254733333333",
+    "occupation": "Trader"
+  }
+}
+```
+
+---
+
+## 2.5 Delete Guarantor
+
+```http
+DELETE /api/v1/guarantors/:id
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Guarantor deleted successfully"
+}
+```
+
+---
+
+# 3. Collateral API
+
+Collateral provides security information for a loan application.
+
+Examples include:
+
+```text
+Vehicle
+Land
+Property
+Equipment
+Business assets
+Other assets
+```
+
+## 3.1 Add Collateral
+
+```http
+POST /api/v1/collateral
+```
+
+**Access:** `CUSTOMER`
+
+### Request
+
+```json
+{
+  "loanApplicationId": "8a72b5c1-23d4-4a1c-91de-123456789abc",
+  "type": "VEHICLE",
+  "description": "Toyota Probox 2018",
+  "estimatedValue": 850000,
+  "ownershipDocumentUrl": "https://res.cloudinary.com/example/document.pdf"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Collateral added successfully",
+  "data": {
+    "id": "c1234567-89ab-4cde-9012-345678901234",
+    "loanApplicationId": "8a72b5c1-23d4-4a1c-91de-123456789abc",
+    "type": "VEHICLE",
+    "description": "Toyota Probox 2018",
+    "estimatedValue": 850000,
+    "ownershipDocumentUrl": "https://res.cloudinary.com/example/document.pdf"
+  }
+}
+```
+
+---
+
+## 3.2 Get Application Collateral
+
+```http
+GET /api/v1/collateral/application/:applicationId
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Collateral retrieved successfully",
+  "data": [
+    {
+      "id": "c1234567-89ab-4cde-9012-345678901234",
+      "type": "VEHICLE",
+      "description": "Toyota Probox 2018",
+      "estimatedValue": 850000,
+      "ownershipDocumentUrl": "https://res.cloudinary.com/example/document.pdf"
+    }
+  ]
+}
+```
+
+---
+
+## 3.3 Update Collateral
+
+```http
+PUT /api/v1/collateral/:id
+```
+
+### Request
+
+```json
+{
+  "description": "Toyota Probox 2019",
+  "estimatedValue": 900000
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Collateral updated successfully",
+  "data": {
+    "id": "c1234567-89ab-4cde-9012-345678901234",
+    "estimatedValue": 900000
+  }
+}
+```
+
+---
+
+## 3.4 Delete Collateral
+
+```http
+DELETE /api/v1/collateral/:id
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Collateral deleted successfully"
+}
+```
+
+---
+
+# 4. Documents Management API
+
+This module handles:
+
+* Official loan application form download
+* Customer application-form upload
+* KYC/application documents
+* Document review
+* Document verification
+* Document rejection
+* Re-upload after rejection
+
+## 4.1 Download Official Loan Application Form
+
+```http
+GET /api/v1/documents/application-template
+```
+
+**Access:** Authenticated users.
+
+The endpoint returns:
+
+```text
+KOPAFLEX APPLICATION FORM.docx
+```
+
+The customer flow is:
+
+```text
+Create application
+       ↓
+Download application form
+       ↓
+Fill DOCX
+       ↓
+Upload completed form
+       ↓
+Loan officer reviews
+       ↓
+Verify OR reject
+```
+
+---
+
+## 4.2 Upload Completed Application Form
+
+```http
+POST /api/v1/documents/application/:applicationId/upload
+```
+
+**Content-Type:**
+
+```http
+multipart/form-data
+```
+
+### Form field
+
+```text
+file = KOPAFLEX APPLICATION FORM - Completed.docx
+```
+
+### Example request
+
+```http
+POST /api/v1/documents/application/8a72b5c1-23d4-4a1c-91de-123456789abc/upload
+Authorization: Bearer <access_token>
+Content-Type: multipart/form-data
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Application document uploaded successfully",
+  "data": {
+    "id": "d1234567-89ab-4cde-9012-345678901234",
+    "applicationId": "8a72b5c1-23d4-4a1c-91de-123456789abc",
+    "fileName": "KOPAFLEX APPLICATION FORM - Completed.docx",
+    "fileUrl": "https://res.cloudinary.com/example/raw/upload/loan-platform/application-documents/application-form.docx",
+    "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "fileSize": 245760,
+    "status": "PENDING",
+    "createdAt": "2026-09-28T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+## 4.3 Get Application Documents
+
+```http
+GET /api/v1/documents/application/:applicationId
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Application documents retrieved successfully",
+  "data": [
+    {
+      "id": "d1234567-89ab-4cde-9012-345678901234",
+      "type": "APPLICATION_FORM",
+      "fileName": "KOPAFLEX APPLICATION FORM - Completed.docx",
+      "status": "PENDING",
+      "createdAt": "2026-09-28T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## 4.4 Get Document
+
+```http
+GET /api/v1/documents/:id
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Document retrieved successfully",
+  "data": {
+    "id": "d1234567-89ab-4cde-9012-345678901234",
+    "type": "APPLICATION_FORM",
+    "fileName": "KOPAFLEX APPLICATION FORM - Completed.docx",
+    "fileUrl": "https://res.cloudinary.com/example/raw/upload/document.docx",
+    "status": "PENDING",
+    "createdAt": "2026-09-28T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+## 4.5 Verify Document
+
+```http
+PATCH /api/v1/documents/:id/verify
+```
+
+**Access:**
+
+```text
+ADMIN
+LOAN_OFFICER
+```
+
+### Request
+
+No body required.
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Document verified successfully",
+  "data": {
+    "id": "d1234567-89ab-4cde-9012-345678901234",
+    "status": "VERIFIED",
+    "verifiedAt": "2026-09-28T11:00:00.000Z",
+    "verifiedBy": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344"
+  }
+}
+```
+
+---
+
+## 4.6 Reject Document
+
+```http
+PATCH /api/v1/documents/:id/reject
+```
+
+**Access:**
+
+```text
+ADMIN
+LOAN_OFFICER
+```
+
+### Request
+
+```json
+{
+  "rejectionReason": "The applicant signature section is incomplete."
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Document rejected successfully",
+  "data": {
+    "id": "d1234567-89ab-4cde-9012-345678901234",
+    "status": "REJECTED",
+    "rejectionReason": "The applicant signature section is incomplete.",
+    "verifiedBy": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344"
+  }
+}
+```
+
+The customer can then:
+
+```text
+See rejection reason
+       ↓
+Correct document
+       ↓
+Upload again
+       ↓
+PENDING
+       ↓
+Loan Officer reviews
+```
+
+---
+
+## 4.7 Delete Document
+
+```http
+DELETE /api/v1/documents/:id
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Document deleted successfully"
+}
+```
+
+---
+
+# 5. Security & API Hardening
+
+This module protects the entire API rather than exposing new business functionality.
+
+Your API should implement the following layers:
+
+```text
+Request
+   ↓
+CORS
+   ↓
+Helmet
+   ↓
+Rate Limiting
+   ↓
+Authentication
+   ↓
+Authorization
+   ↓
+Validation
+   ↓
+Business Logic
+   ↓
+Prisma
+   ↓
+PostgreSQL
+```
+
+---
+
+## 5.1 Authentication
+
+Protected endpoints require:
+
+```http
+Authorization: Bearer <JWT>
+```
+
+### Missing token
+
+```json
+{
+  "success": false,
+  "message": "Authentication required"
+}
+```
+
+HTTP:
+
+```text
+401 Unauthorized
+```
+
+### Invalid/expired token
+
+```json
+{
+  "success": false,
+  "message": "Invalid or expired access token"
+}
+```
+
+HTTP:
+
+```text
+401 Unauthorized
+```
+
+---
+
+# 6. Role-Based Authorization
+
+For example:
+
+```http
+PATCH /api/v1/documents/:id/verify
+```
+
+requires:
+
+```text
+ADMIN
+LOAN_OFFICER
+```
+
+If a customer attempts it:
+
+```json
+{
+  "success": false,
+  "message": "You do not have permission to perform this action"
+}
+```
+
+HTTP:
+
+```text
+403 Forbidden
+```
+
+---
+
+# 7. Request Validation
+
+Every request body should be validated using Zod.
+
+For example, loan amount:
+
+```json
+{
+  "requestedAmount": 5000
+}
+```
+
+If the schema requires a positive amount and the request contains:
+
+```json
+{
+  "requestedAmount": -500
+}
+```
+
+the API should return:
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "requestedAmount",
+      "message": "Requested amount must be greater than zero"
+    }
+  ]
+}
+```
+
+HTTP:
+
+```text
+400 Bad Request
+```
+
+---
+
+# 8. Rate Limiting
+
+Rate limiting should particularly protect:
+
+```text
+/auth/login
+/auth/register
+/auth/verify-otp
+/auth/resend-otp
+/auth/forgot-password
+```
+
+For example, excessive OTP requests should return:
+
+```json
+{
+  "success": false,
+  "message": "Too many requests. Please try again later."
+}
+```
+
+HTTP:
+
+```text
+429 Too Many Requests
+```
+
+---
+
+# 9. Security Headers
+
+You already have:
+
+```ts
+app.use(helmet());
+```
+
+This should remain enabled.
+
+It helps add security-related HTTP headers to responses.
+
+---
+
+# 10. CORS
+
+You already have CORS configured.
+
+Production should only allow your actual frontend domains.
+
+For example:
+
+```env
+ALLOWED_ORIGINS=https://yourfrontend.com
+```
+
+Avoid:
+
+```env
+ALLOWED_ORIGINS=*
+```
+
+in production when credentials are involved.
+
+---
+
+# 11. File Upload Security
+
+Your document upload should enforce:
+
+```text
+Maximum file size
+Allowed MIME type
+Allowed extension
+Authenticated user
+Application ownership
+```
+
+For your application form:
+
+```text
+Allowed:
+.docx
+
+Maximum:
+10 MB
+```
+
+A rejected upload should return:
+
+```json
+{
+  "success": false,
+  "message": "Only DOCX files are allowed"
+}
+```
+
+---
+
+# 12. Ownership Checks
+
+This is particularly important for your loan application.
+
+A customer must not be able to do:
+
+```http
+GET /api/v1/documents/application/SOMEONE_ELSES_APPLICATION
+```
+
+just by knowing the UUID.
+
+The backend must verify:
+
+```text
+application.userId === authenticatedUser.userId
+```
+
+Otherwise return:
+
+```json
+{
+  "success": false,
+  "message": "You do not have access to this application"
+}
+```
+
+HTTP:
+
+```text
+403 Forbidden
+```
+
+This same principle should apply to:
+
+* Documents
+* Guarantors
+* Collateral
+* Loan applications
+* Loans
+* Repayment schedules
+* Payments
+
+---
+
+# 13. Sensitive Data Protection
+
+Do not return sensitive information unnecessarily.
+
+For example, a normal user response should not expose:
+
+```text
+passwordHash
+refreshToken
+OTP codes
+OTP hashes
+internal authentication data
+```
+
+An admin response should also only expose information necessary for the administrative task.
+
+---
+
+# 14. Audit Logging
+
+Sensitive operations should create audit records.
+
+Examples:
+
+```text
+USER_CREATED
+USER_UPDATED
+ROLE_CHANGED
+USER_SUSPENDED
+
+KYC_APPROVED
+KYC_REJECTED
+
+DOCUMENT_VERIFIED
+DOCUMENT_REJECTED
+
+LOAN_APPROVED
+LOAN_REJECTED
+LOAN_DISBURSED
+
+PAYMENT_CREATED
+PAYMENT_COMPLETED
+```
+
+Example audit record:
+
+```json
+{
+  "action": "APPROVE",
+  "userId": "7b9f3d20-8c51-4e91-8f1d-5e0e1a2b3344",
+  "entity": "DOCUMENT",
+  "entityId": "d1234567-89ab-4cde-9012-345678901234",
+  "ipAddress": "192.168.1.20",
+  "userAgent": "Mozilla/5.0",
+  "createdAt": "2026-09-28T11:00:00.000Z"
+}
+```
+
+---
+
+# 15. Standard Error Format
+
+All APIs should follow a consistent structure.
+
+### Success
+
+```json
+{
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": {}
+}
+```
+
+### Validation error
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": []
+}
+```
+
+### Authentication error
+
+```json
+{
+  "success": false,
+  "message": "Authentication required"
+}
+```
+
+### Authorization error
+
+```json
+{
+  "success": false,
+  "message": "You do not have permission to perform this action"
+}
+```
+
+### Not found
+
+```json
+{
+  "success": false,
+  "message": "Resource not found"
+}
+```
+
+### Server error
+
+```json
+{
+  "success": false,
+  "message": "Internal server error"
+}
+```
+
+---
+
+# 16. Final API Map
+
+With these modules added, your backend API is roughly:
+
+```text
+/api/v1
+│
+├── /auth
+│   ├── register
+│   ├── login
+│   ├── verify-otp
+│   └── refresh
+│
+├── /users
+│
+├── /system-config
+│
+├── /loan-products
+│
+├── /kyc
+│
+├── /admin/kyc
+│
+├── /loan-applications
+│
+├── /admin/loan-applications
+│
+├── /loans
+│
+├── /repayment-schedules
+│
+├── /payments
+│
+├── /loan-transactions
+│
+├── /loan-status
+│
+├── /notifications
+│
+├── /documents
+│
+├── /guarantors
+│
+├── /collateral
+│
+├── /audit-logs
+│
+├── /reports
+│
+└── /admin/dashboard
+```
+
+### Customer journey
+
+```text
+Register
+   ↓
+Verify OTP
+   ↓
+Login
+   ↓
+Complete KYC
+   ↓
+Create Loan Application
+   ↓
+Download KOPAFLEX Application Form
+   ↓
+Fill Form
+   ↓
+Upload Application Form
+   ↓
+Add Guarantor / Collateral if required
+   ↓
+Submit Application
+   ↓
+Loan Officer Review
+   ↓
+Document/KYC Verification
+   ↓
+Loan Approval
+   ↓
+Disbursement
+   ↓
+Repayment Schedule
+   ↓
+Repay Loan
+   ↓
+Loan Fully Paid
+```
+
+### Staff journey
+
+```text
+Admin/Loan Officer Login
+        ↓
+Dashboard
+        ↓
+Review KYC
+        ↓
+Review Application
+        ↓
+Review Documents
+        ↓
+Verify / Reject
+        ↓
+Review Guarantors / Collateral
+        ↓
+Approve / Reject Application
+        ↓
+Disbursement
+        ↓
+Monitor Repayment
+        ↓
+Handle Overdue Loans
+```
+
+This gives you a complete **API-level documentation map** for the remaining modules without changing the modules you've already completed.
