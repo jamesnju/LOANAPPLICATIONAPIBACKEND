@@ -30,10 +30,18 @@ const envSchema = z.object({
     SMS_PROVIDER: z
         .string()
         .default("console"),
+    // ✅ Comma-separated string → string[]
+    ALLOWED_ORIGINS: z
+        .string()
+        .default("https://loanappbackendapis.vercel.app,http://localhost:3000,https://kopaflex.vercel.app")
+        .transform((val) => val
+        .split(",")
+        .map((o) => o.trim().replace(/\/$/, "")) // strip trailing slash
+        .filter(Boolean)),
 });
 const result = envSchema.safeParse(process.env);
 if (!result.success) {
-    console.error("❌ Invalid environment variables:");
+    console.error(" Invalid environment variables:");
     console.error(result.error.flatten().fieldErrors);
     process.exit(1);
 }

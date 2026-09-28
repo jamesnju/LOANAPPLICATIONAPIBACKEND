@@ -19,13 +19,15 @@ export const kycDocumentTypeSchema = z.enum([
     "EMPLOYMENT_LETTER",
     "PAYSLIP",
     "BANK_STATEMENT",
+    "BUSINESS_LICENSE",
+    "KRA_PIN",
     "OTHER",
 ]);
 export const genderSchema = z.enum([
     "MALE",
     "FEMALE",
     "OTHER",
-    "PREFER_NOT_TO_SAY",
+    //"PREFER_NOT_TO_SAY",
 ]);
 export const employmentStatusSchema = z.enum([
     "EMPLOYED",
@@ -33,7 +35,7 @@ export const employmentStatusSchema = z.enum([
     "BUSINESS_OWNER",
     "STUDENT",
     "UNEMPLOYED",
-    "RETIRED",
+    // "RETIRED",
     "OTHER",
 ]);
 /*

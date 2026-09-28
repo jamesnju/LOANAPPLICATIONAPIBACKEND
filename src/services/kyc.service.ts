@@ -181,6 +181,7 @@ export async function addKycDocument(
       fileName: data.fileName,
 
       mimeType: data.mimeType,
+      documentNumber: data.documentNumber ?? null,
 
       fileSize: data.fileSize,
     },

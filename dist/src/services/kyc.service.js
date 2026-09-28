@@ -136,6 +136,7 @@ export async function addKycDocument(userId, data) {
             fileUrl: data.fileUrl,
             fileName: data.fileName,
             mimeType: data.mimeType,
+            documentNumber: data.documentNumber ?? null,
             fileSize: data.fileSize,
         },
     });

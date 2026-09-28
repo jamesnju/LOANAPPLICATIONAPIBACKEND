@@ -15,6 +15,17 @@ import adminKycRoutes from './routes/adminKyc.routes.js';
 import adminLoanApplicationRoutes from './routes/adminLoanApplication.routes.js';
 import kycRoutes from './routes/kyc.routes.js';
 import loanApplicationRoutes from './routes/loanApplication.routes.js';
+import loanRoutes from './routes/loan.routes.js';
+import loanApplicationApprovalRoutes from './routes/loanApplicationApproval.routes.js';
+import repaymentScheduleRoutes from './routes/repaymentSchedule.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
+import loanTransactionRoutes from './routes/loanTransaction.routes.js';
+import loanStatusRoutes from './routes/loanStatus.routes.js';
+import { startLoanJobs } from './jobs/loan.jobs.js';
+import adminDashboardRoutes from './routes/adminDashboard.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
+import reportRoutes from './routes/report.routes.js';
+import auditLogRoutes from './routes/auditLog.routes.js';
 
 // ✅ Explicitly type the app
 const app: Express = express();
@@ -87,6 +98,38 @@ app.use(`${apiPrefix}/kyc`, kycRoutes);
 app.use(`${apiPrefix}/admin/kyc`, adminKycRoutes);
 app.use(`${apiPrefix}/loan-applications`, loanApplicationRoutes);
 app.use(`${apiPrefix}/admin/loan-applications`, adminLoanApplicationRoutes);
+app.use(`${apiPrefix}/loan-applications`, loanApplicationApprovalRoutes);
+app.use(`${apiPrefix}/loans`, loanRoutes);
+app.use(`${apiPrefix}/repayment-schedules`, repaymentScheduleRoutes);
+
+app.use(`${apiPrefix}/payments`, paymentRoutes);
+app.use(`${apiPrefix}/loan-transactions`, loanTransactionRoutes);
+app.use(`${apiPrefix}/loan-status`, loanStatusRoutes);
+
+app.use(`${apiPrefix}/notifications`, notificationRoutes);
+app.use(`${apiPrefix}/audit-logs`, auditLogRoutes);
+app.use(`${apiPrefix}/admin/dashboard`, adminDashboardRoutes);
+app.use(`${apiPrefix}/reports`, reportRoutes);
+
+
+
+
+/*
+ * YOUR EXISTING SYSTEM CONFIG ROUTE
+ */
+app.use(
+  "/api/v1/system-config",
+  systemConfigRoutes,
+);
+
+
+
+
+
+
+
+
+
 
 // 404 handler
 app.use((_req, res) => {
@@ -138,8 +181,13 @@ if (env.NODE_ENV !== 'production') {
     }
   };
 
+  startLoanJobs();
   startServer();
+
 }
+
+
+
 // import express from "express";
 // import cors from "cors";
 // import helmet from "helmet";

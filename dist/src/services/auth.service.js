@@ -1,6 +1,6 @@
 import { prisma } from "../config/database.js";
-import { Role, VerificationChannel, } from "../generated/prisma/client.js";
-import { hashPassword, comparePassword, } from "../utils/password.js";
+import { Role, VerificationChannel } from "../generated/prisma/client.js";
+import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateAccessToken, generateRefreshToken, hashRefreshToken, } from "../utils/jwt.js";
 import { createAndSendVerificationOtp, verifyAccountOtp, } from "./otp.service.js";
 import { env } from "../config/env.js";
@@ -111,14 +111,10 @@ export async function resendVerificationOtp(userId, channel) {
      * verified through requested
      * channel.
      */
-    if (channel ===
-        VerificationChannel.EMAIL &&
-        user.emailVerified) {
+    if (channel === VerificationChannel.EMAIL && user.emailVerified) {
         throw new Error("Email is already verified");
     }
-    if (channel ===
-        VerificationChannel.SMS &&
-        user.phoneVerified) {
+    if (channel === VerificationChannel.SMS && user.phoneVerified) {
         throw new Error("Phone number is already verified");
     }
     await createAndSendVerificationOtp(userId, channel);
@@ -132,6 +128,11 @@ export async function resendVerificationOtp(userId, channel) {
 export async function loginUser(identifier, password) {
     /*
      * Find by email OR phone.
+     *
+     * Also load the user's KYC record
+     * so the login response can tell
+     * the frontend whether KYC has
+     * been completed.
      */
     const user = await prisma.user.findFirst({
         where: {
@@ -143,6 +144,9 @@ export async function loginUser(identifier, password) {
                     phone: identifier,
                 },
             ],
+        },
+        include: {
+            kyc: true,
         },
     });
     if (!user) {
@@ -170,6 +174,18 @@ export async function loginUser(identifier, password) {
         throw new Error("Account is not active");
     }
     /*
+     * Determine KYC status.
+     *
+     * If the user has never started
+     * KYC, there will be no Kyc record.
+     */
+    const kycStatus = user.kyc?.status ?? "NOT_STARTED";
+    /*
+     * KYC is considered completed
+     * only after it has been approved.
+     */
+    const kycCompleted = kycStatus === "APPROVED";
+    /*
      * Update last login.
      */
     await prisma.user.update({
@@ -181,14 +197,14 @@ export async function loginUser(identifier, password) {
         },
     });
     /*
-     * Access token.
+     * Generate access token.
      */
     const accessToken = generateAccessToken({
         userId: user.id,
         role: user.role,
     });
     /*
-     * Refresh token.
+     * Generate refresh token.
      */
     const refreshToken = generateRefreshToken();
     /*
@@ -199,9 +215,6 @@ export async function loginUser(identifier, password) {
     /*
      * Calculate refresh
      * token expiration.
-     *
-     * Uses configured
-     * REFRESH_TOKEN_EXPIRES_IN.
      */
     const refreshTokenExpiresAt = calculateExpiration(env.REFRESH_TOKEN_EXPIRES_IN);
     /*
@@ -231,6 +244,11 @@ export async function loginUser(identifier, password) {
             status: user.status,
             emailVerified: user.emailVerified,
             phoneVerified: user.phoneVerified,
+            /*
+             * KYC information.
+             */
+            kycStatus,
+            kycCompleted,
         },
     };
 }
@@ -265,15 +283,13 @@ export async function refreshAccessToken(refreshToken) {
     /*
      * Check expiration.
      */
-    if (storedToken.expiresAt <
-        new Date()) {
+    if (storedToken.expiresAt < new Date()) {
         throw new Error("Refresh token has expired");
     }
     /*
      * Check user account.
      */
-    if (storedToken.user.status !==
-        "ACTIVE") {
+    if (storedToken.user.status !== "ACTIVE") {
         throw new Error("Account is not active");
     }
     /*
@@ -324,32 +340,18 @@ function calculateExpiration(value) {
     let milliseconds = 0;
     switch (unit) {
         case "s":
-            milliseconds =
-                amount * 1000;
+            milliseconds = amount * 1000;
             break;
         case "m":
-            milliseconds =
-                amount *
-                    60 *
-                    1000;
+            milliseconds = amount * 60 * 1000;
             break;
         case "h":
-            milliseconds =
-                amount *
-                    60 *
-                    60 *
-                    1000;
+            milliseconds = amount * 60 * 60 * 1000;
             break;
         case "d":
-            milliseconds =
-                amount *
-                    24 *
-                    60 *
-                    60 *
-                    1000;
+            milliseconds = amount * 24 * 60 * 60 * 1000;
             break;
     }
-    return new Date(Date.now() +
-        milliseconds);
+    return new Date(Date.now() + milliseconds);
 }
 //# sourceMappingURL=auth.service.js.map
