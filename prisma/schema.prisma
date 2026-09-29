@@ -218,9 +218,10 @@ model User {
   lastName  String
 
   email        String @unique
-  phone        String @unique
-  passwordHash String
-
+  phone        String? @unique
+  passwordHash String?
+  googleId    String? @unique
+  avatarUrl   String?
   nationalId  String?   @unique
   dateOfBirth DateTime?
   gender      Gender?

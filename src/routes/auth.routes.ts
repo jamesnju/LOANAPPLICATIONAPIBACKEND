@@ -7,12 +7,14 @@ import {
   login,
   refreshToken,
   logout,
+  googleLogin,
 } from "../controllers/auth.controller.js";
 
 
 const router =
   Router();
 
+router.post("/google", googleLogin);
 
 /*
  * POST /api/v1/auth/register

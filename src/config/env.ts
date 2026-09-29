@@ -52,6 +52,18 @@ const envSchema = z.object({
 
   CLOUDINARYAPISECRET: z.string().min(1),
 
+  // ✅ Google OAuth
+  GOOGLECLIENTID: z.string().min(1),
+
+  GOOGLECLIENTSECRET: z.string().min(1),
+
+  GOOGLECALLBACKURL: z
+    .string()
+    .url()
+    .default(
+      "http://localhost:3000/api/auth/callback/google"
+    ),
+
   // ✅ Comma-separated string → string[]
   ALLOWED_ORIGINS: z
     .string()
@@ -72,7 +84,7 @@ const result = envSchema.safeParse(
 
 if (!result.success) {
   console.error(
-    " Invalid environment variables:"
+    "❌ Invalid environment variables:"
   );
 
   console.error(
