@@ -33,6 +33,13 @@ const envSchema = z.object({
     CLOUDINARYCLOUDNAME: z.string().min(1),
     CLOUDINARYAPIKEY: z.string().min(1),
     CLOUDINARYAPISECRET: z.string().min(1),
+    // ✅ Google OAuth
+    GOOGLECLIENTID: z.string().min(1),
+    GOOGLECLIENTSECRET: z.string().min(1),
+    GOOGLECALLBACKURL: z
+        .string()
+        .url()
+        .default("http://localhost:3000/api/auth/callback/google"),
     // ✅ Comma-separated string → string[]
     ALLOWED_ORIGINS: z
         .string()
@@ -44,7 +51,7 @@ const envSchema = z.object({
 });
 const result = envSchema.safeParse(process.env);
 if (!result.success) {
-    console.error(" Invalid environment variables:");
+    console.error("❌ Invalid environment variables:");
     console.error(result.error.flatten().fieldErrors);
     process.exit(1);
 }

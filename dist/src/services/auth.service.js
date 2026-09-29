@@ -1,9 +1,123 @@
 import { prisma } from "../config/database.js";
 import { Role, VerificationChannel } from "../generated/prisma/client.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
+import { OAuth2Client } from "google-auth-library";
 import { generateAccessToken, generateRefreshToken, hashRefreshToken, } from "../utils/jwt.js";
 import { createAndSendVerificationOtp, verifyAccountOtp, } from "./otp.service.js";
 import { env } from "../config/env.js";
+const googleClient = new OAuth2Client(env.GOOGLECLIENTID);
+/**
+ * LOGIN / SIGNUP VIA GOOGLE
+ *
+ * Frontend sends the Google ID token. We verify it,
+ * then either:
+ *   1. Find the existing user by googleId or email and log them in
+ *   2. Create a new CUSTOMER account (email pre-verified)
+ */
+export async function googleLoginUser(input) {
+    const ticket = await googleClient.verifyIdToken({
+        idToken: input.idToken,
+        audience: env.GOOGLECLIENTID,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.email) {
+        throw new Error("Invalid Google token");
+    }
+    const { email, given_name, family_name, picture, sub: googleId, email_verified, } = payload;
+    /*
+     * Find by googleId first, then by email.
+     */
+    let user = await prisma.user.findFirst({
+        where: {
+            OR: [{ googleId }, { email }],
+        },
+        include: { kyc: true },
+    });
+    /*
+     * Create the user if new.
+     */
+    if (!user) {
+        user = await prisma.user.create({
+            data: {
+                firstName: given_name ?? "Customer",
+                lastName: family_name ?? "",
+                email,
+                passwordHash: null,
+                googleId,
+                avatarUrl: picture ?? null,
+                role: Role.CUSTOMER,
+                status: "ACTIVE",
+                emailVerified: email_verified ?? true,
+                phoneVerified: false,
+            },
+            include: { kyc: true },
+        });
+    }
+    else if (!user.googleId) {
+        /*
+         * Existing email/password user signing in with Google for the first time.
+         * Link the google account.
+         */
+        user = await prisma.user.update({
+            where: { id: user.id },
+            data: { googleId, avatarUrl: picture ?? user.avatarUrl },
+            include: { kyc: true },
+        });
+    }
+    /*
+     * Guard: status must be ACTIVE.
+     */
+    if (user.status !== "ACTIVE") {
+        throw new Error("Account is not active");
+    }
+    /*
+     * KYC state.
+     */
+    const kycStatus = user.kyc?.status ?? "NOT_STARTED";
+    const kycCompleted = kycStatus === "APPROVED";
+    /*
+     * Update last login.
+     */
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+    });
+    /*
+     * Issue tokens (same as password login).
+     */
+    const accessToken = generateAccessToken({
+        userId: user.id,
+        role: user.role,
+    });
+    const refreshToken = generateRefreshToken();
+    const tokenHash = hashRefreshToken(refreshToken);
+    const refreshTokenExpiresAt = calculateExpiration(env.REFRESH_TOKEN_EXPIRES_IN);
+    await prisma.refreshToken.create({
+        data: {
+            userId: user.id,
+            tokenHash,
+            expiresAt: refreshTokenExpiresAt,
+        },
+    });
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            status: user.status,
+            emailVerified: user.emailVerified,
+            phoneVerified: user.phoneVerified,
+            avatarUrl: user.avatarUrl,
+            kycStatus,
+            kycCompleted,
+        },
+    };
+}
 /**
  * REGISTER
  */

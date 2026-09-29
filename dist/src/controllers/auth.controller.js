@@ -1,5 +1,22 @@
-import { registerUser, verifyUserAccount, loginUser, refreshAccessToken, logoutUser, resendVerificationOtp, } from "../services/auth.service.js";
-import { registerSchema, verifyAccountSchema, loginSchema, refreshTokenSchema, logoutSchema, resendOtpSchema, } from "../schemas/auth.schema.js";
+import { registerUser, verifyUserAccount, loginUser, refreshAccessToken, logoutUser, resendVerificationOtp, googleLoginUser, } from "../services/auth.service.js";
+import { registerSchema, verifyAccountSchema, loginSchema, refreshTokenSchema, logoutSchema, resendOtpSchema, googleLoginSchema, } from "../schemas/auth.schema.js";
+export async function googleLogin(req, res) {
+    try {
+        const input = googleLoginSchema.parse(req.body);
+        const result = await googleLoginUser(input);
+        return res.status(200).json({
+            success: true,
+            message: "Login successful.",
+            data: result,
+        });
+    }
+    catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Google login failed",
+        });
+    }
+}
 /**
  * REGISTER
  */

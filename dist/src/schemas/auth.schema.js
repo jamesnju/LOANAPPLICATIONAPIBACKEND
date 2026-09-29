@@ -66,4 +66,7 @@ export const resendOtpSchema = z.object({
         "SMS",
     ]),
 });
+export const googleLoginSchema = z.object({
+    idToken: z.string().min(1, "Google ID token is required"),
+});
 //# sourceMappingURL=auth.schema.js.map

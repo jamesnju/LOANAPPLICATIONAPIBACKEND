@@ -125,7 +125,7 @@ export async function createAndSendVerificationOtp(
   } else {
 
     await sendVerificationSms(
-      user.phone,
+      user.phone!,
       otp
     );
   }
