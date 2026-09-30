@@ -3,10 +3,10 @@ import { createLoanApplicationSchema, loanApplicationQuerySchema, cancelLoanAppl
 import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication } from "../services/loanApplication.service.js";
 function getUserId(req) {
     const user = req.user;
-    if (!user?.id) {
+    if (!user?.userId) { // ✅ read userId
         throw new Error("Unauthorized");
     }
-    return user.id;
+    return user.userId; // ✅ return userId
 }
 /*
  * POST /api/v1/loan-applications

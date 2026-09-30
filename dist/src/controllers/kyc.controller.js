@@ -2,10 +2,10 @@ import { createKycSchema, idParamSchema, updateKycSchema, createKycDocumentSchem
 import { createKyc, getMyKyc, getKycById, updateKyc, addKycDocument, deleteKycDocument } from "../services/kyc.service.js";
 function getUserId(req) {
     const user = req.user;
-    if (!user?.id) {
+    if (!user?.userId) { // ✅ read userId
         throw new Error("Unauthorized");
     }
-    return user.id;
+    return user.userId; // ✅ return userId
 }
 /*
  * POST /api/v1/kyc

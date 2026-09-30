@@ -11,13 +11,12 @@ import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanAppl
 function getUserId(req: Request): string {
   const user = (req as any).user;
 
-  if (!user?.id) {
+  if (!user?.userId) {           // ✅ read userId
     throw new Error("Unauthorized");
   }
 
-  return user.id;
+  return user.userId;            // ✅ return userId
 }
-
 
 /*
  * POST /api/v1/loan-applications
