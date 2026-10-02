@@ -2,10 +2,10 @@ import { adminKycQuerySchema, idParamSchema, reviewKycSchema } from "../schemas/
 import { getKycList, getAdminKycById, reviewKyc } from "../services/kyc.service.js";
 function getUserId(req) {
     const user = req.user;
-    if (!user?.id) {
+    if (!user?.userId) { // ✅ read userId
         throw new Error("Unauthorized");
     }
-    return user.id;
+    return user.userId;
 }
 /*
  * GET /api/v1/admin/kyc

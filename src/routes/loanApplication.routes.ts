@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController } from "../controllers/loanApplication.controller.js";
+import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController, submitLoanApplicationController } from "../controllers/loanApplication.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 
 
@@ -27,6 +27,10 @@ router.get(
 router.patch(
   "/:id/cancel",
   cancelLoanApplicationController,
+);
+router.patch(
+  "/:id/submit",
+  submitLoanApplicationController,
 );
 
 export default router;

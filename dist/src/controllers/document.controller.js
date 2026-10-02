@@ -1,20 +1,33 @@
-import { getApplicationTemplate, verifyApplicationOwnership, createApplicationDocument, getApplicationDocuments, getDocumentById as getDocument, verifyDocument as verifyDocumentService, rejectDocument as rejectDocumentService, deleteDocument as deleteDocumentService, } from "../services/document.service.js";
-import { uploadDocument, } from "../services/cloudinary.service.js";
-import { rejectDocumentSchema, } from "../schemas/document.schema.js";
+import { getApplicationTemplate, verifyApplicationOwnership, verifyGuarantorOwnership, verifyCollateralOwnership, createApplicationDocument, createScopedDocument, getApplicationDocuments, getDocumentById as getDocument, verifyDocument as verifyDocumentService, rejectDocument as rejectDocumentService, deleteDocument as deleteDocumentService, } from "../services/document.service.js";
+import { uploadDocument } from "../services/cloudinary.service.js";
+import { uploadDocumentSchema, rejectDocumentSchema, } from "../schemas/document.schema.js";
+/*
+ * ============================================================
+ * HELPERS
+ * ============================================================
+ */
 function getParam(value) {
-    if (!value) {
+    if (!value)
         return null;
-    }
-    if (Array.isArray(value)) {
+    if (Array.isArray(value))
         return value[0] ?? null;
-    }
     return value;
 }
+const STAFF_ROLES = [
+    "SUPER_ADMIN",
+    "ADMIN",
+    "LOAN_OFFICER",
+    "SUPPORT",
+];
+function isStaffRole(role) {
+    return !!role && STAFF_ROLES.includes(role);
+}
 /*
- * GET
+ * ============================================================
+ * GET /documents/application-template
  *
- * Download the official KOPAFLEX
- * application form.
+ * Download the official KOPAFLEX application form.
+ * ============================================================
  */
 export async function downloadApplicationTemplate(_req, res) {
     try {
@@ -35,54 +48,40 @@ export async function downloadApplicationTemplate(_req, res) {
     }
 }
 /*
- * POST
+ * ============================================================
+ * POST /documents/application/:applicationId/upload
  *
- * Upload completed application form.
- *
- * multipart/form-data
- *
- * field name:
- * file
+ * Upload the completed KOPAFLEX form against an application.
+ * Type is forced to APPLICATION_FORM.
+ * ============================================================
  */
 export async function uploadApplicationDocument(req, res) {
     try {
         const applicationId = getParam(req.params.applicationId);
         if (!applicationId) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid application ID",
             });
-            return;
         }
-        /*
-         * Multer puts the uploaded file
-         * into req.file.
-         */
         if (!req.file) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Please upload the completed application form.",
             });
-            return;
         }
-        /*
-         * Verify application ownership.
-         */
+        // Ownership check.
         await verifyApplicationOwnership(applicationId, req.user.userId);
-        /*
-         * Upload DOCX to Cloudinary.
-         */
+        // Upload to Cloudinary.
         const uploaded = await uploadDocument(req.file.buffer, req.file.originalname);
-        /*
-         * Save document record in PostgreSQL.
-         */
+        // Save document record.
         const document = await createApplicationDocument(req.user.userId, applicationId, {
             fileName: req.file.originalname,
             fileUrl: uploaded.secure_url,
             fileSize: req.file.size,
             mimeType: req.file.mimetype,
         });
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Loan application document uploaded successfully.",
             data: document,
@@ -90,7 +89,7 @@ export async function uploadApplicationDocument(req, res) {
     }
     catch (error) {
         console.error("Application document upload error:", error);
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error instanceof Error
                 ? error.message
@@ -99,33 +98,104 @@ export async function uploadApplicationDocument(req, res) {
     }
 }
 /*
- * Get documents belonging to an application.
+ * ============================================================
+ * POST /documents
+ *
+ * Generic upload — used for:
+ *   - guarantor documents (type: GUARANTOR_ID, ...)
+ *   - collateral documents (type: COLLATERAL_OWNERSHIP, ...)
+ *   - additional application documents (type: PROOF_OF_ADDRESS, ...)
+ *
+ * Body fields (multipart/form-data):
+ *   - type           (required, DocumentType enum)
+ *   - applicationId  (optional)
+ *   - guarantorId    (optional)
+ *   - collateralId   (optional)
+ *   - file           (required, the actual file)
+ *
+ * At least ONE of applicationId / guarantorId / collateralId must be present.
+ * ============================================================
+ */
+export async function uploadScopedDocument(req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "No file uploaded.",
+            });
+        }
+        // Validate body. Multer puts text fields into req.body.
+        const parsed = uploadDocumentSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({
+                success: false,
+                message: parsed.error.issues[0]?.message ?? "Invalid request body",
+            });
+        }
+        const { type, applicationId, guarantorId, collateralId } = parsed.data;
+        if (!applicationId && !guarantorId && !collateralId) {
+            return res.status(400).json({
+                success: false,
+                message: "Provide at least one of: applicationId, guarantorId, collateralId.",
+            });
+        }
+        const userId = req.user.userId;
+        // Ownership checks for whichever scopes were provided.
+        if (applicationId) {
+            await verifyApplicationOwnership(applicationId, userId);
+        }
+        if (guarantorId) {
+            await verifyGuarantorOwnership(guarantorId, userId);
+        }
+        if (collateralId) {
+            await verifyCollateralOwnership(collateralId, userId);
+        }
+        // Upload to Cloudinary.
+        const uploaded = await uploadDocument(req.file.buffer, req.file.originalname);
+        // Save document record.
+        const document = await createScopedDocument(userId, {
+            type: type,
+            applicationId: applicationId ?? null,
+            guarantorId: guarantorId ?? null,
+            collateralId: collateralId ?? null,
+            fileName: req.file.originalname,
+            fileUrl: uploaded.secure_url,
+            fileSize: req.file.size,
+            mimeType: req.file.mimetype,
+        });
+        return res.status(201).json({
+            success: true,
+            message: "Document uploaded successfully.",
+            data: document,
+        });
+    }
+    catch (error) {
+        console.error("Scoped document upload error:", error);
+        return res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to upload document",
+        });
+    }
+}
+/*
+ * ============================================================
+ * GET /documents/application/:applicationId
+ * ============================================================
  */
 export async function getApplicationDocumentsController(req, res) {
     try {
         const applicationId = getParam(req.params.applicationId);
         if (!applicationId) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid application ID",
             });
-            return;
         }
-        const staffRoles = [
-            "SUPER_ADMIN",
-            "ADMIN",
-            "LOAN_OFFICER",
-            "SUPPORT",
-        ];
-        const isStaff = staffRoles.includes(req.user.role);
-        const documents = await getApplicationDocuments(applicationId, req.user.userId, isStaff);
-        res.status(200).json({
-            success: true,
-            data: documents,
-        });
+        const documents = await getApplicationDocuments(applicationId, req.user.userId, isStaffRole(req.user.role));
+        return res.status(200).json({ success: true, data: documents });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error instanceof Error
                 ? error.message
@@ -134,124 +204,110 @@ export async function getApplicationDocumentsController(req, res) {
     }
 }
 /*
- * Get one document.
+ * ============================================================
+ * GET /documents/:id
+ * ============================================================
  */
 export async function getDocumentById(req, res) {
     try {
         const id = getParam(req.params.id);
         if (!id) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid document ID",
             });
-            return;
         }
-        const staffRoles = [
-            "SUPER_ADMIN",
-            "ADMIN",
-            "LOAN_OFFICER",
-            "SUPPORT",
-        ];
-        const isStaff = staffRoles.includes(req.user.role);
-        const document = await getDocument(id, req.user.userId, isStaff);
-        res.status(200).json({
-            success: true,
-            data: document,
-        });
+        const document = await getDocument(id, req.user.userId, isStaffRole(req.user.role));
+        return res.status(200).json({ success: true, data: document });
     }
     catch (error) {
-        res.status(404).json({
+        return res.status(404).json({
             success: false,
-            message: error instanceof Error
-                ? error.message
-                : "Document not found",
+            message: error instanceof Error ? error.message : "Document not found",
         });
     }
 }
 /*
- * Verify document.
+ * ============================================================
+ * PATCH /documents/:id/verify
+ * ============================================================
  */
 export async function verifyDocument(req, res) {
     try {
         const id = getParam(req.params.id);
         if (!id) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid document ID",
             });
-            return;
         }
         const document = await verifyDocumentService(id, req.user.userId);
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Application document verified successfully.",
             data: document,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
-            message: error instanceof Error
-                ? error.message
-                : "Failed to verify document",
+            message: error instanceof Error ? error.message : "Failed to verify document",
         });
     }
 }
 /*
- * Reject document.
+ * ============================================================
+ * PATCH /documents/:id/reject
+ * ============================================================
  */
 export async function rejectDocument(req, res) {
     try {
         const id = getParam(req.params.id);
         if (!id) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid document ID",
             });
-            return;
         }
-        const { rejectionReason, } = rejectDocumentSchema.parse(req.body);
+        const { rejectionReason } = rejectDocumentSchema.parse(req.body);
         const document = await rejectDocumentService(id, req.user.userId, rejectionReason);
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Application document rejected.",
             data: document,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
-            message: error instanceof Error
-                ? error.message
-                : "Failed to reject document",
+            message: error instanceof Error ? error.message : "Failed to reject document",
         });
     }
 }
 /*
- * Delete document.
+ * ============================================================
+ * DELETE /documents/:id
+ * ============================================================
  */
 export async function deleteDocument(req, res) {
     try {
         const id = getParam(req.params.id);
         if (!id) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Invalid document ID",
             });
-            return;
         }
         await deleteDocumentService(id, req.user.userId);
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Document deleted successfully.",
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
-            message: error instanceof Error
-                ? error.message
-                : "Failed to delete document",
+            message: error instanceof Error ? error.message : "Failed to delete document",
         });
     }
 }

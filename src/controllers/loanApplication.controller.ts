@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { idParamSchema } from "../schemas/kyc.schema.js";
 import { createLoanApplicationSchema, loanApplicationQuerySchema, cancelLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
-import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication } from "../services/loanApplication.service.js";
+import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication } from "../services/loanApplication.service.js";
 
 
 
@@ -11,11 +11,11 @@ import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanAppl
 function getUserId(req: Request): string {
   const user = (req as any).user;
 
-  if (!user?.userId) {           // ✅ read userId
+  if (!user?.userId) {          
     throw new Error("Unauthorized");
   }
 
-  return user.userId;            // ✅ return userId
+  return user.userId;            
 }
 
 /*
@@ -163,6 +163,29 @@ export async function cancelLoanApplicationController(
       success: true,
       data: application,
     });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+
+/*
+ * PATCH /api/v1/loan-applications/:id/submit
+ */
+export async function submitLoanApplicationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const customerId = getUserId(req);
+    const { id } = idParamSchema.parse(req.params);
+
+    const application = await submitLoanApplication(customerId, id);
+
+    return res.json({ success: true, data: application });
   } catch (error: any) {
     return res.status(400).json({
       success: false,

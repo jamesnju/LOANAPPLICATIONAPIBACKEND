@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { DocumentType } from "../generated/prisma/enums.js";
 
 import { prisma } from "../config/prisma.js";
 
@@ -39,32 +40,130 @@ export function getApplicationTemplate() {
  * Verify that the loan application exists
  * and belongs to the currently logged-in user.
  */
+// src/services/document.service.ts
+
+
+/*
+ * ============================================================
+ * OWNERSHIP CHECKS
+ * ============================================================
+ */
+
 export async function verifyApplicationOwnership(
   applicationId: string,
   userId: string,
 ) {
-  const application =
-    await prisma.loanApplication.findFirst({
-      where: {
-        id: applicationId,
-        userId,
-      },
+  const app = await prisma.loanApplication.findFirst({
+    where: { id: applicationId, userId },
+    select: { id: true },
+  });
 
-      select: {
-        id: true,
-        userId: true,
-        status: true,
-        loanProductId: true,
-      },
-    });
-
-  if (!application) {
-    throw new Error(
-      "Loan application not found.",
-    );
+  if (!app) {
+    throw new Error("You do not have access to this application");
   }
+}
 
-  return application;
+export async function verifyGuarantorOwnership(
+  guarantorId: string,
+  userId: string,
+) {
+  const g = await prisma.guarantor.findFirst({
+    where: {
+      id: guarantorId,
+      // Guarantor -> LoanApplication -> userId
+      application: { userId },
+    },
+    select: { id: true },
+  });
+
+  if (!g) {
+    throw new Error("You do not have access to this guarantor");
+  }
+}
+
+export async function verifyCollateralOwnership(
+  collateralId: string,
+  userId: string,
+) {
+  const c = await prisma.collateral.findFirst({
+    where: {
+      id: collateralId,
+      application: { userId },
+    },
+    select: { id: true },
+  });
+
+  if (!c) {
+    throw new Error("You do not have access to this collateral");
+  }
+}
+
+/*
+ * ============================================================
+ * CREATE HELPERS
+ * ============================================================
+ */
+
+/**
+ * Application-form specific (used by uploadApplicationDocument).
+ * Type is forced to APPLICATION_FORM.
+ */
+export async function createApplicationDocument(
+  userId: string,
+  applicationId: string,
+  data: {
+    fileName: string;
+    fileUrl: string;
+    fileSize?: number | null;
+    mimeType?: string | null;
+  },
+) {
+  return prisma.document.create({
+    data: {
+      userId,
+      applicationId,
+      type: "APPLICATION_FORM" as DocumentType,
+      fileName: data.fileName,
+      fileUrl: data.fileUrl,
+      fileSize: data.fileSize ?? null,
+      mimeType: data.mimeType ?? null,
+      status: "PENDING",
+    },
+  });
+}
+
+/**
+ * Generic scoped upload (guarantor / collateral / extra application docs).
+ * Exactly one (or more) of applicationId / guarantorId / collateralId
+ * should be provided — the controller enforces this.
+ */
+export async function createScopedDocument(
+  userId: string,
+  data: {
+    type: DocumentType;
+    applicationId?: string | null;
+    guarantorId?: string | null;
+    collateralId?: string | null;
+    fileName: string;
+    fileUrl: string;
+    fileSize?: number | null;
+    mimeType?: string | null;
+  },
+) {
+  return prisma.document.create({
+    data: {
+      userId,
+      applicationId: data.applicationId ?? null,
+      guarantorId: data.guarantorId ?? null,
+      collateralId: data.collateralId ?? null,
+      type: data.type,
+      fileName: data.fileName,
+      fileUrl: data.fileUrl,
+      fileSize: data.fileSize ?? null,
+      mimeType: data.mimeType ?? null,
+      status: "PENDING",
+    },
+  });
 }
 
 /*
@@ -78,78 +177,7 @@ export async function verifyApplicationOwnership(
  * Cloudinary/object storage and pass the resulting
  * URL here.
  */
-export async function createApplicationDocument(
-  userId: string,
-  applicationId: string,
-  data: {
-    fileName: string;
-    fileUrl: string;
-    fileSize?: number;
-    mimeType?: string;
-  },
-) {
-  /*
-   * Confirm the application belongs to the user.
-   */
-  await verifyApplicationOwnership(
-    applicationId,
-    userId,
-  );
 
-  /*
-   * Check if there is already an application
-   * form uploaded for this application.
-   */
-  const existing =
-    await prisma.document.findFirst({
-      where: {
-        applicationId,
-
-        /*
-         * If your DocumentType enum uses a
-         * different name, change this value.
-         */
-        type: "APPLICATION_FORM" as any,
-      },
-    });
-
-  /*
-   * If an old document exists, we don't delete it.
-   *
-   * This is useful for audit/history.
-   *
-   * Instead, mark the old document as rejected/
-   * superseded if your schema supports that.
-   *
-   * For now, we simply create a new document.
-   */
-  const document =
-    await prisma.document.create({
-      data: {
-        userId,
-        applicationId,
-
-        type: "APPLICATION_FORM" as any,
-
-        fileName: data.fileName,
-        fileUrl: data.fileUrl,
-
-        fileSize:
-          data.fileSize ?? null,
-
-        mimeType:
-          data.mimeType ?? null,
-
-        status: "PENDING" as any,
-
-        verifiedAt: null,
-        verifiedBy: null,
-        rejectionReason: null,
-      },
-    });
-
-  return document;
-}
 
 /*
  * Get application documents.
@@ -290,11 +318,11 @@ export async function deleteDocument(
     );
   }
 
-  if (document.userId !== userId) {
-    throw new Error(
-      "You do not have permission to delete this document.",
-    );
-  }
+  // if (document.userId !== userId) {
+  //   throw new Error(
+  //     "You do not have permission to delete this document.",
+  //   );
+  // }
 
   return prisma.document.delete({
     where: {
@@ -302,3 +330,6 @@ export async function deleteDocument(
     },
   });
 }
+/*
+ * Confirm the collateral belongs to the user (via its application).
+ */

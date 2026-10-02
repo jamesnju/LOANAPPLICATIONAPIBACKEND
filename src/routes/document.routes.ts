@@ -6,6 +6,7 @@ import { authorize } from "../middleware/role.middleware.js";
 import {
   downloadApplicationTemplate,
   uploadApplicationDocument,
+  uploadScopedDocument,
   getApplicationDocumentsController,
   getDocumentById,
   verifyDocument,
@@ -19,101 +20,79 @@ import {
 
 const router = Router();
 
-/*
- * All document operations require login.
- */
 router.use(authenticate);
 
 /*
  * ============================================================
- * APPLICATION FORM TEMPLATE
+ * TEMPLATE
  * ============================================================
- *
- * Customer downloads the official DOCX.
  */
 router.get(
   "/application-template",
-  authorize(
-    "CUSTOMER",
-    "ADMIN",
-    "LOAN_OFFICER",
-  ),
+  authorize("CUSTOMER", "ADMIN", "LOAN_OFFICER"),
   downloadApplicationTemplate,
 );
 
 /*
  * ============================================================
- * UPLOAD COMPLETED APPLICATION FORM
+ * GENERIC SCOPED UPLOAD
+ * ============================================================
+ */
+router.post(
+  "/",
+  authorize("CUSTOMER", "ADMIN", "LOAN_OFFICER"),
+  applicationDocumentUpload.single("file"),
+  uploadScopedDocument,
+);
+
+/*
+ * ============================================================
+ * APPLICATION-FORM UPLOAD
  * ============================================================
  */
 router.post(
   "/application/:applicationId/upload",
-  authorize(
-    "CUSTOMER",
-  ),
-  applicationDocumentUpload.single(
-    "file",
-  ),
+  authorize("CUSTOMER"),
+  applicationDocumentUpload.single("file"),
   uploadApplicationDocument,
 );
 
 /*
  * ============================================================
- * GET APPLICATION DOCUMENTS
+ * LIST APPLICATION DOCUMENTS
  * ============================================================
  */
 router.get(
   "/application/:applicationId",
-  authorize(
-    "CUSTOMER",
-    "ADMIN",
-    "LOAN_OFFICER",
-    "SUPPORT",
-  ),
+  authorize("CUSTOMER", "ADMIN", "LOAN_OFFICER", "SUPPORT"),
   getApplicationDocumentsController,
 );
 
 /*
  * ============================================================
- * GET ONE DOCUMENT
+ * GET ONE
  * ============================================================
  */
 router.get(
   "/:id",
-  authorize(
-    "CUSTOMER",
-    "ADMIN",
-    "LOAN_OFFICER",
-    "SUPPORT",
-  ),
+  authorize("CUSTOMER", "ADMIN", "LOAN_OFFICER", "SUPPORT"),
   getDocumentById,
 );
 
 /*
  * ============================================================
- * VERIFY
+ * VERIFY / REJECT
  * ============================================================
  */
 router.patch(
   "/:id/verify",
-  authorize(
-    "ADMIN",
-    "LOAN_OFFICER",
-  ),
+  authorize("ADMIN", "LOAN_OFFICER", "SUPER_ADMIN"),
   verifyDocument,
 );
 
-/*
- * ============================================================
- * REJECT
- * ============================================================
- */
 router.patch(
   "/:id/reject",
-  authorize(
-    "ADMIN",
-    "LOAN_OFFICER",
-  ),
+  authorize("ADMIN", "LOAN_OFFICER", "SUPER_ADMIN"),
   rejectDocument,
 );
 
@@ -124,10 +103,7 @@ router.patch(
  */
 router.delete(
   "/:id",
-  authorize(
-    "CUSTOMER",
-    "ADMIN",
-  ),
+  authorize("CUSTOMER", "ADMIN", "SUPER_ADMIN"),
   deleteDocument,
 );
 

@@ -1,27 +1,52 @@
 import { z } from "zod";
 
+export const documentTypeSchema = z.enum([
+  "APPLICATION_FORM",
+  "NATIONAL_ID",
+  "PASSPORT",
+  "DRIVING_LICENSE",
+  "SELFIE",
+  "PROOF_OF_ADDRESS",
+  "EMPLOYMENT_LETTER",
+  "PAYSLIP",
+  "BANK_STATEMENT",
+  "BUSINESS_LICENSE",
+  "KRA_PIN",
+  "GUARANTOR_ID",
+  "GUARANTOR_PAYSLIP",
+  "COLLATERAL_OWNERSHIP",
+  "COLLATERAL_PHOTO",
+  "OTHER",
+]);
+
 /*
- * Document ID.
+ * Generic document upload — used by POST /documents.
+ * At least one of the scope ids must be present (checked in the controller).
  */
-export const documentIdSchema = z.object({
-  id: z.string().uuid("Invalid document ID"),
+export const uploadDocumentSchema = z.object({
+  type: documentTypeSchema,
+  applicationId: z.string().uuid().optional(),
+  guarantorId: z.string().uuid().optional(),
+  collateralId: z.string().uuid().optional(),
 });
 
 /*
- * Application ID.
+ * Application-form upload — used by
+ * POST /documents/application/:applicationId/upload.
+ * The scope comes from the URL, so only metadata is in the body.
  */
-export const applicationIdSchema = z.object({
-  applicationId: z.string().uuid(
-    "Invalid application ID",
-  ),
+export const uploadApplicationFormSchema = z.object({
+  // Reserved for future use (e.g. documentNumber, notes).
 });
 
-/*
- * Rejection request.
- */
 export const rejectDocumentSchema = z.object({
   rejectionReason: z
     .string()
-    .min(3, "Rejection reason is required")
-    .max(1000),
+    .trim()
+    .min(3, "Rejection reason must be at least 3 characters")
+    .max(500, "Rejection reason cannot exceed 500 characters"),
 });
+
+export type UploadDocumentInput = z.infer<typeof uploadDocumentSchema>;
+export type RejectDocumentInput = z.infer<typeof rejectDocumentSchema>;
+export type DocumentTypeValue = z.infer<typeof documentTypeSchema>;

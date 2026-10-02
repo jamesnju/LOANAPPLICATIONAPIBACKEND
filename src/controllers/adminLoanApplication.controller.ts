@@ -1,130 +1,233 @@
-
-import { Request, Response } from "express";
+// src/controllers/adminLoanApplication.controller.ts
+import type { Request, Response } from "express";
+import {
+  adminLoanApplicationQuerySchema,
+  reviewLoanApplicationSchema,
+} from "../schemas/loanApplication.schema.js";
 import { idParamSchema } from "../schemas/kyc.schema.js";
-import { adminLoanApplicationQuerySchema, reviewLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
-import { getAdminLoanApplications, getAdminLoanApplication, reviewLoanApplication } from "../services/loanApplication.service.js";
-
-
-
-
-
+import {
+  getAdminLoanApplications,
+  getAdminLoanApplication,
+  reviewLoanApplication,
+} from "../services/loanApplication.service.js";
 
 function getUserId(req: Request): string {
   const user = (req as any).user;
-
-  if (!user?.id) {
-    throw new Error("Unauthorized");
-  }
-
-  return user.id;
+  const id = user?.userId ?? user?.id;
+  if (!id) throw new Error("Unauthorized");
+  return id;
 }
 
-
-/*
- * GET /api/v1/admin/loan-applications
- */
 export async function getAdminLoanApplicationsController(
   req: Request,
   res: Response,
 ) {
   try {
-    const query =
-      adminLoanApplicationQuerySchema.parse(
-        req.query,
-      );
+    const query = adminLoanApplicationQuerySchema.parse(req.query);
+    const result = await getAdminLoanApplications(query);
 
-    const result =
-      await getAdminLoanApplications(
-        query,
-      );
-
+    // Flatten so the frontend can read body.items / body.pagination
     return res.json({
       success: true,
-      data: result,
+      items: result.items,
+      pagination: result.pagination,
     });
-  } catch (error: any) {
+  } catch (error) {
+    console.error("getAdminLoanApplications error:", error);
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message: error instanceof Error ? error.message : "Failed to list",
     });
   }
 }
 
-
-/*
- * GET /api/v1/admin/loan-applications/:id
- */
 export async function getAdminLoanApplicationController(
   req: Request,
   res: Response,
 ) {
   try {
-    const { id } =
-      idParamSchema.parse(
-        req.params,
-      );
+    const { id } = idParamSchema.parse(req.params);
+    const app = await getAdminLoanApplication(id);
 
-    const application =
-      await getAdminLoanApplication(id);
-
-    if (!application) {
+    if (!app) {
       return res.status(404).json({
         success: false,
-        message:
-          "Loan application not found",
+        message: "Loan application not found",
       });
     }
 
-    return res.json({
-      success: true,
-      data: application,
-    });
-  } catch (error: any) {
+    return res.json({ success: true, data: app });
+  } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message: error instanceof Error ? error.message : "Failed to load",
     });
   }
 }
 
-
-/*
- * PATCH /api/v1/admin/loan-applications/:id/review
- */
 export async function reviewLoanApplicationController(
   req: Request,
   res: Response,
 ) {
   try {
-    const reviewerId =
-      getUserId(req);
+    const reviewerId = getUserId(req);
+    const { id } = idParamSchema.parse(req.params);
+    const data = reviewLoanApplicationSchema.parse(req.body);
 
-    const { id } =
-      idParamSchema.parse(
-        req.params,
-      );
+    const result = await reviewLoanApplication(id, reviewerId, data);
 
-    const data =
-      reviewLoanApplicationSchema.parse(
-        req.body,
-      );
-
-    const result =
-      await reviewLoanApplication(
-        id,
-        reviewerId,
-        data,
-      );
-
-    return res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error: any) {
+    return res.json({ success: true, data: result.application });
+  } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message: error instanceof Error ? error.message : "Review failed",
     });
   }
 }
 
+// import { Request, Response } from "express";
+// import { idParamSchema } from "../schemas/kyc.schema.js";
+// import { adminLoanApplicationQuerySchema, reviewLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
+// import { getAdminLoanApplications, getAdminLoanApplication, reviewLoanApplication } from "../services/loanApplication.service.js";
+
+
+
+
+
+
+// function getUserId(req: Request): string {
+//   const user = (req as any).user;
+
+//   if (!user?.id) {
+//     throw new Error("Unauthorized");
+//   }
+
+//   return user.id;
+// }
+
+
+// /*
+//  * GET /api/v1/admin/loan-applications
+//  */
+// export async function getAdminLoanApplicationsController(
+//   req: Request,
+//   res: Response,
+// ) {
+//   try {
+//     const query =
+//       adminLoanApplicationQuerySchema.parse(
+//         req.query,
+//       );
+
+//     const result =
+//       await getAdminLoanApplications(
+//         query,
+//       );
+
+//     return res.json({
+//       success: true,
+//       data: result,
+//     });
+//   } catch (error: any) {
+//     return res.status(400).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// }
+
+
+// /*
+//  * GET /api/v1/admin/loan-applications/:id
+//  */
+// export async function getAdminLoanApplicationController(
+//   req: Request,
+//   res: Response,
+// ) {
+//   try {
+//     const { id } =
+//       idParamSchema.parse(
+//         req.params,
+//       );
+
+//     const application =
+//       await getAdminLoanApplication(id);
+
+//     if (!application) {
+//       return res.status(404).json({
+//         success: false,
+//         message:
+//           "Loan application not found",
+//       });
+//     }
+
+//     return res.json({
+//       success: true,
+//       data: application,
+//     });
+//   } catch (error: any) {
+//     return res.status(400).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// }
+
+
+// /*
+//  * PATCH /api/v1/admin/loan-applications/:id/review
+//  */
+// // export async function reviewLoanApplicationController(
+// //   req: Request,
+// //   res: Response,
+// // ) {
+// //   try {
+// //     const reviewerId =
+// //       getUserId(req);
+
+// //     const { id } =
+// //       idParamSchema.parse(
+// //         req.params,
+// //       );
+
+// //     const data =
+// //       reviewLoanApplicationSchema.parse(
+// //         req.body,
+// //       );
+
+// //     const result =
+// //       await reviewLoanApplication(
+// //         id,
+// //         reviewerId,
+// //         data,
+// //       );
+
+// //     return res.json({
+// //       success: true,
+// //       data: result,
+// //     });
+// //   } catch (error: any) {
+// //     return res.status(400).json({
+// //       success: false,
+// //       message: error.message,
+// //     });
+// //   }
+// // }
+
+// export async function reviewLoanApplicationController(
+//   req: Request,
+//   res: Response,
+// ) {
+//   try {
+//     const reviewerId = getUserId(req);
+//     const { id } = idParamSchema.parse(req.params);
+//     const data = reviewLoanApplicationSchema.parse(req.body);
+//     const result = await reviewLoanApplication(id, reviewerId, data);
+//     return res.json({ success: true, data: result.application });
+//   } catch (error: any) {
+//     return res.status(400).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// }
