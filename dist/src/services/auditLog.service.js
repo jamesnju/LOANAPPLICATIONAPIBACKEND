@@ -1,4 +1,13 @@
 import { prisma } from "../config/prisma.js";
+export async function logAction(data) {
+    try {
+        return await createAuditLog(data);
+    }
+    catch (err) {
+        console.error("[AUDIT] Failed to write audit log:", err);
+        return null;
+    }
+}
 const STAFF_ROLES = [
     "SUPER_ADMIN",
     "ADMIN",
@@ -122,5 +131,28 @@ export async function getAuditLogById(id, requestingUserId) {
             },
         },
     });
+}
+// append to src/services/auditLog.service.ts
+/*
+ * DELETE AUDIT LOG
+ *
+ * Only SUPER_ADMIN should be able to delete audit records.
+ */
+export async function deleteAuditLog(id, requestingUserId) {
+    const requester = await prisma.user.findUnique({
+        where: { id: requestingUserId },
+        select: { role: true },
+    });
+    if (!requester || requester.role !== "SUPER_ADMIN") {
+        throw new Error("UNAUTHORIZED");
+    }
+    const existing = await prisma.auditLog.findUnique({
+        where: { id },
+    });
+    if (!existing) {
+        throw new Error("NOT_FOUND");
+    }
+    await prisma.auditLog.delete({ where: { id } });
+    return { id };
 }
 //# sourceMappingURL=auditLog.service.js.map

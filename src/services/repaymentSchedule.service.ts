@@ -30,6 +30,8 @@
 
 import { prisma } from "../config/prisma.js";
 import { LoanStatus, RepaymentStatus, Role } from "../generated/prisma/enums.js";
+import { logAction } from "./auditLog.service.js";
+import { notifyUser } from "./notification.service.js";
 
 /*
  * ============================================================
@@ -180,6 +182,40 @@ export const generateRepaymentSchedule = async (
        */
       status: RepaymentStatus.PENDING,
     },
+  });
+
+await logAction({
+  userId,
+  action: "CREATE",
+  entity: "RepaymentSchedule",
+  entityId: schedule.id,
+  description: `Repayment schedule generated for loan ${loan.loanNumber}`,
+  newValue: {
+    installmentNumber: schedule.installmentNumber,
+    dueDate: schedule.dueDate,
+    totalAmount: schedule.totalAmount.toString(),
+  },
+});
+await notifyUser(
+    loan.userId,
+    "REPAYMENT_DUE",
+    "Repayment schedule ready",
+    `Hi ${loan.userId ?? "there"}, your repayment schedule for loan ${
+      loan.loanNumber
+    } is now available. Total repayment is KES ${Number(
+      loan.totalAmount,
+    ).toLocaleString()}, due on ${loan.maturityDate.toLocaleDateString()}.`,
+    {
+      loanId: loan.id,
+      loanNumber: loan.loanNumber,
+      scheduleId: schedule.id,
+      dueDate: loan.maturityDate.toISOString(),
+    },
+  ).catch((err) => {
+    console.error(
+      "[RepaymentSchedule] Failed to send schedule notification:",
+      err,
+    );
   });
 
   return schedule;

@@ -6,6 +6,8 @@ import {
   ReviewKycInput,
   UpdateKycInput,
 } from "../schemas/kyc.schema.js";
+import { logAction } from "./auditLog.service.js";
+import { notifyUser } from "./notification.service.js";
 
 /*
  * ============================================================
@@ -304,22 +306,37 @@ export async function getAdminKycById(id: string) {
   });
 }
 
+
+
+
 export async function reviewKyc(
   kycId: string,
   reviewerId: string,
   data: ReviewKycInput,
 ) {
-  const kyc = await prisma.kyc.findUnique({ where: { id: kycId } });
+  const kyc = await prisma.kyc.findUnique({
+    where: { id: kycId },
+    include: {
+      user: {
+        select: { id: true, firstName: true, lastName: true, email: true },
+      },
+    },
+  });
+
   if (!kyc) throw new Error("KYC not found");
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const now = new Date();
 
     const statusTimestamps =
       data.status === "APPROVED"
         ? { approvedAt: now, reviewedAt: now }
         : data.status === "REJECTED"
-          ? { rejectedAt: now, reviewedAt: now, rejectionReason: data.reviewNotes ?? null }
+          ? {
+              rejectedAt: now,
+              reviewedAt: now,
+              rejectionReason: data.reviewNotes ?? null,
+            }
           : { reviewedAt: now };
 
     const updatedKyc = await tx.kyc.update({
@@ -338,391 +355,96 @@ export async function reviewKyc(
 
     return { kyc: updatedKyc, review };
   });
+
+  /*
+   * ----------------------------------------------------------
+   * AUDIT LOG
+   * ----------------------------------------------------------
+   * Written after the transaction commits so the audit record
+   * reflects what actually happened. If the audit write fails,
+   * the KYC review is still persisted.
+   */
+  await logAction({
+    userId: reviewerId,
+    action:
+      data.status === "APPROVED"
+        ? "APPROVE"
+        : data.status === "REJECTED"
+          ? "REJECT"
+          : "UPDATE",
+    entity: "Kyc",
+    entityId: kycId,
+    description:
+      data.status === "APPROVED"
+        ? `KYC approved for user ${kyc.user?.email ?? kyc.userId}`
+        : data.status === "REJECTED"
+          ? `KYC rejected for user ${kyc.user?.email ?? kyc.userId}${
+              data.reviewNotes ? `: ${data.reviewNotes}` : ""
+            }`
+          : `KYC marked under review for user ${kyc.user?.email ?? kyc.userId}`,
+    oldValue: { status: kyc.status },
+    newValue: { status: data.status },
+  });
+
+  /*
+   * ----------------------------------------------------------
+   * NOTIFICATION
+   * ----------------------------------------------------------
+   * Fire-and-forget. A failed SMTP send must not roll back the
+   * review — it's already committed above.
+   */
+  await sendKycReviewedNotification(kyc, data).catch((err) => {
+    console.error("[KYC] Failed to send review notification:", err);
+  });
+
+  return result;
 }
 
+/*
+ * Map a KYC review action to a user-facing notification.
+ * Kept as a separate helper so reviewKyc stays readable.
+ */
+async function sendKycReviewedNotification(
+  kyc: {
+    id: string;
+    userId: string;
+    user?: { firstName?: string | null; lastName?: string | null } | null;
+  },
+  data: ReviewKycInput,
+) {
+  const name = kyc.user?.firstName ?? "there";
 
-// import { prisma } from "../config/prisma.js";
-// import { AdminKycQueryInput, CreateKycDocumentInput, CreateKycInput, ReviewKycInput, UpdateKycInput } from "../schemas/kyc.schema.js";
+  switch (data.status) {
+    case "APPROVED":
+      return notifyUser(
+        kyc.userId,
+        "APPLICATION_APPROVED",
+        "KYC approved",
+        `Hi ${name}, your KYC has been approved. You can now apply for a loan.`,
+        { kycId: kyc.id, status: "APPROVED" },
+      );
 
+    case "REJECTED":
+      return notifyUser(
+        kyc.userId,
+        "APPLICATION_REJECTED",
+        "KYC rejected",
+        `Hi ${name}, your KYC was rejected${
+          data.reviewNotes ? `: ${data.reviewNotes}` : "."
+        } Please review the remarks and re-submit.`,
+        { kycId: kyc.id, status: "REJECTED" },
+      );
 
-// /*
-//  * ============================================================
-//  * CUSTOMER KYC
-//  * ============================================================
-//  */
+    case "UNDER_REVIEW":
+    default:
+      return notifyUser(
+        kyc.userId,
+        "GENERAL",
+        "KYC under review",
+        `Hi ${name}, your KYC is now under review. We'll let you know once it's processed.`,
+        { kycId: kyc.id, status: "UNDER_REVIEW" },
+      );
+  }
+}
 
-// export async function createKyc(
-//   userId: string,
-//   data: CreateKycInput,
-// ) {
-//   const existing = await prisma.kyc.findUnique({
-//     where: {
-//       userId,
-//     },
-//   });
-
-//   if (existing) {
-//     throw new Error("KYC already exists");
-//   }
-
-//   return prisma.kyc.create({
-//     data: {
-//       userId,
-//       ...data,
-//       status: "PENDING",
-//     },
-//     include: {
-//       documents: true,
-//     },
-//   });
-// }
-
-
-// export async function getMyKyc(
-//   userId: string,
-// ) {
-//   return prisma.kyc.findUnique({
-//     where: {
-//       userId,
-//     },
-//     include: {
-//       documents: true,
-//       reviews: {
-//         orderBy: {
-//           createdAt: "desc",
-//         },
-//       },
-//     },
-//   });
-// }
-
-
-// export async function getKycById(
-//   userId: string,
-//   id: string,
-// ) {
-//   return prisma.kyc.findFirst({
-//     where: {
-//       id,
-//       userId,
-//     },
-//     include: {
-//       documents: true,
-//       reviews: {
-//         orderBy: {
-//           createdAt: "desc",
-//         },
-//       },
-//     },
-//   });
-// }
-
-
-// export async function updateKyc(
-//   userId: string,
-//   data: UpdateKycInput,
-// ) {
-//   const kyc = await prisma.kyc.findUnique({
-//     where: {
-//       userId,
-//     },
-//   });
-
-//   if (!kyc) {
-//     throw new Error("KYC not found");
-//   }
-
-//   /*
-//    * A customer should not modify approved KYC directly.
-//    */
-//   if (kyc.status === "APPROVED") {
-//     throw new Error(
-//       "Approved KYC cannot be modified",
-//     );
-//   }
-
-//   return prisma.kyc.update({
-//     where: {
-//       userId,
-//     },
-//     data: {
-//       ...data,
-//       status: "PENDING",
-//     },
-//     include: {
-//       documents: true,
-//     },
-//   });
-// }
-
-
-// /*
-//  * ============================================================
-//  * DOCUMENTS
-//  * ============================================================
-//  */
-
-// export async function addKycDocument(
-//   userId: string,
-//   data: CreateKycDocumentInput,
-// ) {
-//   /*
-//    * ============================================================
-//    * FIND CUSTOMER KYC
-//    * ============================================================
-//    */
-//   const kyc = await prisma.kyc.findUnique({
-//     where: {
-//       userId,
-//     },
-//   });
-
-//   /*
-//    * Customer must create their KYC details before
-//    * uploading supporting documents.
-//    */
-//   if (!kyc) {
-//     throw new Error(
-//       "Complete your KYC details before uploading documents",
-//     );
-//   }
-
-//   /*
-//    * Approved KYC should not be modified directly.
-//    */
-//   if (kyc.status === "APPROVED") {
-//     throw new Error(
-//       "Approved KYC cannot be modified",
-//     );
-//   }
-
-//   /*
-//    * ============================================================
-//    * CREATE KYC DOCUMENT
-//    * ============================================================
-//    *
-//    * Our API/schema calls this field:
-//    *
-//    * documentType
-//    *
-//    * But the Prisma KycDocument model calls it:
-//    *
-//    * type
-//    *
-//    * Therefore we explicitly map:
-//    *
-//    * documentType -> type
-//    */
-//   return prisma.kycDocument.create({
-//     data: {
-//       kycId: kyc.id,
-
-//       type: data.documentType,
-
-//       fileUrl: data.fileUrl,
-
-//       fileName: data.fileName,
-
-//       mimeType: data.mimeType,
-//       documentNumber: data.documentNumber ?? null,
-
-//       fileSize: data.fileSize,
-//     },
-//   });
-// }
-
-
-
-
-// export async function deleteKycDocument(
-//   userId: string,
-//   documentId: string,
-// ) {
-//   const document =
-//     await prisma.kycDocument.findFirst({
-//       where: {
-//         id: documentId,
-//         kyc: {
-//           userId,
-//         },
-//       },
-//     });
-
-//   if (!document) {
-//     throw new Error(
-//       "KYC document not found",
-//     );
-//   }
-
-//   return prisma.kycDocument.delete({
-//     where: {
-//       id: documentId,
-//     },
-//   });
-// }
-
-
-// /*
-//  * ============================================================
-//  * ADMIN / REVIEWER
-//  * ============================================================
-//  */
-
-// export async function getKycList(
-//   query: AdminKycQueryInput,
-// ) {
-//   const {
-//     page,
-//     limit,
-//     status,
-//     search,
-//     sortBy,
-//     sortOrder,
-//   } = query;
-
-//   const where: any = {
-//     ...(status && { status }),
-
-//     ...(search && {
-//       OR: [
-//         {
-//           firstName: {
-//             contains: search,
-//             mode: "insensitive",
-//           },
-//         },
-//         {
-//           lastName: {
-//             contains: search,
-//             mode: "insensitive",
-//           },
-//         },
-//         {
-//           identificationNumber: {
-//             contains: search,
-//             mode: "insensitive",
-//           },
-//         },
-//       ],
-//     }),
-//   };
-
-//   const [items, total] =
-//     await prisma.$transaction([
-//       prisma.kyc.findMany({
-//         where,
-//         skip: (page - 1) * limit,
-//         take: limit,
-//         orderBy: {
-//           [sortBy]: sortOrder,
-//         },
-//         include: {
-//           user: {
-//             select: {
-//               id: true,
-//               email: true,
-//               phoneNumber: true,
-//             },
-//           },
-//           documents: true,
-//         },
-//       }),
-
-//       prisma.kyc.count({
-//         where,
-//       }),
-//     ]);
-
-//   return {
-//     items,
-//     pagination: {
-//       page,
-//       limit,
-//       total,
-//       totalPages: Math.ceil(total / limit),
-//     },
-//   };
-// }
-
-
-// export async function getAdminKycById(
-//   id: string,
-// ) {
-//   return prisma.kyc.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       user: {
-//         select: {
-//           id: true,
-//           email: true,
-//           phoneNumber: true,
-//           createdAt: true,
-//         },
-//       },
-//       documents: true,
-//       reviews: {
-//         include: {
-//           reviewer: {
-//             select: {
-//               id: true,
-//               email: true,
-//             },
-//           },
-//         },
-//         orderBy: {
-//           createdAt: "desc",
-//         },
-//       },
-//     },
-//   });
-// }
-
-
-// export async function reviewKyc(
-//   kycId: string,
-//   reviewerId: string,
-//   data: ReviewKycInput,
-// ) {
-//   const kyc = await prisma.kyc.findUnique({
-//     where: {
-//       id: kycId,
-//     },
-//   });
-
-//   if (!kyc) {
-//     throw new Error("KYC not found");
-//   }
-
-//   return prisma.$transaction(
-//     async (tx) => {
-//       const updatedKyc =
-//         await tx.kyc.update({
-//           where: {
-//             id: kycId,
-//           },
-//           data: {
-//             status: data.status,
-//           },
-//         });
-
-//       const review =
-//         await tx.kycReview.create({
-//           data: {
-//             kycId,
-//             reviewerId,
-//             status: data.status,
-//             reviewNotes:
-//               data.reviewNotes ?? null,
-//           },
-//         });
-
-//       return {
-//         kyc: updatedKyc,
-//         review,
-//       };
-//     },
-//   );
-// }
 

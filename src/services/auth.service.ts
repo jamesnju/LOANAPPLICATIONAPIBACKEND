@@ -17,6 +17,7 @@ import {
 } from "./otp.service.js";
 
 import { env } from "../config/env.js";
+import { logAction } from "./auditLog.service.js";
 
 interface RegisterInput {
   email: string;
@@ -143,6 +144,7 @@ export async function googleLoginUser(input: GoogleLoginInput) {
       expiresAt: refreshTokenExpiresAt,
     },
   });
+  
 
   return {
     accessToken,
@@ -331,234 +333,187 @@ export async function resendVerificationOtp(
 /**
  * LOGIN
  */
+
 export async function loginUser(
   identifier: string,
-  password: string
+  password: string,
+  context?: {
+    ipAddress?: string;
+    userAgent?: string;
+  },
 ) {
-
   /*
    * Find by email OR phone.
    *
-   * Also load the user's KYC record
-   * so the login response can tell
-   * the frontend whether KYC has
-   * been completed.
+   * Also load the user's KYC record so the login response can
+   * tell the frontend whether KYC has been completed.
    */
-  const user =
-    await prisma.user.findFirst({
-
-      where: {
-
-        OR: [
-
-          {
-            email: identifier,
-          },
-
-          {
-            phone: identifier,
-          },
-        ],
-      },
-
-      include: {
-        kyc: true,
-      },
-    });
-
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: identifier }, { phone: identifier }],
+    },
+    include: {
+      kyc: true,
+    },
+  });
 
   if (!user) {
+    /*
+     * Log the failed attempt. We don't have a userId, so this
+     * row only carries the identifier (email/phone) in the
+     * description — useful for spotting brute force attempts.
+     */
+    await logAction({
+      action: "LOGIN",
+      entity: "User",
+      description: `Failed login attempt for unknown identifier: ${identifier}`,
+      ipAddress: context?.ipAddress,
+      userAgent: context?.userAgent,
+      newValue: { success: false, reason: "user_not_found" },
+    });
 
-    throw new Error(
-      "Invalid email/phone or password"
-    );
+    throw new Error("Invalid email/phone or password");
   }
-
 
   /*
    * Verify password.
    */
-  const passwordValid =
-    await comparePassword(
-      password,
-      user.passwordHash!
-    );
-
+  const passwordValid = await comparePassword(
+    password,
+    user.passwordHash!,
+  );
 
   if (!passwordValid) {
+    await logAction({
+      userId: user.id,
+      action: "LOGIN",
+      entity: "User",
+      entityId: user.id,
+      description: `Failed login (wrong password) for ${user.email}`,
+      ipAddress: context?.ipAddress,
+      userAgent: context?.userAgent,
+      newValue: { success: false, reason: "wrong_password" },
+    });
 
-    throw new Error(
-      "Invalid email/phone or password"
-    );
+    throw new Error("Invalid email/phone or password");
   }
-
 
   /*
    * Account must be verified.
    */
-  const accountVerified =
-    user.emailVerified ||
-    user.phoneVerified;
-
+  const accountVerified = user.emailVerified || user.phoneVerified;
 
   if (!accountVerified) {
+    await logAction({
+      userId: user.id,
+      action: "LOGIN",
+      entity: "User",
+      entityId: user.id,
+      description: `Blocked login (account not verified) for ${user.email}`,
+      ipAddress: context?.ipAddress,
+      userAgent: context?.userAgent,
+      newValue: { success: false, reason: "not_verified" },
+    });
 
-    throw new Error(
-      "ACCOUNT_NOT_VERIFIED"
-    );
+    throw new Error("ACCOUNT_NOT_VERIFIED");
   }
-
 
   /*
    * Account must be active.
    */
-  if (
-    user.status !== "ACTIVE"
-  ) {
+  if (user.status !== "ACTIVE") {
+    await logAction({
+      userId: user.id,
+      action: "LOGIN",
+      entity: "User",
+      entityId: user.id,
+      description: `Blocked login (status=${user.status}) for ${user.email}`,
+      ipAddress: context?.ipAddress,
+      userAgent: context?.userAgent,
+      newValue: { success: false, reason: "not_active" },
+    });
 
-    throw new Error(
-      "Account is not active"
-    );
+    throw new Error("Account is not active");
   }
-
 
   /*
    * Determine KYC status.
-   *
-   * If the user has never started
-   * KYC, there will be no Kyc record.
    */
-  const kycStatus =
-    user.kyc?.status ?? "NOT_STARTED";
-
+  const kycStatus = user.kyc?.status ?? "NOT_STARTED";
 
   /*
-   * KYC is considered completed
-   * only after it has been approved.
+   * KYC is considered completed only after approval.
    */
-  const kycCompleted =
-    kycStatus === "APPROVED";
-
+  const kycCompleted = kycStatus === "APPROVED";
 
   /*
    * Update last login.
    */
   await prisma.user.update({
-
-    where: {
-      id: user.id,
-    },
-
-    data: {
-      lastLoginAt:
-        new Date(),
-    },
+    where: { id: user.id },
+    data: { lastLoginAt: new Date() },
   });
-
 
   /*
    * Generate access token.
    */
-  const accessToken =
-    generateAccessToken({
-
-      userId:
-        user.id,
-
-      role:
-        user.role,
-    });
-
+  const accessToken = generateAccessToken({
+    userId: user.id,
+    role: user.role,
+  });
 
   /*
-   * Generate refresh token.
+   * Generate refresh token + hash it before storing.
    */
-  const refreshToken =
-    generateRefreshToken();
+  const refreshToken = generateRefreshToken();
+  const tokenHash = hashRefreshToken(refreshToken);
+  const refreshTokenExpiresAt = calculateExpiration(
+    env.REFRESH_TOKEN_EXPIRES_IN,
+  );
 
-
-  /*
-   * Hash refresh token
-   * before storing.
-   */
-  const tokenHash =
-    hashRefreshToken(
-      refreshToken
-    );
-
-
-  /*
-   * Calculate refresh
-   * token expiration.
-   */
-  const refreshTokenExpiresAt =
-    calculateExpiration(
-      env.REFRESH_TOKEN_EXPIRES_IN
-    );
-
-
-  /*
-   * Store hashed refresh token.
-   */
   await prisma.refreshToken.create({
-
     data: {
-
-      userId:
-        user.id,
-
+      userId: user.id,
       tokenHash,
-
-      expiresAt:
-        refreshTokenExpiresAt,
+      expiresAt: refreshTokenExpiresAt,
     },
   });
 
+  /*
+   * ----------------------------------------------------------
+   * AUDIT LOG — successful login
+   * ----------------------------------------------------------
+   * logAction swallows failures, so a broken audit write can
+   * never block a login.
+   */
+  await logAction({
+    userId: user.id,
+    action: "LOGIN",
+    entity: "User",
+    entityId: user.id,
+    description: `${user.email} logged in (role: ${user.role})`,
+    ipAddress: context?.ipAddress,
+    userAgent: context?.userAgent,
+    newValue: { success: true, role: user.role },
+  });
 
   /*
-   * Return authentication
-   * response.
+   * Return authentication response.
    */
   return {
-
     accessToken,
-
     refreshToken,
-
     user: {
-
-      id:
-        user.id,
-
-      firstName:
-        user.firstName,
-
-      lastName:
-        user.lastName,
-
-      email:
-        user.email,
-
-      phone:
-        user.phone,
-
-      role:
-        user.role,
-
-      status:
-        user.status,
-
-      emailVerified:
-        user.emailVerified,
-
-      phoneVerified:
-        user.phoneVerified,
-
-      /*
-       * KYC information.
-       */
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      status: user.status,
+      emailVerified: user.emailVerified,
+      phoneVerified: user.phoneVerified,
       kycStatus,
-
       kycCompleted,
     },
   };

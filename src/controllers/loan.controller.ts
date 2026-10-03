@@ -3,18 +3,37 @@ import { Request, Response } from "express";
 import {
   createLoanFromApplication,
   disburseLoan,
+  getAdminLoans,
   getLoanById,
   getLoanTransactions,
   getMyLoans,
 } from "../services/loan.service.js";
 import { applicationIdSchema, disburseLoanSchema, loanIdSchema } from "../schemas/loan.schema.js";
+import { LoanStatus } from "../generated/prisma/enums.js";
 
-// import {
-//   applicationIdSchema,
-//   disburseLoanSchema,
-//   loanIdSchema,
-// } from "../schemas/loan.schema.js";
+export async function getAdminLoansController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Math.min(Number(req.query.limit) || 20, 100);
+    const status = req.query.status as LoanStatus | undefined;
 
+    const result = await getAdminLoans({ status, page, limit });
+
+    return res.json({
+      success: true,
+      items: result.items,
+      pagination: result.pagination,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message ?? "Failed to list loans",
+    });
+  }
+}
 /*
  * ============================================================
  * CREATE LOAN FROM APPROVED APPLICATION

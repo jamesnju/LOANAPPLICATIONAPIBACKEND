@@ -9,6 +9,8 @@ import type {
 
 import { randomBytes } from "crypto";
 import { prisma } from "../config/prisma.js";
+import { notifyUser } from "./notification.service.js";
+import { logAction } from "./auditLog.service.js";
 
 
 /*
@@ -572,8 +574,29 @@ export const createPayment = async (
         };
       },
     );
-
-
+    await logAction({
+  userId,
+  action: "REPAY",
+  entity: "Payment",
+  entityId: result.payment.id,
+  description: `Payment of ${input.amount} recorded`,
+  newValue: {
+    amount: input.amount,
+    paymentMethod: input.paymentMethod,
+    loanId: schedule.loanId,
+  },
+});
+await notifyUser(
+  schedule.loan.userId,
+  "PAYMENT_RECEIVED",
+  "Payment received",
+  `We received KES ${input.amount.toLocaleString()} for loan ${schedule.loan.loanNumber}. Outstanding balance: KES ${Number(result.loan.outstandingAmount).toLocaleString()}.`,
+  {
+    loanId: schedule.loan.id,
+    paymentId: result.payment.id,
+    paymentReference: result.payment.paymentReference,
+  },
+);
   return result;
 };
 

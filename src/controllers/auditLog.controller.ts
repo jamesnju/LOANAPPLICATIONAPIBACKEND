@@ -6,6 +6,7 @@ import type {
 import {
   getAuditLogs,
   getAuditLogById,
+  deleteAuditLog,
 } from "../services/auditLog.service.js";
 
 import {
@@ -94,6 +95,43 @@ export async function getAuditLogController(
     res.status(500).json({
       success: false,
       message: "Unable to retrieve audit log",
+    });
+  }
+}
+
+export async function deleteAuditLogController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const id = String(req.params.id);
+
+    await deleteAuditLog(id, req.user!.userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Audit log deleted successfully",
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      res.status(403).json({
+        success: false,
+        message: "You do not have permission to delete audit logs",
+      });
+      return;
+    }
+
+    if (error instanceof Error && error.message === "NOT_FOUND") {
+      res.status(404).json({
+        success: false,
+        message: "Audit log not found",
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to delete audit log",
     });
   }
 }

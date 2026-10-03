@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createLoanController, disburseLoanController, getLoanController, getLoanTransactionsController, getMyLoansController, } from "../controllers/loan.controller.js";
+import { createLoanController, disburseLoanController, getAdminLoansController, getLoanController, getLoanTransactionsController, getMyLoansController, } from "../controllers/loan.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { Role } from "../generated/prisma/client.js";
 import { authorize } from "../middleware/role.middleware.js";
@@ -53,5 +53,6 @@ router.get("/:id/transactions", authenticate, getLoanTransactionsController);
  * /api/v1/loans/:id
  */
 router.get("/:id", authenticate, getLoanController);
+router.get("/", authenticate, authorize(Role.FINANCE_OFFICER, Role.ADMIN, Role.SUPER_ADMIN, Role.LOAN_OFFICER), getAdminLoansController);
 export default router;
 //# sourceMappingURL=loan.routes.js.map

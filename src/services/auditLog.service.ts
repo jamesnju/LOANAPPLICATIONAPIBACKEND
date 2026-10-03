@@ -4,7 +4,24 @@ import type {
   AuditAction,
   Role,
 } from "../generated/prisma/enums.js";
-
+export async function logAction(data: {
+  userId?: string;
+  action: AuditAction;
+  entity: string;
+  entityId?: string;
+  description?: string;
+  oldValue?: unknown;
+  newValue?: unknown;
+  ipAddress?: string;
+  userAgent?: string;
+}) {
+  try {
+    return await createAuditLog(data as any);
+  } catch (err) {
+    console.error("[AUDIT] Failed to write audit log:", err);
+    return null;
+  }
+}
 const STAFF_ROLES: Role[] = [
   "SUPER_ADMIN",
   "ADMIN",
@@ -183,4 +200,37 @@ export async function getAuditLogById(
       },
     },
   });
+}
+
+// append to src/services/auditLog.service.ts
+
+/*
+ * DELETE AUDIT LOG
+ *
+ * Only SUPER_ADMIN should be able to delete audit records.
+ */
+export async function deleteAuditLog(
+  id: string,
+  requestingUserId: string,
+) {
+  const requester = await prisma.user.findUnique({
+    where: { id: requestingUserId },
+    select: { role: true },
+  });
+
+  if (!requester || requester.role !== "SUPER_ADMIN") {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  const existing = await prisma.auditLog.findUnique({
+    where: { id },
+  });
+
+  if (!existing) {
+    throw new Error("NOT_FOUND");
+  }
+
+  await prisma.auditLog.delete({ where: { id } });
+
+  return { id };
 }

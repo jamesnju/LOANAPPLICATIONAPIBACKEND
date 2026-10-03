@@ -1,5 +1,7 @@
 import { ApplicationStatus, LoanStatus, TransactionType, Role, } from "../generated/prisma/client.js";
 import { prisma } from "../config/prisma.js";
+import { notifyUser } from "./notification.service.js";
+import { logAction } from "./auditLog.service.js";
 /*
  * ============================================================
  * HELPERS
@@ -184,6 +186,24 @@ export async function createLoanFromApplication(applicationId, createdByUserId) 
             loanProduct: true,
             application: true,
         },
+    });
+    // after creating the loan:
+    await logAction({
+        userId: createdByUserId,
+        action: "CREATE",
+        entity: "Loan",
+        entityId: loan.id,
+        description: `Loan ${loan.loanNumber} created from application`,
+        newValue: {
+            loanNumber: loan.loanNumber,
+            principalAmount: loan.principalAmount.toString(),
+            status: loan.status,
+        },
+    });
+    await notifyUser(loan.userId, "APPLICATION_APPROVED", // reuse — or add a new type if you want
+    "Loan created", `Your loan ${loan.loanNumber} has been created and is pending disbursement.`, {
+        loanId: loan.id,
+        loanNumber: loan.loanNumber,
     });
     return loan;
 }
@@ -410,6 +430,22 @@ export async function disburseLoan(loanId, financeUserId, paymentMethod, transac
                 balanceAfter: loan.outstandingAmount,
             },
         });
+        await logAction({
+            userId: financeUserId,
+            action: "DISBURSE",
+            entity: "Loan",
+            entityId: loanId,
+            description: `Loan disbursed via ${paymentMethod}`,
+            newValue: {
+                status: "ACTIVE",
+                disbursedAt,
+                transactionReference: transactionReference ?? null,
+            },
+        });
+        await notifyUser(result.loan.userId, "LOAN_DISBURSED", "Loan disbursed", `Your loan ${result.loan.loanNumber} of KES ${Number(result.loan.totalAmount).toLocaleString()} has been disbursed.`, {
+            loanId: result.loan.id,
+            loanNumber: result.loan.loanNumber,
+        });
         return {
             loan: updatedLoan,
             transaction,
@@ -448,5 +484,49 @@ export async function getLoanTransactions(loanId, requestingUserId) {
         },
     });
     return transactions;
+}
+export async function getAdminLoans(query) {
+    const { status, page, limit } = query;
+    const where = {
+        ...(status && { status }),
+    };
+    const [items, total] = await prisma.$transaction([
+        prisma.loan.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { createdAt: "desc" },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                loanProduct: { select: { id: true, name: true, code: true } },
+                application: {
+                    select: {
+                        id: true,
+                        applicationNumber: true,
+                        purpose: true,
+                        status: true,
+                    },
+                },
+            },
+        }),
+        prisma.loan.count({ where }),
+    ]);
+    return {
+        items,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
 }
 //# sourceMappingURL=loan.service.js.map

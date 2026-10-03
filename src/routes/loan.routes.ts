@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   createLoanController,
   disburseLoanController,
+  getAdminLoansController,
   getLoanController,
   getLoanTransactionsController,
   getMyLoansController,
@@ -104,4 +105,15 @@ router.get(
   getLoanController,
 );
 
+router.get(
+  "/",
+  authenticate,
+  authorize(
+    Role.FINANCE_OFFICER,
+    Role.ADMIN,
+    Role.SUPER_ADMIN,
+    Role.LOAN_OFFICER,
+  ),
+  getAdminLoansController,
+);
 export default router;
