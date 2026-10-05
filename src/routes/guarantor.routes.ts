@@ -9,8 +9,10 @@ import {
   getApplicationGuarantors,
   getGuarantorById,
   updateGuarantor,
+  uploadGuarantorIdPhoto,
   verifyGuarantor,
 } from "../controllers/guarantor.controller.js";
+import { idPhotoUpload } from "../middleware/documentUpload.middleware.js";
 
 const router = Router();
 
@@ -74,6 +76,18 @@ router.delete(
     "ADMIN",
   ),
   deleteGuarantor,
+);
+router.post(
+  "/:id/id-photo",
+  authorize("CUSTOMER", "LOAN_OFFICER", "ADMIN"),
+  idPhotoUpload.single("file"),
+  uploadGuarantorIdPhoto
+);
+router.post(
+  "/:id/id-photo",
+  authorize("CUSTOMER", "LOAN_OFFICER", "ADMIN"),
+  idPhotoUpload.single("file"),
+  uploadGuarantorIdPhoto
 );
 
 export default router;

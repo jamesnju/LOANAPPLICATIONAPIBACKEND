@@ -2143,7 +2143,9 @@ export const GuarantorScalarFieldEnum = {
   guaranteedAmount: 'guaranteedAmount',
   isVerified: 'isVerified',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  idFrontUrl: 'idFrontUrl',
+  idBackUrl: 'idBackUrl'
 } as const
 
 export type GuarantorScalarFieldEnum = (typeof GuarantorScalarFieldEnum)[keyof typeof GuarantorScalarFieldEnum]

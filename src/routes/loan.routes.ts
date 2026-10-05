@@ -7,12 +7,14 @@ import {
   getLoanController,
   getLoanTransactionsController,
   getMyLoansController,
+  uploadIdPhotoController,
 } from "../controllers/loan.controller.js";
 
 import { authenticate } from "../middleware/auth.middleware.js";
 
 import { Role } from "../generated/prisma/client.js";
 import { authorize } from "../middleware/role.middleware.js";
+import { idPhotoUpload } from "../middleware/documentUpload.middleware.js";
 
 const router = Router();
 
@@ -115,5 +117,11 @@ router.get(
     Role.LOAN_OFFICER,
   ),
   getAdminLoansController,
+);
+router.post(
+  "/:id/id-photos",
+  authenticate,
+  idPhotoUpload.single("file"),
+  uploadIdPhotoController
 );
 export default router;

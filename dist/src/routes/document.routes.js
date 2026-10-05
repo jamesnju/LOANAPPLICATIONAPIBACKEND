@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { authorize } from "../middleware/role.middleware.js";
 import { downloadApplicationTemplate, uploadApplicationDocument, uploadScopedDocument, getApplicationDocumentsController, getDocumentById, verifyDocument, rejectDocument, deleteDocument, } from "../controllers/document.controller.js";
-import { applicationDocumentUpload, } from "../middleware/documentUpload.middleware.js";
+import { applicationDocumentUpload, applicationUploadAny, } from "../middleware/documentUpload.middleware.js";
 const router = Router();
 router.use(authenticate);
 /*
@@ -48,5 +48,7 @@ router.patch("/:id/reject", authorize("ADMIN", "LOAN_OFFICER", "SUPER_ADMIN"), r
  * ============================================================
  */
 router.delete("/:id", authorize("CUSTOMER", "ADMIN", "SUPER_ADMIN"), deleteDocument);
+router.post("/application/:applicationId/upload", authorize("CUSTOMER"), applicationUploadAny.single("file"), // ← was applicationDocumentUpload
+uploadApplicationDocument);
 export default router;
 //# sourceMappingURL=document.routes.js.map

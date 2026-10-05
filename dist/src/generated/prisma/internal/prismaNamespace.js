@@ -307,7 +307,9 @@ export const GuarantorScalarFieldEnum = {
     guaranteedAmount: 'guaranteedAmount',
     isVerified: 'isVerified',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    idFrontUrl: 'idFrontUrl',
+    idBackUrl: 'idBackUrl'
 };
 export const CollateralScalarFieldEnum = {
     id: 'id',

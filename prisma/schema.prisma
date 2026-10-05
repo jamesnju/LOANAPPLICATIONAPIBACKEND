@@ -149,6 +149,10 @@ enum DocumentType {
   COLLATERAL_OWNERSHIP
   COLLATERAL_PHOTO
   OTHER
+  NATIONAL_ID_FRONT
+  NATIONAL_ID_BACK
+  GUARANTOR_ID_FRONT
+  GUARANTOR_ID_BACK
 }
 
 enum DocumentStatus {
@@ -706,7 +710,8 @@ model Guarantor {
   application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   user User? @relation(fields: [userId], references: [id])
-
+  idFrontUrl   String?
+  idBackUrl    String?
   documents Document[]
 
   @@index([applicationId])

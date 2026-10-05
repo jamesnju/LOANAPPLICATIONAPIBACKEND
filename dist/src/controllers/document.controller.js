@@ -1,6 +1,7 @@
-import { getApplicationTemplate, verifyApplicationOwnership, verifyGuarantorOwnership, verifyCollateralOwnership, createApplicationDocument, createScopedDocument, getApplicationDocuments, getDocumentById as getDocument, verifyDocument as verifyDocumentService, rejectDocument as rejectDocumentService, deleteDocument as deleteDocumentService, } from "../services/document.service.js";
-import { uploadDocument } from "../services/cloudinary.service.js";
+import { getApplicationTemplate, verifyApplicationOwnership, verifyGuarantorOwnership, verifyCollateralOwnership, createScopedDocument, getApplicationDocuments, getDocumentById as getDocument, verifyDocument as verifyDocumentService, rejectDocument as rejectDocumentService, deleteDocument as deleteDocumentService, } from "../services/document.service.js";
+import { uploadDocument, uploadImage } from "../services/cloudinary.service.js";
 import { uploadDocumentSchema, rejectDocumentSchema, } from "../schemas/document.schema.js";
+import z from "zod";
 /*
  * ============================================================
  * HELPERS
@@ -55,40 +56,127 @@ export async function downloadApplicationTemplate(_req, res) {
  * Type is forced to APPLICATION_FORM.
  * ============================================================
  */
+// backend/src/controllers/document.controller.ts
+// Full replacement for the uploadApplicationDocument handler
+/*
+ * Body shape for POST /documents/application/:applicationId/upload
+ *
+ * `type` is sent as a form field (multipart) and defaults to
+ * APPLICATION_FORM when omitted, so the same endpoint can accept
+ * the KOPAFLEX form or National ID photos.
+ */
+const uploadApplicationDocumentBodySchema = z.object({
+    type: z
+        .enum([
+        "APPLICATION_FORM",
+        "NATIONAL_ID_FRONT",
+        "NATIONAL_ID_BACK",
+        "GUARANTOR_ID_FRONT",
+        "GUARANTOR_ID_BACK",
+        "PASSPORT",
+        "DRIVING_LICENSE",
+        "SELFIE",
+        "PROOF_OF_ADDRESS",
+        "EMPLOYMENT_LETTER",
+        "PAYSLIP",
+        "BANK_STATEMENT",
+        "BUSINESS_LICENSE",
+        "KRA_PIN",
+        "OTHER",
+    ])
+        .default("APPLICATION_FORM"),
+});
+/*
+ * Extract a single string from an Express param/query value.
+ */
+function param(value) {
+    if (!value)
+        return null;
+    return Array.isArray(value) ? (value[0] ?? null) : value;
+}
+/*
+ * ============================================================
+ * POST /api/v1/documents/application/:applicationId/upload
+ * ============================================================
+ *
+ * Multipart form-data:
+ *   file  → the DOCX or image
+ *   type  → DocumentType (default: APPLICATION_FORM)
+ *
+ * Access:
+ *   CUSTOMER (owner of the application only)
+ *
+ * Behaviour:
+ *   1. Verify the application belongs to the authenticated user.
+ *   2. Pick the correct Cloudinary uploader (image vs. raw DOCX).
+ *   3. Persist a Document row scoped to the application.
+ */
 export async function uploadApplicationDocument(req, res) {
     try {
-        const applicationId = getParam(req.params.applicationId);
+        /* 1. Authenticated user */
+        const user = req.user;
+        const userId = user?.userId;
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+        /* 2. Application id from URL */
+        const applicationId = param(req.params.applicationId);
         if (!applicationId) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid application ID",
             });
         }
-        if (!req.file) {
+        /* 3. Ownership check — customer may only upload to their own application */
+        await verifyApplicationOwnership(applicationId, userId);
+        /* 4. Validate the optional `type` field */
+        const { type } = uploadApplicationDocumentBodySchema.parse({
+            type: req.body?.type ?? "APPLICATION_FORM",
+        });
+        /* 5. File must be present */
+        const file = req.file;
+        if (!file) {
             return res.status(400).json({
                 success: false,
-                message: "Please upload the completed application form.",
+                message: "No file uploaded",
             });
         }
-        // Ownership check.
-        await verifyApplicationOwnership(applicationId, req.user.userId);
-        // Upload to Cloudinary.
-        const uploaded = await uploadDocument(req.file.buffer, req.file.originalname);
-        // Save document record.
-        const document = await createApplicationDocument(req.user.userId, applicationId, {
-            fileName: req.file.originalname,
+        /* 6. Pick the correct Cloudinary uploader */
+        const isImage = file.mimetype.startsWith("image/");
+        const uploaded = isImage
+            ? await uploadImage(file.buffer, file.originalname)
+            : await uploadDocument(file.buffer, file.originalname);
+        /* 7. Persist the Document row */
+        const doc = await createScopedDocument(userId, {
+            type: type,
+            applicationId,
+            fileName: file.originalname,
             fileUrl: uploaded.secure_url,
-            fileSize: req.file.size,
-            mimeType: req.file.mimetype,
+            fileSize: file.size,
+            mimeType: file.mimetype,
         });
+        /* 8. Respond */
         return res.status(201).json({
             success: true,
-            message: "Loan application document uploaded successfully.",
-            data: document,
+            message: "Application document uploaded successfully",
+            data: doc,
         });
     }
     catch (error) {
-        console.error("Application document upload error:", error);
+        /*
+         * Zod validation errors come back as `ZodError`.
+         * Return the first issue message so the frontend can toast it.
+         */
+        if (error?.name === "ZodError" && Array.isArray(error.errors)) {
+            return res.status(400).json({
+                success: false,
+                message: error.errors[0]?.message ?? "Validation failed",
+                errors: error.errors,
+            });
+        }
         return res.status(400).json({
             success: false,
             message: error instanceof Error
@@ -97,6 +185,58 @@ export async function uploadApplicationDocument(req, res) {
         });
     }
 }
+// export async function uploadApplicationDocument(
+//   req: Request,
+//   res: Response,
+// ) {
+//   try {
+//     const applicationId = getParam(req.params.applicationId);
+//     if (!applicationId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid application ID",
+//       });
+//     }
+//     if (!req.file) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Please upload the completed application form.",
+//       });
+//     }
+//     // Ownership check.
+//     await verifyApplicationOwnership(applicationId, req.user!.userId);
+//     // Upload to Cloudinary.
+//     const uploaded = await uploadDocument(
+//       req.file.buffer,
+//       req.file.originalname,
+//     );
+//     // Save document record.
+//     const document = await createApplicationDocument(
+//       req.user!.userId,
+//       applicationId,
+//       {
+//         fileName: req.file.originalname,
+//         fileUrl: uploaded.secure_url,
+//         fileSize: req.file.size,
+//         mimeType: req.file.mimetype,
+//       },
+//     );
+//     return res.status(201).json({
+//       success: true,
+//       message: "Loan application document uploaded successfully.",
+//       data: document,
+//     });
+//   } catch (error) {
+//     console.error("Application document upload error:", error);
+//     return res.status(400).json({
+//       success: false,
+//       message:
+//         error instanceof Error
+//           ? error.message
+//           : "Failed to upload application document",
+//     });
+//   }
+// }
 /*
  * ============================================================
  * POST /documents

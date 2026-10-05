@@ -48,6 +48,8 @@ export type GuarantorMinAggregateOutputType = {
   isVerified: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  idFrontUrl: string | null
+  idBackUrl: string | null
 }
 
 export type GuarantorMaxAggregateOutputType = {
@@ -64,6 +66,8 @@ export type GuarantorMaxAggregateOutputType = {
   isVerified: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  idFrontUrl: string | null
+  idBackUrl: string | null
 }
 
 export type GuarantorCountAggregateOutputType = {
@@ -80,6 +84,8 @@ export type GuarantorCountAggregateOutputType = {
   isVerified: number
   createdAt: number
   updatedAt: number
+  idFrontUrl: number
+  idBackUrl: number
   _all: number
 }
 
@@ -106,6 +112,8 @@ export type GuarantorMinAggregateInputType = {
   isVerified?: true
   createdAt?: true
   updatedAt?: true
+  idFrontUrl?: true
+  idBackUrl?: true
 }
 
 export type GuarantorMaxAggregateInputType = {
@@ -122,6 +130,8 @@ export type GuarantorMaxAggregateInputType = {
   isVerified?: true
   createdAt?: true
   updatedAt?: true
+  idFrontUrl?: true
+  idBackUrl?: true
 }
 
 export type GuarantorCountAggregateInputType = {
@@ -138,6 +148,8 @@ export type GuarantorCountAggregateInputType = {
   isVerified?: true
   createdAt?: true
   updatedAt?: true
+  idFrontUrl?: true
+  idBackUrl?: true
   _all?: true
 }
 
@@ -241,6 +253,8 @@ export type GuarantorGroupByOutputType = {
   isVerified: boolean
   createdAt: Date
   updatedAt: Date
+  idFrontUrl: string | null
+  idBackUrl: string | null
   _count: GuarantorCountAggregateOutputType | null
   _avg: GuarantorAvgAggregateOutputType | null
   _sum: GuarantorSumAggregateOutputType | null
@@ -280,6 +294,8 @@ export type GuarantorWhereInput = {
   isVerified?: Prisma.BoolFilter<"Guarantor"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
+  idFrontUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
+  idBackUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
   application?: Prisma.XOR<Prisma.LoanApplicationScalarRelationFilter, Prisma.LoanApplicationWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   documents?: Prisma.DocumentListRelationFilter
@@ -299,6 +315,8 @@ export type GuarantorOrderByWithRelationInput = {
   isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  idBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   application?: Prisma.LoanApplicationOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   documents?: Prisma.DocumentOrderByRelationAggregateInput
@@ -321,6 +339,8 @@ export type GuarantorWhereUniqueInput = Prisma.AtLeast<{
   isVerified?: Prisma.BoolFilter<"Guarantor"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
+  idFrontUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
+  idBackUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
   application?: Prisma.XOR<Prisma.LoanApplicationScalarRelationFilter, Prisma.LoanApplicationWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   documents?: Prisma.DocumentListRelationFilter
@@ -340,6 +360,8 @@ export type GuarantorOrderByWithAggregationInput = {
   isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  idBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.GuarantorCountOrderByAggregateInput
   _avg?: Prisma.GuarantorAvgOrderByAggregateInput
   _max?: Prisma.GuarantorMaxOrderByAggregateInput
@@ -364,6 +386,8 @@ export type GuarantorScalarWhereWithAggregatesInput = {
   isVerified?: Prisma.BoolWithAggregatesFilter<"Guarantor"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Guarantor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Guarantor"> | Date | string
+  idFrontUrl?: Prisma.StringNullableWithAggregatesFilter<"Guarantor"> | string | null
+  idBackUrl?: Prisma.StringNullableWithAggregatesFilter<"Guarantor"> | string | null
 }
 
 export type GuarantorCreateInput = {
@@ -378,6 +402,8 @@ export type GuarantorCreateInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   application: Prisma.LoanApplicationCreateNestedOneWithoutGuarantorsInput
   user?: Prisma.UserCreateNestedOneWithoutGuarantorInput
   documents?: Prisma.DocumentCreateNestedManyWithoutGuarantorInput
@@ -397,6 +423,8 @@ export type GuarantorUncheckedCreateInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutGuarantorInput
 }
 
@@ -412,6 +440,8 @@ export type GuarantorUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   application?: Prisma.LoanApplicationUpdateOneRequiredWithoutGuarantorsNestedInput
   user?: Prisma.UserUpdateOneWithoutGuarantorNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutGuarantorNestedInput
@@ -431,6 +461,8 @@ export type GuarantorUncheckedUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutGuarantorNestedInput
 }
 
@@ -448,6 +480,8 @@ export type GuarantorCreateManyInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
 }
 
 export type GuarantorUpdateManyMutationInput = {
@@ -462,6 +496,8 @@ export type GuarantorUpdateManyMutationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuarantorUncheckedUpdateManyInput = {
@@ -478,6 +514,8 @@ export type GuarantorUncheckedUpdateManyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuarantorListRelationFilter = {
@@ -504,6 +542,8 @@ export type GuarantorCountOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idFrontUrl?: Prisma.SortOrder
+  idBackUrl?: Prisma.SortOrder
 }
 
 export type GuarantorAvgOrderByAggregateInput = {
@@ -524,6 +564,8 @@ export type GuarantorMaxOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idFrontUrl?: Prisma.SortOrder
+  idBackUrl?: Prisma.SortOrder
 }
 
 export type GuarantorMinOrderByAggregateInput = {
@@ -540,6 +582,8 @@ export type GuarantorMinOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idFrontUrl?: Prisma.SortOrder
+  idBackUrl?: Prisma.SortOrder
 }
 
 export type GuarantorSumOrderByAggregateInput = {
@@ -663,6 +707,8 @@ export type GuarantorCreateWithoutUserInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   application: Prisma.LoanApplicationCreateNestedOneWithoutGuarantorsInput
   documents?: Prisma.DocumentCreateNestedManyWithoutGuarantorInput
 }
@@ -680,6 +726,8 @@ export type GuarantorUncheckedCreateWithoutUserInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutGuarantorInput
 }
 
@@ -726,6 +774,8 @@ export type GuarantorScalarWhereInput = {
   isVerified?: Prisma.BoolFilter<"Guarantor"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Guarantor"> | Date | string
+  idFrontUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
+  idBackUrl?: Prisma.StringNullableFilter<"Guarantor"> | string | null
 }
 
 export type GuarantorCreateWithoutApplicationInput = {
@@ -740,6 +790,8 @@ export type GuarantorCreateWithoutApplicationInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   user?: Prisma.UserCreateNestedOneWithoutGuarantorInput
   documents?: Prisma.DocumentCreateNestedManyWithoutGuarantorInput
 }
@@ -757,6 +809,8 @@ export type GuarantorUncheckedCreateWithoutApplicationInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutGuarantorInput
 }
 
@@ -798,6 +852,8 @@ export type GuarantorCreateWithoutDocumentsInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
   application: Prisma.LoanApplicationCreateNestedOneWithoutGuarantorsInput
   user?: Prisma.UserCreateNestedOneWithoutGuarantorInput
 }
@@ -816,6 +872,8 @@ export type GuarantorUncheckedCreateWithoutDocumentsInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
 }
 
 export type GuarantorCreateOrConnectWithoutDocumentsInput = {
@@ -846,6 +904,8 @@ export type GuarantorUpdateWithoutDocumentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   application?: Prisma.LoanApplicationUpdateOneRequiredWithoutGuarantorsNestedInput
   user?: Prisma.UserUpdateOneWithoutGuarantorNestedInput
 }
@@ -864,6 +924,8 @@ export type GuarantorUncheckedUpdateWithoutDocumentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuarantorCreateManyUserInput = {
@@ -879,6 +941,8 @@ export type GuarantorCreateManyUserInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
 }
 
 export type GuarantorUpdateWithoutUserInput = {
@@ -893,6 +957,8 @@ export type GuarantorUpdateWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   application?: Prisma.LoanApplicationUpdateOneRequiredWithoutGuarantorsNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutGuarantorNestedInput
 }
@@ -910,6 +976,8 @@ export type GuarantorUncheckedUpdateWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutGuarantorNestedInput
 }
 
@@ -926,6 +994,8 @@ export type GuarantorUncheckedUpdateManyWithoutUserInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type GuarantorCreateManyApplicationInput = {
@@ -941,6 +1011,8 @@ export type GuarantorCreateManyApplicationInput = {
   isVerified?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  idFrontUrl?: string | null
+  idBackUrl?: string | null
 }
 
 export type GuarantorUpdateWithoutApplicationInput = {
@@ -955,6 +1027,8 @@ export type GuarantorUpdateWithoutApplicationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneWithoutGuarantorNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutGuarantorNestedInput
 }
@@ -972,6 +1046,8 @@ export type GuarantorUncheckedUpdateWithoutApplicationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutGuarantorNestedInput
 }
 
@@ -988,6 +1064,8 @@ export type GuarantorUncheckedUpdateManyWithoutApplicationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1035,6 +1113,8 @@ export type GuarantorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   isVerified?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idFrontUrl?: boolean
+  idBackUrl?: boolean
   application?: boolean | Prisma.LoanApplicationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Guarantor$userArgs<ExtArgs>
   documents?: boolean | Prisma.Guarantor$documentsArgs<ExtArgs>
@@ -1055,6 +1135,8 @@ export type GuarantorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isVerified?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idFrontUrl?: boolean
+  idBackUrl?: boolean
   application?: boolean | Prisma.LoanApplicationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Guarantor$userArgs<ExtArgs>
 }, ExtArgs["result"]["guarantor"]>
@@ -1073,6 +1155,8 @@ export type GuarantorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   isVerified?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idFrontUrl?: boolean
+  idBackUrl?: boolean
   application?: boolean | Prisma.LoanApplicationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Guarantor$userArgs<ExtArgs>
 }, ExtArgs["result"]["guarantor"]>
@@ -1091,9 +1175,11 @@ export type GuarantorSelectScalar = {
   isVerified?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idFrontUrl?: boolean
+  idBackUrl?: boolean
 }
 
-export type GuarantorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicationId" | "userId" | "firstName" | "lastName" | "phone" | "email" | "nationalId" | "relationship" | "guaranteedAmount" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["guarantor"]>
+export type GuarantorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicationId" | "userId" | "firstName" | "lastName" | "phone" | "email" | "nationalId" | "relationship" | "guaranteedAmount" | "isVerified" | "createdAt" | "updatedAt" | "idFrontUrl" | "idBackUrl", ExtArgs["result"]["guarantor"]>
 export type GuarantorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   application?: boolean | Prisma.LoanApplicationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Guarantor$userArgs<ExtArgs>
@@ -1130,6 +1216,8 @@ export type $GuarantorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     isVerified: boolean
     createdAt: Date
     updatedAt: Date
+    idFrontUrl: string | null
+    idBackUrl: string | null
   }, ExtArgs["result"]["guarantor"]>
   composites: {}
 }
@@ -1569,6 +1657,8 @@ export interface GuarantorFieldRefs {
   readonly isVerified: Prisma.FieldRef<"Guarantor", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Guarantor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Guarantor", 'DateTime'>
+  readonly idFrontUrl: Prisma.FieldRef<"Guarantor", 'String'>
+  readonly idBackUrl: Prisma.FieldRef<"Guarantor", 'String'>
 }
     
 

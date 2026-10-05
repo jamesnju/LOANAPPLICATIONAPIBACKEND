@@ -1,5 +1,6 @@
 import { applicationIdSchema, createGuarantorSchema, guarantorIdSchema, updateGuarantorSchema, verifyGuarantorSchema, } from "../schemas/guarantor.schema.js";
 import * as service from "../services/guarantor.service.js";
+import { addGuarantorIdPhoto } from "../services/guarantor.service.js";
 function param(value) {
     if (!value)
         return null;
@@ -171,6 +172,47 @@ export async function deleteGuarantor(req, res) {
             message: error instanceof Error
                 ? error.message
                 : "Failed to delete guarantor",
+        });
+    }
+}
+export async function uploadGuarantorIdPhoto(req, res) {
+    try {
+        const id = param(req.params.id);
+        if (!id) {
+            res.status(400).json({ success: false, message: "Invalid guarantor ID" });
+            return;
+        }
+        const { side } = req.body;
+        if (side !== "FRONT" && side !== "BACK") {
+            res.status(400).json({
+                success: false,
+                message: "side must be FRONT or BACK",
+            });
+            return;
+        }
+        const file = req.file;
+        if (!file) {
+            res.status(400).json({ success: false, message: "No file uploaded" });
+            return;
+        }
+        const doc = await addGuarantorIdPhoto(id, side, {
+            buffer: file.buffer,
+            originalname: file.originalname,
+            mimetype: file.mimetype,
+            size: file.size,
+        });
+        res.status(201).json({
+            success: true,
+            message: "Guarantor ID photo uploaded successfully",
+            data: doc,
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error
+                ? error.message
+                : "Failed to upload guarantor photo",
         });
     }
 }

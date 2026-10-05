@@ -149,7 +149,8 @@ export async function createScopedDocument(
     fileSize?: number | null;
     mimeType?: string | null;
   },
-) {
+)
+ {
   return prisma.document.create({
     data: {
       userId,
@@ -333,3 +334,4 @@ export async function deleteDocument(
 /*
  * Confirm the collateral belongs to the user (via its application).
  */
+

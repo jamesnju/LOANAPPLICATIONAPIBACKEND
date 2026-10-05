@@ -12,10 +12,14 @@ import {
   verifyDocument,
   rejectDocument,
   deleteDocument,
+  
 } from "../controllers/document.controller.js";
 
 import {
   applicationDocumentUpload,
+  applicationUploadAny,
+  documentUpload,
+  idPhotoUpload,
 } from "../middleware/documentUpload.middleware.js";
 
 const router = Router();
@@ -105,6 +109,12 @@ router.delete(
   "/:id",
   authorize("CUSTOMER", "ADMIN", "SUPER_ADMIN"),
   deleteDocument,
+);
+router.post(
+  "/application/:applicationId/upload",
+  authorize("CUSTOMER"),
+  applicationUploadAny.single("file"),   // ← was applicationDocumentUpload
+  uploadApplicationDocument,
 );
 
 export default router;
