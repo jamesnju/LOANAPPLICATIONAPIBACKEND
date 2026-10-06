@@ -113,7 +113,7 @@ router.delete(
 router.post(
   "/application/:applicationId/upload",
   authorize("CUSTOMER"),
-  applicationUploadAny.single("file"),   // ← was applicationDocumentUpload
+  applicationUploadAny.single("file"),  
   uploadApplicationDocument,
 );
 
