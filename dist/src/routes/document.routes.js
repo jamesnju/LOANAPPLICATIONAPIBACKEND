@@ -48,7 +48,6 @@ router.patch("/:id/reject", authorize("ADMIN", "LOAN_OFFICER", "SUPER_ADMIN"), r
  * ============================================================
  */
 router.delete("/:id", authorize("CUSTOMER", "ADMIN", "SUPER_ADMIN"), deleteDocument);
-router.post("/application/:applicationId/upload", authorize("CUSTOMER"), applicationUploadAny.single("file"), // ← was applicationDocumentUpload
-uploadApplicationDocument);
+router.post("/application/:applicationId/upload", authorize("CUSTOMER"), applicationUploadAny.single("file"), uploadApplicationDocument);
 export default router;
 //# sourceMappingURL=document.routes.js.map

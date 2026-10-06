@@ -26,47 +26,61 @@ export async function googleLoginUser(input) {
     }
     const { email, given_name, family_name, picture, sub: googleId, email_verified, } = payload;
     /*
-     * Find by googleId first, then by email.
+     * Google must provide a verified email.
+     */
+    if (!email_verified) {
+        throw new Error("Google email is not verified");
+    }
+    /*
+     * Find an existing account.
+     *
+     * We check both googleId and email.
      */
     let user = await prisma.user.findFirst({
         where: {
-            OR: [{ googleId }, { email }],
+            OR: [
+                { googleId },
+                { email },
+            ],
         },
-        include: { kyc: true },
+        include: {
+            kyc: true,
+        },
     });
     /*
-     * Create the user if new.
+     * IMPORTANT:
+     *
+     * Do NOT create a new account here.
+     *
+     * Google login is only available to users who
+     * have already registered.
      */
     if (!user) {
-        user = await prisma.user.create({
-            data: {
-                firstName: given_name ?? "Customer",
-                lastName: family_name ?? "",
-                email,
-                passwordHash: null,
-                googleId,
-                avatarUrl: picture ?? null,
-                role: Role.CUSTOMER,
-                status: "ACTIVE",
-                emailVerified: email_verified ?? true,
-                phoneVerified: false,
-            },
-            include: { kyc: true },
-        });
+        throw new Error("ACCOUNT_NOT_REGISTERED");
     }
-    else if (!user.googleId) {
-        /*
-         * Existing email/password user signing in with Google for the first time.
-         * Link the google account.
-         */
+    /*
+     * Existing email/password account logging in
+     * with Google for the first time.
+     *
+     * Link the Google account to the existing user.
+     */
+    if (!user.googleId) {
         user = await prisma.user.update({
-            where: { id: user.id },
-            data: { googleId, avatarUrl: picture ?? user.avatarUrl },
-            include: { kyc: true },
+            where: {
+                id: user.id,
+            },
+            data: {
+                googleId,
+                avatarUrl: picture ?? user.avatarUrl,
+                emailVerified: true,
+            },
+            include: {
+                kyc: true,
+            },
         });
     }
     /*
-     * Guard: status must be ACTIVE.
+     * Account must be active.
      */
     if (user.status !== "ACTIVE") {
         throw new Error("Account is not active");
@@ -80,16 +94,23 @@ export async function googleLoginUser(input) {
      * Update last login.
      */
     await prisma.user.update({
-        where: { id: user.id },
-        data: { lastLoginAt: new Date() },
+        where: {
+            id: user.id,
+        },
+        data: {
+            lastLoginAt: new Date(),
+        },
     });
     /*
-     * Issue tokens (same as password login).
+     * Generate access token.
      */
     const accessToken = generateAccessToken({
         userId: user.id,
         role: user.role,
     });
+    /*
+     * Generate refresh token.
+     */
     const refreshToken = generateRefreshToken();
     const tokenHash = hashRefreshToken(refreshToken);
     const refreshTokenExpiresAt = calculateExpiration(env.REFRESH_TOKEN_EXPIRES_IN);
@@ -100,6 +121,9 @@ export async function googleLoginUser(input) {
             expiresAt: refreshTokenExpiresAt,
         },
     });
+    /*
+     * Return authentication response.
+     */
     return {
         accessToken,
         refreshToken,
@@ -119,6 +143,116 @@ export async function googleLoginUser(input) {
         },
     };
 }
+// export async function googleLoginUser(input: GoogleLoginInput) {
+//   const ticket = await googleClient.verifyIdToken({
+//     idToken: input.idToken,
+//     audience: env.GOOGLECLIENTID,
+//   });
+//   const payload = ticket.getPayload();
+//   if (!payload?.email) {
+//     throw new Error("Invalid Google token");
+//   }
+//   const {
+//     email,
+//     given_name,
+//     family_name,
+//     picture,
+//     sub: googleId,
+//     email_verified,
+//   } = payload;
+//   /*
+//    * Find by googleId first, then by email.
+//    */
+//   let user = await prisma.user.findFirst({
+//     where: {
+//       OR: [{ googleId }, { email }],
+//     },
+//     include: { kyc: true },
+//   });
+//   /*
+//    * Create the user if new.
+//    */
+//   if (!user) {
+//     user = await prisma.user.create({
+//       data: {
+//         firstName: given_name ?? "Customer",
+//         lastName: family_name ?? "",
+//         email,
+//         passwordHash: null,
+//         googleId,
+//         avatarUrl: picture ?? null,
+//         role: Role.CUSTOMER,
+//         status: "ACTIVE",
+//         emailVerified: email_verified ?? true,
+//         phoneVerified: false,
+//       },
+//       include: { kyc: true },
+//     });
+//   } else if (!user.googleId) {
+//     /*
+//      * Existing email/password user signing in with Google for the first time.
+//      * Link the google account.
+//      */
+//     user = await prisma.user.update({
+//       where: { id: user.id },
+//       data: { googleId, avatarUrl: picture ?? user.avatarUrl },
+//       include: { kyc: true },
+//     });
+//   }
+//   /*
+//    * Guard: status must be ACTIVE.
+//    */
+//   if (user.status !== "ACTIVE") {
+//     throw new Error("Account is not active");
+//   }
+//   /*
+//    * KYC state.
+//    */
+//   const kycStatus = user.kyc?.status ?? "NOT_STARTED";
+//   const kycCompleted = kycStatus === "APPROVED";
+//   /*
+//    * Update last login.
+//    */
+//   await prisma.user.update({
+//     where: { id: user.id },
+//     data: { lastLoginAt: new Date() },
+//   });
+//   /*
+//    * Issue tokens (same as password login).
+//    */
+//   const accessToken = generateAccessToken({
+//     userId: user.id,
+//     role: user.role,
+//   });
+//   const refreshToken = generateRefreshToken();
+//   const tokenHash = hashRefreshToken(refreshToken);
+//   const refreshTokenExpiresAt = calculateExpiration(env.REFRESH_TOKEN_EXPIRES_IN);
+//   await prisma.refreshToken.create({
+//     data: {
+//       userId: user.id,
+//       tokenHash,
+//       expiresAt: refreshTokenExpiresAt,
+//     },
+//   });
+//   return {
+//     accessToken,
+//     refreshToken,
+//     user: {
+//       id: user.id,
+//       firstName: user.firstName,
+//       lastName: user.lastName,
+//       email: user.email,
+//       phone: user.phone,
+//       role: user.role,
+//       status: user.status,
+//       emailVerified: user.emailVerified,
+//       phoneVerified: user.phoneVerified,
+//       avatarUrl: user.avatarUrl,
+//       kycStatus,
+//       kycCompleted,
+//     },
+//   };
+// }
 /**
  * REGISTER
  */

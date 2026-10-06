@@ -31,6 +31,7 @@ import guarantorRoutes from './routes/guarantor.routes.js';
 import collateralRoutes from './routes/collateral.routes.js';
 import documentRoutes from './routes/document.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
 
 // ✅ Explicitly type the app
 const app: Express = express();
@@ -130,9 +131,8 @@ app.use(`${apiPrefix}/reports`, reportRoutes);
 app.use(`${apiPrefix}/users`, userRoutes);
 app.use(`${apiPrefix}/guarantors`, guarantorRoutes);
 app.use(`${apiPrefix}/collateral`, collateralRoutes);
-
 app.use(`${apiPrefix}/documents`, documentRoutes);
-
+app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 /*
  * 404 handler.
  */
