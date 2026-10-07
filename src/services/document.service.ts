@@ -10,13 +10,13 @@ import { prisma } from "../config/prisma.js";
  * Current file:
  *
  * backend/src/documents/
- * KOPAFLEX APPLICATION FORM.docx
+ * PesaMaishaCapital_TemplateForm.docx
  */
 const applicationTemplatePath = path.resolve(
   process.cwd(),
   "src",
   "documents",
-  "KOPAFLEX APPLICATION FORM.docx",
+  "PesaMaishaCapital_TemplateForm.docx",
 );
 
 /*

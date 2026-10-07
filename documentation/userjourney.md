@@ -472,7 +472,7 @@ GET /api/v1/documents/application-template
 He downloads:
 
 ```text
-KOPAFLEX APPLICATION FORM.docx
+PesaMaishaCapital_TemplateForm.docx
 ```
 
 He fills it in.
@@ -1279,7 +1279,7 @@ DRAFT
 He downloads:
 
 ```text
-KOPAFLEX APPLICATION FORM.docx
+PesaMaishaCapital_TemplateForm.docx
 ```
 
 fills it and uploads it.

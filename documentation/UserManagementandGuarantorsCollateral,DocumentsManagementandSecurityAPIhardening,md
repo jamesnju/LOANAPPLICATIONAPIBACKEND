@@ -512,7 +512,7 @@ GET /api/v1/documents/application-template
 The endpoint returns:
 
 ```text
-KOPAFLEX APPLICATION FORM.docx
+PesaMaishaCapital_TemplateForm.docx
 ```
 
 The customer flow is:
