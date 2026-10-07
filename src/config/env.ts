@@ -68,7 +68,7 @@ const envSchema = z.object({
   ALLOWED_ORIGINS: z
     .string()
     .default(
-      "https://loanappbackendapis.vercel.app,http://localhost:3000,https://kopaflex.vercel.app"
+      "https://loanappbackendapis.vercel.app,http://localhost:3000,https://pesamaishacapital.vercel.app"
     )
     .transform((val) =>
       val

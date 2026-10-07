@@ -43,7 +43,7 @@ const envSchema = z.object({
     // ✅ Comma-separated string → string[]
     ALLOWED_ORIGINS: z
         .string()
-        .default("https://loanappbackendapis.vercel.app,http://localhost:3000,https://kopaflex.vercel.app")
+        .default("https://loanappbackendapis.vercel.app,http://localhost:3000,https://pesamaishacapital.vercel.app")
         .transform((val) => val
         .split(",")
         .map((o) => o.trim().replace(/\/$/, "")) // strip trailing slash
