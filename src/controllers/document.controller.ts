@@ -61,7 +61,7 @@ export async function downloadApplicationTemplate(
   try {
     const filePath = getApplicationTemplate();
 
-    res.download(filePath, "KOPAFLEX APPLICATION FORM.docx", (error) => {
+    res.download(filePath, "PesaMaishaCapital_TemplateForm.docx", (error) => {
       if (error) {
         console.error("Application template download failed:", error);
       }
