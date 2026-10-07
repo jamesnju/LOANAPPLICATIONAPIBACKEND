@@ -33,7 +33,7 @@ function isStaffRole(role) {
 export async function downloadApplicationTemplate(_req, res) {
     try {
         const filePath = getApplicationTemplate();
-        res.download(filePath, "KOPAFLEX APPLICATION FORM.docx", (error) => {
+        res.download(filePath, "PesaMaishaCapital_TemplateForm.docx", (error) => {
             if (error) {
                 console.error("Application template download failed:", error);
             }
