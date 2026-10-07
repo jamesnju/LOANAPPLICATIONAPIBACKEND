@@ -28,10 +28,12 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   monthlyIncome: runtime.Decimal | null
+  failedLoginAttempts: number | null
 }
 
 export type UserSumAggregateOutputType = {
   monthlyIncome: runtime.Decimal | null
+  failedLoginAttempts: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -51,6 +53,9 @@ export type UserMinAggregateOutputType = {
   monthlyIncome: runtime.Decimal | null
   role: $Enums.Role | null
   status: $Enums.UserStatus | null
+  failedLoginAttempts: number | null
+  lockedUntil: Date | null
+  lastFailedLoginAt: Date | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
   lastLoginAt: Date | null
@@ -75,6 +80,9 @@ export type UserMaxAggregateOutputType = {
   monthlyIncome: runtime.Decimal | null
   role: $Enums.Role | null
   status: $Enums.UserStatus | null
+  failedLoginAttempts: number | null
+  lockedUntil: Date | null
+  lastFailedLoginAt: Date | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
   lastLoginAt: Date | null
@@ -99,6 +107,9 @@ export type UserCountAggregateOutputType = {
   monthlyIncome: number
   role: number
   status: number
+  failedLoginAttempts: number
+  lockedUntil: number
+  lastFailedLoginAt: number
   emailVerified: number
   phoneVerified: number
   lastLoginAt: number
@@ -110,10 +121,12 @@ export type UserCountAggregateOutputType = {
 
 export type UserAvgAggregateInputType = {
   monthlyIncome?: true
+  failedLoginAttempts?: true
 }
 
 export type UserSumAggregateInputType = {
   monthlyIncome?: true
+  failedLoginAttempts?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -133,6 +146,9 @@ export type UserMinAggregateInputType = {
   monthlyIncome?: true
   role?: true
   status?: true
+  failedLoginAttempts?: true
+  lockedUntil?: true
+  lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
   lastLoginAt?: true
@@ -157,6 +173,9 @@ export type UserMaxAggregateInputType = {
   monthlyIncome?: true
   role?: true
   status?: true
+  failedLoginAttempts?: true
+  lockedUntil?: true
+  lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
   lastLoginAt?: true
@@ -181,6 +200,9 @@ export type UserCountAggregateInputType = {
   monthlyIncome?: true
   role?: true
   status?: true
+  failedLoginAttempts?: true
+  lockedUntil?: true
+  lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
   lastLoginAt?: true
@@ -292,6 +314,9 @@ export type UserGroupByOutputType = {
   monthlyIncome: runtime.Decimal | null
   role: $Enums.Role
   status: $Enums.UserStatus
+  failedLoginAttempts: number
+  lockedUntil: Date | null
+  lastFailedLoginAt: Date | null
   emailVerified: boolean
   phoneVerified: boolean
   lastLoginAt: Date | null
@@ -339,6 +364,9 @@ export type UserWhereInput = {
   monthlyIncome?: Prisma.DecimalNullableFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFilter<"User"> | number
+  lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastFailedLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -374,6 +402,9 @@ export type UserOrderByWithRelationInput = {
   monthlyIncome?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
+  lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastFailedLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -412,6 +443,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   monthlyIncome?: Prisma.DecimalNullableFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFilter<"User"> | number
+  lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastFailedLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -447,6 +481,9 @@ export type UserOrderByWithAggregationInput = {
   monthlyIncome?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
+  lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastFailedLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -479,6 +516,9 @@ export type UserScalarWhereWithAggregatesInput = {
   monthlyIncome?: Prisma.DecimalNullableWithAggregatesFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntWithAggregatesFilter<"User"> | number
+  lockedUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  lastFailedLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -503,6 +543,9 @@ export type UserCreateInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -538,6 +581,9 @@ export type UserUncheckedCreateInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -573,6 +619,9 @@ export type UserUpdateInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -608,6 +657,9 @@ export type UserUncheckedUpdateInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -643,6 +695,9 @@ export type UserCreateManyInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -667,6 +722,9 @@ export type UserUpdateManyMutationInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -691,6 +749,9 @@ export type UserUncheckedUpdateManyInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -715,6 +776,9 @@ export type UserCountOrderByAggregateInput = {
   monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
+  lockedUntil?: Prisma.SortOrder
+  lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -724,6 +788,7 @@ export type UserCountOrderByAggregateInput = {
 
 export type UserAvgOrderByAggregateInput = {
   monthlyIncome?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -743,6 +808,9 @@ export type UserMaxOrderByAggregateInput = {
   monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
+  lockedUntil?: Prisma.SortOrder
+  lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -767,6 +835,9 @@ export type UserMinOrderByAggregateInput = {
   monthlyIncome?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
+  lockedUntil?: Prisma.SortOrder
+  lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -776,6 +847,7 @@ export type UserMinOrderByAggregateInput = {
 
 export type UserSumOrderByAggregateInput = {
   monthlyIncome?: Prisma.SortOrder
+  failedLoginAttempts?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -822,6 +894,14 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type EnumUserStatusFieldUpdateOperationsInput = {
   set?: $Enums.UserStatus
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -1007,6 +1087,9 @@ export type UserCreateWithoutRefreshTokensInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1041,6 +1124,9 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1091,6 +1177,9 @@ export type UserUpdateWithoutRefreshTokensInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1125,6 +1214,9 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1159,6 +1251,9 @@ export type UserCreateWithoutOtpCodesInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1193,6 +1288,9 @@ export type UserUncheckedCreateWithoutOtpCodesInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1243,6 +1341,9 @@ export type UserUpdateWithoutOtpCodesInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1277,6 +1378,9 @@ export type UserUncheckedUpdateWithoutOtpCodesInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1311,6 +1415,9 @@ export type UserCreateWithoutKycInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1345,6 +1452,9 @@ export type UserUncheckedCreateWithoutKycInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1395,6 +1505,9 @@ export type UserUpdateWithoutKycInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1429,6 +1542,9 @@ export type UserUncheckedUpdateWithoutKycInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1463,6 +1579,9 @@ export type UserCreateWithoutKycReviewsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1497,6 +1616,9 @@ export type UserUncheckedCreateWithoutKycReviewsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1547,6 +1669,9 @@ export type UserUpdateWithoutKycReviewsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1581,6 +1706,9 @@ export type UserUncheckedUpdateWithoutKycReviewsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1615,6 +1743,9 @@ export type UserCreateWithoutLoanApplicationsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1649,6 +1780,9 @@ export type UserUncheckedCreateWithoutLoanApplicationsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1699,6 +1833,9 @@ export type UserUpdateWithoutLoanApplicationsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1733,6 +1870,9 @@ export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1767,6 +1907,9 @@ export type UserCreateWithoutLoansInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1801,6 +1944,9 @@ export type UserUncheckedCreateWithoutLoansInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1851,6 +1997,9 @@ export type UserUpdateWithoutLoansInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1885,6 +2034,9 @@ export type UserUncheckedUpdateWithoutLoansInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1919,6 +2071,9 @@ export type UserCreateWithoutApprovalsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -1953,6 +2108,9 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2003,6 +2161,9 @@ export type UserUpdateWithoutApprovalsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2037,6 +2198,9 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2071,6 +2235,9 @@ export type UserCreateWithoutGuarantorInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2105,6 +2272,9 @@ export type UserUncheckedCreateWithoutGuarantorInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2155,6 +2325,9 @@ export type UserUpdateWithoutGuarantorInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2189,6 +2362,9 @@ export type UserUncheckedUpdateWithoutGuarantorInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2223,6 +2399,9 @@ export type UserCreateWithoutDocumentsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2257,6 +2436,9 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2307,6 +2489,9 @@ export type UserUpdateWithoutDocumentsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2341,6 +2526,9 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2375,6 +2563,9 @@ export type UserCreateWithoutNotificationsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2409,6 +2600,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2459,6 +2653,9 @@ export type UserUpdateWithoutNotificationsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2493,6 +2690,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2527,6 +2727,9 @@ export type UserCreateWithoutAuditLogsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2561,6 +2764,9 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: $Enums.Role
   status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: Date | string | null
@@ -2611,6 +2817,9 @@ export type UserUpdateWithoutAuditLogsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2645,6 +2854,9 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2791,6 +3003,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   monthlyIncome?: boolean
   role?: boolean
   status?: boolean
+  failedLoginAttempts?: boolean
+  lockedUntil?: boolean
+  lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: boolean
@@ -2827,6 +3042,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   monthlyIncome?: boolean
   role?: boolean
   status?: boolean
+  failedLoginAttempts?: boolean
+  lockedUntil?: boolean
+  lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: boolean
@@ -2851,6 +3069,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   monthlyIncome?: boolean
   role?: boolean
   status?: boolean
+  failedLoginAttempts?: boolean
+  lockedUntil?: boolean
+  lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: boolean
@@ -2875,6 +3096,9 @@ export type UserSelectScalar = {
   monthlyIncome?: boolean
   role?: boolean
   status?: boolean
+  failedLoginAttempts?: boolean
+  lockedUntil?: boolean
+  lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
   lastLoginAt?: boolean
@@ -2882,7 +3106,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "googleId" | "avatarUrl" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "emailVerified" | "phoneVerified" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "googleId" | "avatarUrl" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "failedLoginAttempts" | "lockedUntil" | "lastFailedLoginAt" | "emailVerified" | "phoneVerified" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   kyc?: boolean | Prisma.User$kycArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -2932,6 +3156,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     monthlyIncome: runtime.Decimal | null
     role: $Enums.Role
     status: $Enums.UserStatus
+    failedLoginAttempts: number
+    lockedUntil: Date | null
+    lastFailedLoginAt: Date | null
     emailVerified: boolean
     phoneVerified: boolean
     lastLoginAt: Date | null
@@ -3387,6 +3614,9 @@ export interface UserFieldRefs {
   readonly monthlyIncome: Prisma.FieldRef<"User", 'Decimal'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly status: Prisma.FieldRef<"User", 'UserStatus'>
+  readonly failedLoginAttempts: Prisma.FieldRef<"User", 'Int'>
+  readonly lockedUntil: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastFailedLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly phoneVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>

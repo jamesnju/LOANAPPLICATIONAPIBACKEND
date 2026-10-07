@@ -2,8 +2,67 @@ import { prisma } from "../config/database.js";
 import { env } from "../config/env.js";
 import { VerificationChannel, OtpPurpose, } from "../generated/prisma/client.js";
 import { generateOtp, hashOtp, verifyOtp, } from "../utils/otp.js";
-import { sendVerificationEmail, } from "./email.service.js";
+import { sendPasswordResetEmail, sendVerificationEmail, } from "./email.service.js";
 import { sendVerificationSms, } from "./sms.service.js";
+const RESET_OTP_TTL_MINUTES = 15;
+const RESET_OTP_MAX_ATTEMPTS = 5;
+const code = generateOtp();
+const codeHash = await bcrypt.hash(code, 10);
+const expiresAt = new Date(Date.now() + RESET_OTP_TTL_MINUTES * 60_000);
+import bcrypt from "bcryptjs";
+/* ============================================================
+ * CREATE + SEND PASSWORD RESET OTP
+ * ============================================================ */
+export async function createAndSendPasswordResetOtp(userId, email, firstName) {
+    /* Invalidate any previous un-consumed reset OTPs for this user. */
+    await prisma.otpCode.updateMany({
+        where: {
+            userId,
+            purpose: OtpPurpose.PASSWORD_RESET,
+            verifiedAt: null,
+        },
+        data: { verifiedAt: new Date() },
+    });
+    await prisma.otpCode.create({
+        data: {
+            userId,
+            codeHash,
+            purpose: OtpPurpose.PASSWORD_RESET,
+            channel: VerificationChannel.EMAIL,
+            expiresAt,
+        },
+    });
+    await sendPasswordResetEmail(email, firstName, code, RESET_OTP_TTL_MINUTES);
+}
+/* ============================================================
+ * VERIFY PASSWORD RESET OTP
+ * ============================================================ */
+export async function verifyPasswordResetOtp(userId, code) {
+    const otp = await prisma.otpCode.findFirst({
+        where: {
+            userId,
+            purpose: OtpPurpose.PASSWORD_RESET,
+            verifiedAt: null,
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    if (!otp)
+        throw new Error("No active reset request. Please request a new code.");
+    if (otp.expiresAt < new Date())
+        throw new Error("This code has expired.");
+    if (otp.attempts >= RESET_OTP_MAX_ATTEMPTS) {
+        throw new Error("Too many attempts. Please request a new code.");
+    }
+    const ok = await bcrypt.compare(code, otp.codeHash); // ✅ direct bcrypt
+    if (!ok) {
+        await prisma.otpCode.update({
+            where: { id: otp.id },
+            data: { attempts: { increment: 1 } },
+        });
+        throw new Error("Invalid code.");
+    }
+    return otp;
+}
 /**
  * CREATE AND SEND VERIFICATION OTP
  */

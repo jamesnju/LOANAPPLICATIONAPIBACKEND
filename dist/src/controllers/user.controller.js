@@ -1,4 +1,4 @@
-import { createUserSchema, updateUserRoleSchema, updateUserSchema, updateUserStatusSchema, userIdSchema, userQuerySchema, } from "../schemas/user.schema.js";
+import { changePasswordSchema, createUserSchema, unlockAccountSchema, updateProfileSchema, updateUserRoleSchema, updateUserSchema, updateUserStatusSchema, userIdSchema, userQuerySchema, } from "../schemas/user.schema.js";
 import * as userService from "../services/user.service.js";
 function getParam(value) {
     if (!value)
@@ -258,6 +258,97 @@ export async function getUserLoans(req, res) {
             message: error instanceof Error
                 ? error.message
                 : "Failed to get loans",
+        });
+    }
+}
+/*
+ * ============================================================
+ * GET /users/me
+ * ============================================================
+ */
+export async function getMyProfile(req, res) {
+    try {
+        const userId = req.user.userId;
+        const profile = await userService.getMyProfile(userId);
+        res.json({ success: true, data: profile });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to get profile",
+        });
+    }
+}
+/*
+ * ============================================================
+ * PATCH /users/me
+ * ============================================================
+ */
+export async function updateMyProfile(req, res) {
+    try {
+        const userId = req.user.userId;
+        const data = updateProfileSchema.parse(req.body);
+        const updated = await userService.updateMyProfile(userId, data);
+        res.json({
+            success: true,
+            message: "Profile updated successfully",
+            data: updated,
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to update profile",
+        });
+    }
+}
+/*
+ * ============================================================
+ * POST /users/me/change-password
+ * ============================================================
+ */
+export async function changeMyPassword(req, res) {
+    try {
+        const userId = req.user.userId;
+        const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
+        await userService.changeMyPassword(userId, currentPassword, newPassword);
+        res.json({
+            success: true,
+            message: "Password changed successfully. Please log in again.",
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to change password",
+        });
+    }
+}
+/*
+ * ============================================================
+ * POST /users/:id/unlock  (admin)
+ * ============================================================
+ */
+export async function unlockAccount(req, res) {
+    try {
+        const adminUserId = req.user.userId;
+        const targetId = getParam(req.params.id);
+        if (!targetId) {
+            res.status(400).json({ success: false, message: "Invalid user ID" });
+            return;
+        }
+        const { reason } = unlockAccountSchema.parse(req.body ?? {});
+        const user = await userService.unlockAccount(adminUserId, targetId, reason);
+        res.json({
+            success: true,
+            message: "Account unlocked successfully",
+            data: user,
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to unlock account",
         });
     }
 }

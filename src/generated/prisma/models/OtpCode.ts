@@ -499,14 +499,6 @@ export type EnumVerificationChannelFieldUpdateOperationsInput = {
   set?: $Enums.VerificationChannel
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type OtpCodeCreateWithoutUserInput = {
   id?: string
   codeHash: string

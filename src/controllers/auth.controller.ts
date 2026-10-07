@@ -11,6 +11,9 @@ import {
   logoutUser,
   resendVerificationOtp,
   googleLoginUser,
+  requestPasswordReset,
+  verifyResetCode,
+  resetPasswordWithOtp,
 } from "../services/auth.service.js";
 
 import {
@@ -21,6 +24,9 @@ import {
   logoutSchema,
   resendOtpSchema,
   googleLoginSchema,
+  forgotPasswordSchema,
+  verifyResetOtpSchema,
+  resetPasswordSchema,
 } from "../schemas/auth.schema.js";
 
 export async function googleLogin(req: Request, res: Response) {
@@ -199,75 +205,133 @@ export async function resendOtp(
 /**
  * LOGIN
  */
-export async function login(
-  req: Request,
-  res: Response
-) {
 
+export async function login(req: Request, res: Response) {
   try {
+    const input = loginSchema.parse(req.body);
+    const result = await loginUser(input.identifier, input.password);
 
-    const input =
-      loginSchema.parse(
-        req.body
-      );
-
-
-    const result =
-      await loginUser(
-        input.identifier,
-        input.password
-      );
-
-
-    return res
-      .status(200)
-      .json({
-
-        success: true,
-
-        message:
-          "Login successful.",
-
-        data:
-          result,
-      });
-
+    return res.status(200).json({
+      success: true,
+      message: "Login successful.",
+      data: result,
+    });
   } catch (error) {
-
-    if (
-      error instanceof Error &&
-      error.message ===
-        "ACCOUNT_NOT_VERIFIED"
-    ) {
-
-      return res
-        .status(403)
-        .json({
-
-          success: false,
-
-          code:
-            "ACCOUNT_NOT_VERIFIED",
-
-          message:
-            "Please verify your account before logging in.",
-        });
+    if (error instanceof Error && error.message === "ACCOUNT_NOT_VERIFIED") {
+      return res.status(403).json({
+        success: false,
+        code: "ACCOUNT_NOT_VERIFIED",
+        message: "Please verify your account before logging in.",
+      });
     }
 
-
-    return res
-      .status(401)
-      .json({
-
+    /* ----------------------------------------------------------
+     * ACCOUNT LOCKED
+     * ----------------------------------------------------------
+     * The service throws a message that already includes the
+     * remaining minutes, so pass it straight through. We only
+     * need to tag it with a code so the client can branch on it.
+     */
+    if (
+      error instanceof Error &&
+      error.message.startsWith("Account is locked")
+    ) {
+      return res.status(423).json({   // 423 Locked — semantically correct
         success: false,
-
-        message:
-          error instanceof Error
-            ? error.message
-            : "Login failed",
+        code: "ACCOUNT_LOCKED",
+        message: error.message,
       });
+    }
+
+    /* Also surface the "you just got locked" case (4th failure). */
+    if (
+      error instanceof Error &&
+      error.message.startsWith("Too many failed login attempts")
+    ) {
+      return res.status(423).json({
+        success: false,
+        code: "ACCOUNT_LOCKED",
+        message: error.message,
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      code: "INVALID_CREDENTIALS",
+      message:
+        error instanceof Error ? error.message : "Login failed",
+    });
   }
 }
+// export async function login(
+//   req: Request,
+//   res: Response
+// ) {
+
+//   try {
+
+//     const input =
+//       loginSchema.parse(
+//         req.body
+//       );
+
+
+//     const result =
+//       await loginUser(
+//         input.identifier,
+//         input.password
+//       );
+
+
+//     return res
+//       .status(200)
+//       .json({
+
+//         success: true,
+
+//         message:
+//           "Login successful.",
+
+//         data:
+//           result,
+//       });
+
+//   } catch (error) {
+
+//     if (
+//       error instanceof Error &&
+//       error.message ===
+//         "ACCOUNT_NOT_VERIFIED"
+//     ) {
+
+//       return res
+//         .status(403)
+//         .json({
+
+//           success: false,
+
+//           code:
+//             "ACCOUNT_NOT_VERIFIED",
+
+//           message:
+//             "Please verify your account before logging in.",
+//         });
+//     }
+
+
+//     return res
+//       .status(401)
+//       .json({
+
+//         success: false,
+
+//         message:
+//           error instanceof Error
+//             ? error.message
+//             : "Login failed",
+//       });
+//   }
+// }
 
 
 /**
@@ -366,5 +430,115 @@ export async function logout(
             ? error.message
             : "Logout failed",
       });
+  }
+}
+
+/* ============================================================
+ * POST /auth/forgot-password
+ * ============================================================ */
+export async function forgotPasswordController(req: Request, res: Response) {
+  try {
+    const { identifier } = forgotPasswordSchema.parse(req.body);
+    const result = await requestPasswordReset(identifier);
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error: any) {
+    /* Zod validation errors → 400 with field message. */
+    if (error?.issues) {
+      return res.status(400).json({
+        success: false,
+        message: error.issues[0]?.message ?? "Invalid request",
+      });
+    }
+
+    /* Account locked → distinct 423 (Locked) with a code the
+     * frontend can branch on. */
+    if (error?.code === "ACCOUNT_LOCKED") {
+      return res.status(423).json({
+        success: false,
+        code: "ACCOUNT_LOCKED",
+        message: error.message,
+      });
+    }
+
+    /* Anything else — still don't leak. Return the generic success. */
+    console.error("[forgotPasswordController]", error);
+    return res.status(200).json({
+      success: true,
+      message: "If that account exists, a reset code has been sent.",
+    });
+  }
+}
+// export async function forgotPasswordController(req: Request, res: Response) {
+//   try {
+//     const { identifier } = forgotPasswordSchema.parse(req.body);
+//     const result = await requestPasswordReset(identifier);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: result.message,
+//     });
+//   } catch (error: any) {
+//     if (error?.issues) {
+//       return res.status(400).json({
+//         success: false,
+//         message: error.issues[0]?.message ?? "Invalid request",
+//       });
+//     }
+//     /* Never leak internal errors on this endpoint. */
+//     console.error("[forgotPasswordController]", error);
+//     return res.status(200).json({
+//       success: true,
+//       message: "If that account exists, a reset code has been sent.",
+//     });
+//   }
+// }
+
+/* ============================================================
+ * POST /auth/verify-reset-code
+ * ============================================================ */
+export async function verifyResetCodeController(req: Request, res: Response) {
+  try {
+    const { identifier, code } = verifyResetOtpSchema.parse(req.body);
+    const result = await verifyResetCode(identifier, code);
+
+    return res.status(200).json({ success: true, message: result.message });
+  } catch (error: any) {
+    if (error?.issues) {
+      return res.status(400).json({
+        success: false,
+        message: error.issues[0]?.message ?? "Invalid request",
+      });
+    }
+    return res.status(400).json({
+      success: false,
+      message: error instanceof Error ? error.message : "Invalid or expired code",
+    });
+  }
+}
+
+/* ============================================================
+ * POST /auth/reset-password
+ * ============================================================ */
+export async function resetPasswordController(req: Request, res: Response) {
+  try {
+    const { identifier, code, newPassword } = resetPasswordSchema.parse(req.body);
+    const result = await resetPasswordWithOtp(identifier, code, newPassword);
+
+    return res.status(200).json({ success: true, message: result.message });
+  } catch (error: any) {
+    if (error?.issues) {
+      return res.status(400).json({
+        success: false,
+        message: error.issues[0]?.message ?? "Invalid request",
+      });
+    }
+    return res.status(400).json({
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to reset password",
+    });
   }
 }

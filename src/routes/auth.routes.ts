@@ -8,6 +8,9 @@ import {
   refreshToken,
   logout,
   googleLogin,
+  forgotPasswordController,
+  verifyResetCodeController,
+  resetPasswordController,
 } from "../controllers/auth.controller.js";
 
 
@@ -68,6 +71,9 @@ router.post(
   "/logout",
   logout
 );
+router.post("/forgot-password", forgotPasswordController);
+router.post("/verify-reset-code", verifyResetCodeController);
+router.post("/reset-password", resetPasswordController);
 
 
 export default router;

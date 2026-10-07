@@ -27,6 +27,7 @@ enum UserStatus {
   INACTIVE
   SUSPENDED
   BLOCKED
+  LOCKED 
 }
 
 enum Role {
@@ -242,7 +243,9 @@ model User {
 
   role   Role       @default(CUSTOMER)
   status UserStatus @default(ACTIVE)
-
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastFailedLoginAt   DateTime?
   emailVerified Boolean   @default(false)
   phoneVerified Boolean   @default(false)
   kyc           Kyc?

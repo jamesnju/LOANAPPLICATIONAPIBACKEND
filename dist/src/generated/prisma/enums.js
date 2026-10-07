@@ -21,7 +21,8 @@ export const UserStatus = {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',
     SUSPENDED: 'SUSPENDED',
-    BLOCKED: 'BLOCKED'
+    BLOCKED: 'BLOCKED',
+    LOCKED: 'LOCKED'
 };
 export const Role = {
     SUPER_ADMIN: 'SUPER_ADMIN',

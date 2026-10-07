@@ -1897,6 +1897,9 @@ export const UserScalarFieldEnum = {
   monthlyIncome: 'monthlyIncome',
   role: 'role',
   status: 'status',
+  failedLoginAttempts: 'failedLoginAttempts',
+  lockedUntil: 'lockedUntil',
+  lastFailedLoginAt: 'lastFailedLoginAt',
   emailVerified: 'emailVerified',
   phoneVerified: 'phoneVerified',
   lastLoginAt: 'lastLoginAt',
@@ -2387,6 +2390,20 @@ export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -2418,20 +2435,6 @@ export type EnumVerificationChannelFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'VerificationChannel[]'
  */
 export type ListEnumVerificationChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationChannel[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma.js";
+import { logAction } from "./auditLog.service.js";
+import { sendAccountUnlockedEmail } from "./email.service.js";
 /*
  * Get users with filtering and pagination.
  */
@@ -251,5 +253,265 @@ export async function getUserLoans(userId) {
             createdAt: "desc",
         },
     });
+}
+/*
+ * ============================================================
+ * GET MY PROFILE
+ * ============================================================
+ *
+ * Returns the full self-view including fields the admin
+ * select excludes (e.g. nationalId, address via Kyc).
+ */
+export async function getMyProfile(userId) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            avatarUrl: true,
+            nationalId: true,
+            dateOfBirth: true,
+            gender: true,
+            employmentType: true,
+            employerName: true,
+            monthlyIncome: true,
+            role: true,
+            status: true,
+            emailVerified: true,
+            phoneVerified: true,
+            lastLoginAt: true,
+            createdAt: true,
+            updatedAt: true,
+            kyc: {
+                select: {
+                    nationality: true,
+                    address: true,
+                    city: true,
+                    county: true,
+                    country: true,
+                    postalCode: true,
+                    status: true,
+                },
+            },
+        },
+    });
+    if (!user)
+        throw new Error("User not found");
+    return user;
+}
+/*
+ * ============================================================
+ * UPDATE MY PROFILE
+ * ============================================================
+ */
+export async function updateMyProfile(userId, data) {
+    // `dateOfBirth` arrives already coerced by Zod.
+    return prisma.user.update({
+        where: { id: userId },
+        data: data,
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            avatarUrl: true,
+            nationalId: true,
+            dateOfBirth: true,
+            gender: true,
+            employmentType: true,
+            employerName: true,
+            monthlyIncome: true,
+            updatedAt: true,
+        },
+    });
+}
+/*
+ * ============================================================
+ * CHANGE PASSWORD (self)
+ * ============================================================
+ */
+export async function changeMyPassword(userId, currentPassword, newPassword) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, passwordHash: true },
+    });
+    if (!user)
+        throw new Error("User not found");
+    if (!user.passwordHash) {
+        throw new Error("This account uses social login and has no password");
+    }
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok)
+        throw new Error("Current password is incorrect");
+    const same = await bcrypt.compare(newPassword, user.passwordHash);
+    if (same)
+        throw new Error("New password must differ from the current one");
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+        where: { id: userId },
+        data: { passwordHash },
+    });
+    // Invalidate all refresh tokens — force re-login on other devices.
+    await prisma.refreshToken.updateMany({
+        where: { userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+    });
+    await logAction({
+        userId,
+        action: "UPDATE",
+        entity: "User",
+        entityId: userId,
+        description: "User changed their password",
+    });
+    return { success: true };
+}
+/*
+ * ============================================================
+ * LOCK / UNLOCK HELPERS
+ * ============================================================
+ */
+const MAX_FAILED_ATTEMPTS = 4;
+const LOCK_DURATION_MS = 4 * 60 * 60 * 1000; // 4 hours
+/**
+ * Called by the auth service after a *successful* password check.
+ * Resets counters and clears any expired lock.
+ */
+export async function resetLoginAttempts(userId) {
+    await prisma.user.update({
+        where: { id: userId },
+        data: {
+            failedLoginAttempts: 0,
+            lockedUntil: null,
+            lastFailedLoginAt: null,
+        },
+    });
+}
+/**
+ * Called by the auth service after a *failed* password check.
+ * Increments the counter; locks the account when it reaches the threshold.
+ *
+ * Returns `{ locked: boolean, lockedUntil: Date | null, attemptsLeft: number }`
+ */
+export async function registerFailedLogin(userId) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { failedLoginAttempts: true },
+    });
+    if (!user)
+        throw new Error("User not found");
+    const attempts = user.failedLoginAttempts + 1;
+    const shouldLock = attempts >= MAX_FAILED_ATTEMPTS;
+    const lockedUntil = shouldLock
+        ? new Date(Date.now() + LOCK_DURATION_MS)
+        : null;
+    await prisma.user.update({
+        where: { id: userId },
+        data: {
+            failedLoginAttempts: attempts,
+            lastFailedLoginAt: new Date(),
+            ...(shouldLock && {
+                status: "LOCKED",
+                lockedUntil,
+            }),
+        },
+    });
+    return {
+        locked: shouldLock,
+        lockedUntil,
+        attemptsLeft: Math.max(0, MAX_FAILED_ATTEMPTS - attempts),
+    };
+}
+/**
+ * Read-only check used by the login flow *before* verifying the password.
+ * Also auto-unlocks if the lock window has elapsed.
+ *
+ * Returns `{ locked: boolean, lockedUntil: Date | null }`
+ */
+export async function checkAccountLock(userId) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            status: true,
+            lockedUntil: true,
+            failedLoginAttempts: true,
+        },
+    });
+    if (!user)
+        throw new Error("User not found");
+    const isLocked = user.status === "LOCKED";
+    if (!isLocked) {
+        return { locked: false, lockedUntil: null };
+    }
+    // Auto-unlock if the window has passed
+    if (user.lockedUntil && user.lockedUntil <= new Date()) {
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                status: "ACTIVE",
+                lockedUntil: null,
+                failedLoginAttempts: 0,
+            },
+        });
+        return { locked: false, lockedUntil: null };
+    }
+    return { locked: true, lockedUntil: user.lockedUntil };
+}
+/**
+ * Admin-triggered unlock.
+ */
+export async function unlockAccount(adminUserId, targetUserId, reason) {
+    const user = await prisma.user.findUnique({
+        where: { id: targetUserId },
+    });
+    if (!user)
+        throw new Error("User not found");
+    /* ------------------------------------------------------------
+     * 1. Flip the account back to ACTIVE and clear lock fields.
+     * ------------------------------------------------------------ */
+    const updated = await prisma.user.update({
+        where: { id: targetUserId },
+        data: {
+            status: "ACTIVE",
+            lockedUntil: null,
+            failedLoginAttempts: 0,
+            lastFailedLoginAt: null,
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: true,
+            status: true,
+        },
+    });
+    /* ------------------------------------------------------------
+     * 2. Notify the user by email.
+     *
+     *    Placed AFTER the DB update, so we only email once the
+     *    state change is committed. Wrapped in .catch() so an SMTP
+     *    failure can never roll back the unlock or turn a 200 into
+     *    a 500 — the account IS unlocked regardless of email.
+     * ------------------------------------------------------------ */
+    await sendAccountUnlockedEmail(updated.email, updated.firstName).catch((e) => ""
+    //console.error("[unlockAccount] email failed:", e),
+    );
+    /* ------------------------------------------------------------
+     * 3. Audit log.
+     * ------------------------------------------------------------ */
+    await logAction({
+        userId: adminUserId,
+        action: "UPDATE",
+        entity: "User",
+        entityId: targetUserId,
+        description: `Admin unlocked account${reason ? `: ${reason}` : ""}`,
+        oldValue: { status: user.status, lockedUntil: user.lockedUntil },
+        newValue: { status: "ACTIVE" },
+    });
+    return updated;
 }
 //# sourceMappingURL=user.service.js.map
