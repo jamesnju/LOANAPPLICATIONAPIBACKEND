@@ -11,55 +11,12 @@ export async function googleLogin(req, res) {
         });
     }
     catch (error) {
-        if (error instanceof Error &&
-            error.message === "ACCOUNT_NOT_REGISTERED") {
-            return res.status(404).json({
-                success: false,
-                code: "ACCOUNT_NOT_REGISTERED",
-                message: "This Google account is not registered. Please register an account first.",
-            });
-        }
-        if (error instanceof Error &&
-            error.message === "Google email is not verified") {
-            return res.status(401).json({
-                success: false,
-                code: "GOOGLE_EMAIL_NOT_VERIFIED",
-                message: "Please use a verified Google account.",
-            });
-        }
-        if (error instanceof Error &&
-            error.message === "Account is not active") {
-            return res.status(403).json({
-                success: false,
-                code: "ACCOUNT_NOT_ACTIVE",
-                message: "Your account is not active.",
-            });
-        }
         return res.status(401).json({
             success: false,
-            message: error instanceof Error
-                ? error.message
-                : "Google login failed",
+            message: error instanceof Error ? error.message : "Google login failed",
         });
     }
 }
-// export async function googleLogin(req: Request, res: Response) {
-//   try {
-//     const input = googleLoginSchema.parse(req.body);
-//     const result = await googleLoginUser(input);
-//     return res.status(200).json({
-//       success: true,
-//       message: "Login successful.",
-//       data: result,
-//     });
-//   } catch (error) {
-//     return res.status(401).json({
-//       success: false,
-//       message:
-//         error instanceof Error ? error.message : "Google login failed",
-//     });
-//   }
-// }
 /**
  * REGISTER
  */
