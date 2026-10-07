@@ -19,10 +19,7 @@ function generateLoanNumber() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    const randomPart = Math.random()
-        .toString(36)
-        .substring(2, 8)
-        .toUpperCase();
+    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
     return `LN-${year}${month}${day}-${randomPart}`;
 }
 /*
@@ -37,10 +34,7 @@ function generateTransactionNumber() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    const randomPart = Math.random()
-        .toString(36)
-        .substring(2, 8)
-        .toUpperCase();
+    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
     return `TXN-${year}${month}${day}-${randomPart}`;
 }
 /*
@@ -136,9 +130,7 @@ export async function createLoanFromApplication(applicationId, createdByUserId) 
     const interestRate = Number(application.interestRate);
     const processingFee = Number(application.processingFee);
     const interestAmount = (principalAmount * interestRate) / 100;
-    const totalAmount = principalAmount +
-        interestAmount +
-        processingFee;
+    const totalAmount = principalAmount + interestAmount + processingFee;
     const outstandingAmount = totalAmount;
     /*
      * Generate unique loan number.
@@ -378,13 +370,8 @@ export async function disburseLoan(loanId, financeUserId, paymentMethod, transac
      * together.
      */
     const result = await prisma.$transaction(async (tx) => {
-        /*
-         * Update loan.
-         */
         const updatedLoan = await tx.loan.update({
-            where: {
-                id: loanId,
-            },
+            where: { id: loanId },
             data: {
                 status: LoanStatus.ACTIVE,
                 disbursedAt,
@@ -404,27 +391,13 @@ export async function disburseLoan(loanId, financeUserId, paymentMethod, transac
                 application: true,
             },
         });
-        /*
-         * Record financial ledger transaction.
-         *
-         * At disbursement:
-         *
-         * Balance before = 0
-         *
-         * Balance after = loan outstanding amount
-         *
-         * NOTE:
-         * This is the loan ledger balance, not the customer's
-         * bank account balance.
-         */
         const transaction = await tx.loanTransaction.create({
             data: {
                 transactionNumber: generateTransactionNumber(),
                 loanId,
                 type: TransactionType.DISBURSEMENT,
                 amount: loan.principalAmount,
-                description: comments ??
-                    "Loan disbursed successfully",
+                description: comments ?? "Loan disbursed successfully",
                 reference: transactionReference ?? null,
                 balanceBefore: 0,
                 balanceAfter: loan.outstandingAmount,
@@ -442,9 +415,10 @@ export async function disburseLoan(loanId, financeUserId, paymentMethod, transac
                 transactionReference: transactionReference ?? null,
             },
         });
-        await notifyUser(result.loan.userId, "LOAN_DISBURSED", "Loan disbursed", `Your loan ${result.loan.loanNumber} of KES ${Number(result.loan.totalAmount).toLocaleString()} has been disbursed.`, {
-            loanId: result.loan.id,
-            loanNumber: result.loan.loanNumber,
+        await notifyUser(updatedLoan.userId, // ✅ fixed
+        "LOAN_DISBURSED", "Loan disbursed", `Your loan ${updatedLoan.loanNumber} of KES ${Number(updatedLoan.totalAmount).toLocaleString()} has been disbursed.`, {
+            loanId: updatedLoan.id, // ✅ fixed
+            loanNumber: updatedLoan.loanNumber, // ✅ fixed
         });
         return {
             loan: updatedLoan,

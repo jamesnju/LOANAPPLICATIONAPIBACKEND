@@ -30,10 +30,7 @@ function generateLoanNumber(): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  const randomPart = Math.random()
-    .toString(36)
-    .substring(2, 8)
-    .toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
 
   return `LN-${year}${month}${day}-${randomPart}`;
 }
@@ -52,10 +49,7 @@ function generateTransactionNumber(): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  const randomPart = Math.random()
-    .toString(36)
-    .substring(2, 8)
-    .toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
 
   return `TXN-${year}${month}${day}-${randomPart}`;
 }
@@ -117,9 +111,7 @@ export async function createLoanFromApplication(
    * Prevent duplicate loan creation.
    */
   if (application.loan) {
-    throw new Error(
-      "A loan has already been created for this application",
-    );
+    throw new Error("A loan has already been created for this application");
   }
 
   /*
@@ -144,9 +136,7 @@ export async function createLoanFromApplication(
     creator.role !== Role.ADMIN &&
     creator.role !== Role.SUPER_ADMIN
   ) {
-    throw new Error(
-      "You are not authorized to create loans",
-    );
+    throw new Error("You are not authorized to create loans");
   }
 
   /*
@@ -169,25 +159,15 @@ export async function createLoanFromApplication(
    * 3000 + 150 + 100 = 3,250
    */
 
-  const principalAmount = Number(
-    application.requestedAmount,
-  );
+  const principalAmount = Number(application.requestedAmount);
 
-  const interestRate = Number(
-    application.interestRate,
-  );
+  const interestRate = Number(application.interestRate);
 
-  const processingFee = Number(
-    application.processingFee,
-  );
+  const processingFee = Number(application.processingFee);
 
-  const interestAmount =
-    (principalAmount * interestRate) / 100;
+  const interestAmount = (principalAmount * interestRate) / 100;
 
-  const totalAmount =
-    principalAmount +
-    interestAmount +
-    processingFee;
+  const totalAmount = principalAmount + interestAmount + processingFee;
 
   const outstandingAmount = totalAmount;
 
@@ -259,28 +239,29 @@ export async function createLoanFromApplication(
     },
   });
 
-// after creating the loan:
-await logAction({
-  userId: createdByUserId,
-  action: "CREATE",
-  entity: "Loan",
-  entityId: loan.id,
-  description: `Loan ${loan.loanNumber} created from application`,
-  newValue: {
-    loanNumber: loan.loanNumber,
-    principalAmount: loan.principalAmount.toString(),
-    status: loan.status,
-  },
-});await notifyUser(
-  loan.userId,
-  "APPLICATION_APPROVED",   // reuse — or add a new type if you want
-  "Loan created",
-  `Your loan ${loan.loanNumber} has been created and is pending disbursement.`,
-  {
-    loanId: loan.id,
-    loanNumber: loan.loanNumber,
-  },
-);
+  // after creating the loan:
+  await logAction({
+    userId: createdByUserId,
+    action: "CREATE",
+    entity: "Loan",
+    entityId: loan.id,
+    description: `Loan ${loan.loanNumber} created from application`,
+    newValue: {
+      loanNumber: loan.loanNumber,
+      principalAmount: loan.principalAmount.toString(),
+      status: loan.status,
+    },
+  });
+  await notifyUser(
+    loan.userId,
+    "APPLICATION_APPROVED", // reuse — or add a new type if you want
+    "Loan created",
+    `Your loan ${loan.loanNumber} has been created and is pending disbursement.`,
+    {
+      loanId: loan.id,
+      loanNumber: loan.loanNumber,
+    },
+  );
   return loan;
 }
 
@@ -290,10 +271,7 @@ await logAction({
  * ============================================================
  */
 
-export async function getLoanById(
-  loanId: string,
-  requestingUserId: string,
-) {
+export async function getLoanById(loanId: string, requestingUserId: string) {
   const loan = await prisma.loan.findUnique({
     where: {
       id: loanId,
@@ -360,9 +338,7 @@ export async function getLoanById(
     requester.role === Role.SUPPORT;
 
   if (!isStaff && loan.userId !== requestingUserId) {
-    throw new Error(
-      "You are not authorized to view this loan",
-    );
+    throw new Error("You are not authorized to view this loan");
   }
 
   return loan;
@@ -374,9 +350,7 @@ export async function getLoanById(
  * ============================================================
  */
 
-export async function getMyLoans(
-  userId: string,
-) {
+export async function getMyLoans(userId: string) {
   const loans = await prisma.loan.findMany({
     where: {
       userId,
@@ -470,9 +444,7 @@ export async function disburseLoan(
     financeUser.role !== Role.ADMIN &&
     financeUser.role !== Role.SUPER_ADMIN
   ) {
-    throw new Error(
-      "You are not authorized to disburse loans",
-    );
+    throw new Error("You are not authorized to disburse loans");
   }
 
   /*
@@ -492,9 +464,7 @@ export async function disburseLoan(
    */
   const maturityDate = new Date(disbursedAt);
 
-  maturityDate.setDate(
-    maturityDate.getDate() + loan.repaymentDays,
-  );
+  maturityDate.setDate(maturityDate.getDate() + loan.repaymentDays);
 
   /*
    * ==========================================================
@@ -506,22 +476,13 @@ export async function disburseLoan(
    */
 
   const result = await prisma.$transaction(async (tx) => {
-    /*
-     * Update loan.
-     */
     const updatedLoan = await tx.loan.update({
-      where: {
-        id: loanId,
-      },
-
+      where: { id: loanId },
       data: {
         status: LoanStatus.ACTIVE,
-
         disbursedAt,
-
         maturityDate,
       },
-
       include: {
         user: {
           select: {
@@ -532,71 +493,48 @@ export async function disburseLoan(
             phone: true,
           },
         },
-
         loanProduct: true,
-
         application: true,
       },
     });
 
-    /*
-     * Record financial ledger transaction.
-     *
-     * At disbursement:
-     *
-     * Balance before = 0
-     *
-     * Balance after = loan outstanding amount
-     *
-     * NOTE:
-     * This is the loan ledger balance, not the customer's
-     * bank account balance.
-     */
     const transaction = await tx.loanTransaction.create({
       data: {
-        transactionNumber:
-          generateTransactionNumber(),
-
+        transactionNumber: generateTransactionNumber(),
         loanId,
-
         type: TransactionType.DISBURSEMENT,
-
         amount: loan.principalAmount,
-
-        description:
-          comments ??
-          "Loan disbursed successfully",
-
-        reference:
-          transactionReference ?? null,
-
+        description: comments ?? "Loan disbursed successfully",
+        reference: transactionReference ?? null,
         balanceBefore: 0,
-
         balanceAfter: loan.outstandingAmount,
       },
     });
+
     await logAction({
-  userId: financeUserId,
-  action: "DISBURSE",
-  entity: "Loan",
-  entityId: loanId,
-  description: `Loan disbursed via ${paymentMethod}`,
-  newValue: {
-    status: "ACTIVE",
-    disbursedAt,
-    transactionReference: transactionReference ?? null,
-  },
-});
-await notifyUser(
-  result.loan.userId,
-  "LOAN_DISBURSED",
-  "Loan disbursed",
-  `Your loan ${result.loan.loanNumber} of KES ${Number(result.loan.totalAmount).toLocaleString()} has been disbursed.`,
-  {
-    loanId: result.loan.id,
-    loanNumber: result.loan.loanNumber,
-  },
-);
+      userId: financeUserId,
+      action: "DISBURSE",
+      entity: "Loan",
+      entityId: loanId,
+      description: `Loan disbursed via ${paymentMethod}`,
+      newValue: {
+        status: "ACTIVE",
+        disbursedAt,
+        transactionReference: transactionReference ?? null,
+      },
+    });
+
+    await notifyUser(
+      updatedLoan.userId, // ✅ fixed
+      "LOAN_DISBURSED",
+      "Loan disbursed",
+      `Your loan ${updatedLoan.loanNumber} of KES ${Number(updatedLoan.totalAmount).toLocaleString()} has been disbursed.`,
+      {
+        loanId: updatedLoan.id, // ✅ fixed
+        loanNumber: updatedLoan.loanNumber, // ✅ fixed
+      },
+    );
+
     return {
       loan: updatedLoan,
       transaction,
@@ -619,34 +557,30 @@ export async function getLoanTransactions(
   /*
    * First verify access to the loan.
    */
-  await getLoanById(
-    loanId,
-    requestingUserId,
-  );
+  await getLoanById(loanId, requestingUserId);
 
-  const transactions =
-    await prisma.loanTransaction.findMany({
-      where: {
-        loanId,
-      },
+  const transactions = await prisma.loanTransaction.findMany({
+    where: {
+      loanId,
+    },
 
-      orderBy: {
-        createdAt: "asc",
-      },
+    orderBy: {
+      createdAt: "asc",
+    },
 
-      include: {
-        payment: {
-          select: {
-            id: true,
-            paymentReference: true,
-            amount: true,
-            paymentMethod: true,
-            transactionReference: true,
-            status: true,
-          },
+    include: {
+      payment: {
+        select: {
+          id: true,
+          paymentReference: true,
+          amount: true,
+          paymentMethod: true,
+          transactionReference: true,
+          status: true,
         },
       },
-    });
+    },
+  });
 
   return transactions;
 }
