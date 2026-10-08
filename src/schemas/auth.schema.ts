@@ -147,6 +147,7 @@ export const resendOtpSchema =
   });
 export const googleLoginSchema = z.object({
   idToken: z.string().min(1, "Google ID token is required"),
+  intent: z.enum(["login", "register"]).default("login"),
 });
 
 

@@ -11,7 +11,10 @@ import {
   forgotPasswordController,
   verifyResetCodeController,
   resetPasswordController,
+  refreshController,
+  logoutAllController,
 } from "../controllers/auth.controller.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 
 const router =
@@ -35,7 +38,7 @@ router.post(
   "/verify",
   verifyAccount
 );
-
+router.post("/refresh", refreshController);
 
 /*
  * POST /api/v1/auth/resend-otp
@@ -71,9 +74,11 @@ router.post(
   "/logout",
   logout
 );
+router.post("/logout-all", authenticate, logoutAllController);
 router.post("/forgot-password", forgotPasswordController);
 router.post("/verify-reset-code", verifyResetCodeController);
 router.post("/reset-password", resetPasswordController);
+
 
 
 export default router;

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { register, verifyAccount, resendOtp, login, refreshToken, logout, googleLogin, forgotPasswordController, verifyResetCodeController, resetPasswordController, } from "../controllers/auth.controller.js";
+import { register, verifyAccount, resendOtp, login, refreshToken, logout, googleLogin, forgotPasswordController, verifyResetCodeController, resetPasswordController, refreshController, logoutAllController, } from "../controllers/auth.controller.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 const router = Router();
 router.post("/google", googleLogin);
 /*
@@ -10,6 +11,7 @@ router.post("/register", register);
  * POST /api/v1/auth/verify
  */
 router.post("/verify", verifyAccount);
+router.post("/refresh", refreshController);
 /*
  * POST /api/v1/auth/resend-otp
  */
@@ -26,6 +28,7 @@ router.post("/refresh", refreshToken);
  * POST /api/v1/auth/logout
  */
 router.post("/logout", logout);
+router.post("/logout-all", authenticate, logoutAllController);
 router.post("/forgot-password", forgotPasswordController);
 router.post("/verify-reset-code", verifyResetCodeController);
 router.post("/reset-password", resetPasswordController);

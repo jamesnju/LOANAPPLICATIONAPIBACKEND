@@ -14,6 +14,7 @@ import {
   requestPasswordReset,
   verifyResetCode,
   resetPasswordWithOtp,
+  logoutAllSessions,
 } from "../services/auth.service.js";
 
 import {
@@ -39,14 +40,65 @@ export async function googleLogin(req: Request, res: Response) {
       message: "Login successful.",
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.issues) {
+      return res.status(400).json({
+        success: false,
+        message: error.issues[0]?.message ?? "Invalid request",
+      });
+    }
+
+    /* No account on login page → 404 with a code. */
+    if (error?.code === "ACCOUNT_NOT_FOUND") {
+      return res.status(404).json({
+        success: false,
+        code: "ACCOUNT_NOT_FOUND",
+        message: error.message,
+      });
+    }
+
+    /* Locked → 423, same semantics as the password flow. */
+    if (error?.code === "ACCOUNT_LOCKED") {
+      return res.status(423).json({
+        success: false,
+        code: "ACCOUNT_LOCKED",
+        message: error.message,
+      });
+    }
+
+    if (error?.code === "ACCOUNT_NOT_ACTIVE") {
+      return res.status(403).json({
+        success: false,
+        code: "ACCOUNT_NOT_ACTIVE",
+        message: error.message,
+      });
+    }
+
     return res.status(401).json({
       success: false,
-      message:
-        error instanceof Error ? error.message : "Google login failed",
+      message: error instanceof Error ? error.message : "Google login failed",
     });
   }
 }
+
+// export async function googleLogin(req: Request, res: Response) {
+//   try {
+//     const input = googleLoginSchema.parse(req.body);
+//     const result = await googleLoginUser(input);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Login successful.",
+//       data: result,
+//     });
+//   } catch (error) {
+//     return res.status(401).json({
+//       success: false,
+//       message:
+//         error instanceof Error ? error.message : "Google login failed",
+//     });
+//   }
+// }
 /**
  * REGISTER
  */
@@ -332,7 +384,25 @@ export async function login(req: Request, res: Response) {
 //       });
 //   }
 // }
+export async function refreshController(req: Request, res: Response) {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({ success: false, message: "refreshToken required" });
+    }
 
+    const result = await refreshAccessToken(refreshToken);
+    return res.json({ success: true, data: result });   // { accessToken }
+  } catch (err: any) {
+    /* Any failure → tell the client the refresh token is dead
+     * so it can log out cleanly. */
+    return res.status(401).json({
+      success: false,
+      code: "REFRESH_FAILED",
+      message: err instanceof Error ? err.message : "Refresh failed",
+    });
+  }
+}
 
 /**
  * REFRESH TOKEN
@@ -472,30 +542,7 @@ export async function forgotPasswordController(req: Request, res: Response) {
     });
   }
 }
-// export async function forgotPasswordController(req: Request, res: Response) {
-//   try {
-//     const { identifier } = forgotPasswordSchema.parse(req.body);
-//     const result = await requestPasswordReset(identifier);
 
-//     return res.status(200).json({
-//       success: true,
-//       message: result.message,
-//     });
-//   } catch (error: any) {
-//     if (error?.issues) {
-//       return res.status(400).json({
-//         success: false,
-//         message: error.issues[0]?.message ?? "Invalid request",
-//       });
-//     }
-//     /* Never leak internal errors on this endpoint. */
-//     console.error("[forgotPasswordController]", error);
-//     return res.status(200).json({
-//       success: true,
-//       message: "If that account exists, a reset code has been sent.",
-//     });
-//   }
-// }
 
 /* ============================================================
  * POST /auth/verify-reset-code
@@ -539,6 +586,26 @@ export async function resetPasswordController(req: Request, res: Response) {
     return res.status(400).json({
       success: false,
       message: error instanceof Error ? error.message : "Failed to reset password",
+    });
+  }
+}
+
+export async function logoutAllController(req: Request, res: Response) {
+  try {
+    /* Requires auth — userId comes from the verified access token. */
+    const userId = req.user!.userId;
+
+    const result = await logoutAllSessions(userId);
+
+    return res.json({
+      success: true,
+      message: "Signed out from all sessions.",
+      data: result,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Logout failed",
     });
   }
 }
