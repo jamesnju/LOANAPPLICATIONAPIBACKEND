@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   createLoanController,
   disburseLoanController,
+  downloadLoanReceiptController,
   getAdminLoansController,
   getLoanController,
   getLoanTransactionsController,
@@ -123,5 +124,10 @@ router.post(
   authenticate,
   idPhotoUpload.single("file"),
   uploadIdPhotoController
+);
+router.get(
+  "/:id/receipt",
+  authenticate,
+  downloadLoanReceiptController,
 );
 export default router;

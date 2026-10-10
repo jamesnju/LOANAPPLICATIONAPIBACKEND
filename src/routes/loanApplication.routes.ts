@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController, submitLoanApplicationController } from "../controllers/loanApplication.controller.js";
+import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController, submitLoanApplicationController, getMyDraftApplicationController, deleteDraftApplicationController } from "../controllers/loanApplication.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
+import { authorize } from "../middleware/role.middleware.js";
 
 
 
@@ -32,5 +33,16 @@ router.patch(
   "/:id/submit",
   submitLoanApplicationController,
 );
-
+router.get(
+  "/me/draft",
+  authenticate,
+  authorize("CUSTOMER"),
+  getMyDraftApplicationController,
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("CUSTOMER"),
+  deleteDraftApplicationController,
+);
 export default router;

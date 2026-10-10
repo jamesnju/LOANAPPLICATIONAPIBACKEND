@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createLoanController, disburseLoanController, getAdminLoansController, getLoanController, getLoanTransactionsController, getMyLoansController, uploadIdPhotoController, } from "../controllers/loan.controller.js";
+import { createLoanController, disburseLoanController, downloadLoanReceiptController, getAdminLoansController, getLoanController, getLoanTransactionsController, getMyLoansController, uploadIdPhotoController, } from "../controllers/loan.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { Role } from "../generated/prisma/client.js";
 import { authorize } from "../middleware/role.middleware.js";
@@ -56,5 +56,6 @@ router.get("/:id/transactions", authenticate, getLoanTransactionsController);
 router.get("/:id", authenticate, getLoanController);
 router.get("/", authenticate, authorize(Role.FINANCE_OFFICER, Role.ADMIN, Role.SUPER_ADMIN, Role.LOAN_OFFICER), getAdminLoansController);
 router.post("/:id/id-photos", authenticate, idPhotoUpload.single("file"), uploadIdPhotoController);
+router.get("/:id/receipt", authenticate, downloadLoanReceiptController);
 export default router;
 //# sourceMappingURL=loan.routes.js.map

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { idParamSchema } from "../schemas/kyc.schema.js";
 import { createLoanApplicationSchema, loanApplicationQuerySchema, cancelLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
-import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication } from "../services/loanApplication.service.js";
+import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication, getMyDraftApplication, deleteDraftApplication } from "../services/loanApplication.service.js";
 
 
 
@@ -193,4 +193,48 @@ export async function submitLoanApplicationController(
     });
   }
 }
+export async function getMyDraftApplicationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const userId = req.user!.userId;
+    const draft = await getMyDraftApplication(userId);
 
+    return res.json({
+      success: true,
+      data: draft,   // null when there's no draft
+    });
+  } catch (err: any) {
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to load draft",
+    });
+  }
+}
+export async function deleteDraftApplicationController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const userId = req.user!.userId;
+
+    const raw = req.params.id;
+    const id = Array.isArray(raw) ? raw[0] : raw;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID",
+      });
+    }
+
+    const result = await deleteDraftApplication(id, userId);
+    return res.json({ success: true, data: result });
+  } catch (err: any) {
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Delete failed",
+    });
+  }
+}

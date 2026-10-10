@@ -627,4 +627,38 @@ async function sendLoanApplicationReviewNotification(application, newStatus, com
             return notifyUser(application.userId, "GENERAL", "Application under review", `Hi ${name}, your loan application ${ref} is now under review. We'll update you as it progresses.`, { applicationId: application.id, status: newStatus });
     }
 }
+export async function getMyDraftApplication(userId) {
+    const draft = await prisma.loanApplication.findFirst({
+        where: {
+            userId,
+            status: "DRAFT",
+        },
+        orderBy: { updatedAt: "desc" },
+        include: {
+            loanProduct: true,
+            documents: true,
+            guarantors: { include: { documents: true } },
+            collateral: { include: { documents: true } },
+        },
+    });
+    return draft;
+}
+export async function deleteDraftApplication(applicationId, userId) {
+    const app = await prisma.loanApplication.findFirst({
+        where: { id: applicationId, userId },
+        select: { id: true, status: true },
+    });
+    if (!app)
+        throw new Error("Application not found");
+    if (app.status !== "DRAFT") {
+        throw new Error("Only draft applications can be deleted");
+    }
+    /* Cascade deletes on relations are already in the schema:
+     *   documents, guarantors, collateral, approvals
+     * so a single delete is enough. Confirm your Prisma schema has
+     * onDelete: Cascade on those relations; if not, delete them
+     * explicitly inside a transaction. */
+    await prisma.loanApplication.delete({ where: { id: app.id } });
+    return { deleted: true };
+}
 //# sourceMappingURL=loanApplication.service.js.map

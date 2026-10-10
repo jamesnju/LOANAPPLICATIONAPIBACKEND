@@ -314,3 +314,50 @@ export async function sendPasswordResetEmail(
     `,
   });
 }
+
+/* ============================================================
+ * DISBURSEMENT RECEIPT EMAIL (with PDF attachment)
+ * ============================================================ */
+export async function sendDisbursementReceiptEmail(opts: {
+  to: string;
+  firstName: string;
+  loanNumber: string;
+  totalAmount: number;
+  pdf: Buffer;
+}): Promise<void> {
+  await transporter.sendMail({
+    from: env.EMAIL_FROM,
+    to: opts.to,
+    subject: `Your loan ${opts.loanNumber} has been disbursed`,
+    text:
+      `Hi ${opts.firstName},\n\n` +
+      `Your loan ${opts.loanNumber} of KES ${opts.totalAmount.toLocaleString()} ` +
+      `has been disbursed. Please find your receipt attached.\n\n` +
+      `Repayment is due according to the schedule in your dashboard.\n\n` +
+      `— PesaMaishaCapital`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <body>
+          <h2>Your loan has been disbursed</h2>
+          <p>Hi ${opts.firstName},</p>
+          <p>
+            Your loan <strong>${opts.loanNumber}</strong> of
+            <strong>KES ${opts.totalAmount.toLocaleString()}</strong>
+            has been disbursed.
+          </p>
+          <p>Please find your receipt attached to this email.</p>
+          <p>Repayment is due according to the schedule in your dashboard.</p>
+          <p>— PesaMaishaCapital</p>
+        </body>
+      </html>
+    `,
+    attachments: [
+      {
+        filename: `Receipt-${opts.loanNumber}.pdf`,
+        content: opts.pdf,
+        contentType: "application/pdf",
+      },
+    ],
+  });
+}

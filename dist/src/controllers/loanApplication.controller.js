@@ -1,6 +1,6 @@
 import { idParamSchema } from "../schemas/kyc.schema.js";
 import { createLoanApplicationSchema, loanApplicationQuerySchema, cancelLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
-import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication } from "../services/loanApplication.service.js";
+import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication, getMyDraftApplication, deleteDraftApplication } from "../services/loanApplication.service.js";
 function getUserId(req) {
     const user = req.user;
     if (!user?.userId) {
@@ -109,6 +109,43 @@ export async function submitLoanApplicationController(req, res) {
         return res.status(400).json({
             success: false,
             message: error.message,
+        });
+    }
+}
+export async function getMyDraftApplicationController(req, res) {
+    try {
+        const userId = req.user.userId;
+        const draft = await getMyDraftApplication(userId);
+        return res.json({
+            success: true,
+            data: draft, // null when there's no draft
+        });
+    }
+    catch (err) {
+        return res.status(400).json({
+            success: false,
+            message: err instanceof Error ? err.message : "Failed to load draft",
+        });
+    }
+}
+export async function deleteDraftApplicationController(req, res) {
+    try {
+        const userId = req.user.userId;
+        const raw = req.params.id;
+        const id = Array.isArray(raw) ? raw[0] : raw;
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid application ID",
+            });
+        }
+        const result = await deleteDraftApplication(id, userId);
+        return res.json({ success: true, data: result });
+    }
+    catch (err) {
+        return res.status(400).json({
+            success: false,
+            message: err instanceof Error ? err.message : "Delete failed",
         });
     }
 }
