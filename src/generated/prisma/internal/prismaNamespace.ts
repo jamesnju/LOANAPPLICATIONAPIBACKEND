@@ -415,6 +415,7 @@ export const ModelName = {
   Document: 'Document',
   Notification: 'Notification',
   SystemConfig: 'SystemConfig',
+  MpesaStkRequest: 'MpesaStkRequest',
   AuditLog: 'AuditLog'
 } as const
 
@@ -431,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "otpCode" | "loanProduct" | "kyc" | "kycDocument" | "kycReview" | "loanApplication" | "loan" | "loanApproval" | "repaymentSchedule" | "payment" | "loanTransaction" | "guarantor" | "collateral" | "document" | "notification" | "systemConfig" | "auditLog"
+    modelProps: "user" | "refreshToken" | "otpCode" | "loanProduct" | "kyc" | "kycDocument" | "kycReview" | "loanApplication" | "loan" | "loanApproval" | "repaymentSchedule" | "payment" | "loanTransaction" | "guarantor" | "collateral" | "document" | "notification" | "systemConfig" | "mpesaStkRequest" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1767,6 +1768,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MpesaStkRequest: {
+      payload: Prisma.$MpesaStkRequestPayload<ExtArgs>
+      fields: Prisma.MpesaStkRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MpesaStkRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MpesaStkRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.MpesaStkRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MpesaStkRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        findMany: {
+          args: Prisma.MpesaStkRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>[]
+        }
+        create: {
+          args: Prisma.MpesaStkRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        createMany: {
+          args: Prisma.MpesaStkRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MpesaStkRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.MpesaStkRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        update: {
+          args: Prisma.MpesaStkRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.MpesaStkRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MpesaStkRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MpesaStkRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.MpesaStkRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MpesaStkRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.MpesaStkRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMpesaStkRequest>
+        }
+        groupBy: {
+          args: Prisma.MpesaStkRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MpesaStkRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MpesaStkRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MpesaStkRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -2227,6 +2302,29 @@ export const SystemConfigScalarFieldEnum = {
 export type SystemConfigScalarFieldEnum = (typeof SystemConfigScalarFieldEnum)[keyof typeof SystemConfigScalarFieldEnum]
 
 
+export const MpesaStkRequestScalarFieldEnum = {
+  id: 'id',
+  merchantRequestId: 'merchantRequestId',
+  checkoutRequestId: 'checkoutRequestId',
+  paymentId: 'paymentId',
+  loanId: 'loanId',
+  phone: 'phone',
+  amount: 'amount',
+  accountReference: 'accountReference',
+  requestBody: 'requestBody',
+  callbackBody: 'callbackBody',
+  resultCode: 'resultCode',
+  resultDesc: 'resultDesc',
+  callbackReceivedAt: 'callbackReceivedAt',
+  reconciledAt: 'reconciledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MpesaStkRequestScalarFieldEnum = (typeof MpesaStkRequestScalarFieldEnum)[keyof typeof MpesaStkRequestScalarFieldEnum]
+
+
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2258,6 +2356,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2663,6 +2768,20 @@ export type ListEnumConfigTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'MpesaStkStatus'
+ */
+export type EnumMpesaStkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MpesaStkStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MpesaStkStatus[]'
+ */
+export type ListEnumMpesaStkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MpesaStkStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'AuditAction'
  */
 export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
@@ -2858,6 +2977,7 @@ export type GlobalOmitConfig = {
   document?: Prisma.DocumentOmit
   notification?: Prisma.NotificationOmit
   systemConfig?: Prisma.SystemConfigOmit
+  mpesaStkRequest?: Prisma.MpesaStkRequestOmit
   auditLog?: Prisma.AuditLogOmit
 }
 

@@ -85,6 +85,7 @@ export const ModelName = {
     Document: 'Document',
     Notification: 'Notification',
     SystemConfig: 'SystemConfig',
+    MpesaStkRequest: 'MpesaStkRequest',
     AuditLog: 'AuditLog'
 };
 /**
@@ -371,6 +372,25 @@ export const SystemConfigScalarFieldEnum = {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
+export const MpesaStkRequestScalarFieldEnum = {
+    id: 'id',
+    merchantRequestId: 'merchantRequestId',
+    checkoutRequestId: 'checkoutRequestId',
+    paymentId: 'paymentId',
+    loanId: 'loanId',
+    phone: 'phone',
+    amount: 'amount',
+    accountReference: 'accountReference',
+    requestBody: 'requestBody',
+    callbackBody: 'callbackBody',
+    resultCode: 'resultCode',
+    resultDesc: 'resultDesc',
+    callbackReceivedAt: 'callbackReceivedAt',
+    reconciledAt: 'reconciledAt',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
 export const AuditLogScalarFieldEnum = {
     id: 'id',
     userId: 'userId',
@@ -390,6 +410,9 @@ export const SortOrder = {
 };
 export const NullableJsonNullValueInput = {
     DbNull: DbNull,
+    JsonNull: JsonNull
+};
+export const JsonNullValueInput = {
     JsonNull: JsonNull
 };
 export const QueryMode = {

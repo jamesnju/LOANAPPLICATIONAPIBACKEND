@@ -88,6 +88,13 @@ export const PaymentMethod = {
     MOBILE_MONEY: 'MOBILE_MONEY',
     OTHER: 'OTHER'
 };
+export const MpesaStkStatus = {
+    PENDING: 'PENDING',
+    SUCCESS: 'SUCCESS',
+    FAILED: 'FAILED',
+    TIMEOUT: 'TIMEOUT',
+    CANCELLED: 'CANCELLED'
+};
 export const TransactionType = {
     DISBURSEMENT: 'DISBURSEMENT',
     REPAYMENT: 'REPAYMENT',

@@ -134,6 +134,17 @@ export const PaymentMethod = {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
+export const MpesaStkStatus = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  TIMEOUT: 'TIMEOUT',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type MpesaStkStatus = (typeof MpesaStkStatus)[keyof typeof MpesaStkStatus]
+
+
 export const TransactionType = {
   DISBURSEMENT: 'DISBURSEMENT',
   REPAYMENT: 'REPAYMENT',

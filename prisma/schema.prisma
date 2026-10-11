@@ -27,7 +27,7 @@ enum UserStatus {
   INACTIVE
   SUSPENDED
   BLOCKED
-  LOCKED 
+  LOCKED
 }
 
 enum Role {
@@ -100,6 +100,14 @@ enum PaymentMethod {
   CARD
   MOBILE_MONEY
   OTHER
+}
+
+enum MpesaStkStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  TIMEOUT
+  CANCELLED
 }
 
 enum TransactionType {
@@ -228,28 +236,28 @@ model User {
   firstName String
   lastName  String
 
-  email        String @unique
-  phone        String? @unique
+  email        String    @unique
+  phone        String?   @unique
   passwordHash String?
-  googleId    String? @unique
-  avatarUrl   String?
-  nationalId  String?   @unique
-  dateOfBirth DateTime?
-  gender      Gender?
+  googleId     String?   @unique
+  avatarUrl    String?
+  nationalId   String?   @unique
+  dateOfBirth  DateTime?
+  gender       Gender?
 
   employmentType EmploymentType?
   employerName   String?
   monthlyIncome  Decimal?        @db.Decimal(18, 2)
 
-  role   Role       @default(CUSTOMER)
-  status UserStatus @default(ACTIVE)
-  failedLoginAttempts Int       @default(0)
+  role                Role       @default(CUSTOMER)
+  status              UserStatus @default(ACTIVE)
+  failedLoginAttempts Int        @default(0)
   lockedUntil         DateTime?
   lastFailedLoginAt   DateTime?
-  emailVerified Boolean   @default(false)
-  phoneVerified Boolean   @default(false)
-  kyc           Kyc?
-  lastLoginAt   DateTime?
+  emailVerified       Boolean    @default(false)
+  phoneVerified       Boolean    @default(false)
+  kyc                 Kyc?
+  lastLoginAt         DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -535,8 +543,8 @@ model Loan {
 
   user User @relation(fields: [userId], references: [id])
 
-  loanProduct LoanProduct @relation(fields: [loanProductId], references: [id])
-
+  loanProduct        LoanProduct         @relation(fields: [loanProductId], references: [id])
+  mpesaStkRequests   MpesaStkRequest[]
   repaymentSchedules RepaymentSchedule[]
   payments           Payment[]
   transactions       LoanTransaction[]
@@ -628,10 +636,10 @@ model Payment {
 
   status PaymentStatus @default(PENDING)
 
-  paymentDate DateTime?
-  processedAt DateTime?
-
-  failureReason String?
+  paymentDate     DateTime?
+  processedAt     DateTime?
+  mpesaStkRequest MpesaStkRequest?
+  failureReason   String?
 
   metadata Json?
 
@@ -712,10 +720,10 @@ model Guarantor {
 
   application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  user User? @relation(fields: [userId], references: [id])
-  idFrontUrl   String?
-  idBackUrl    String?
-  documents Document[]
+  user       User?      @relation(fields: [userId], references: [id])
+  idFrontUrl String?
+  idBackUrl  String?
+  documents  Document[]
 
   @@index([applicationId])
   @@index([nationalId])
@@ -856,6 +864,63 @@ model SystemConfig {
 
   @@index([category])
   @@index([isActive])
+}
+
+model MpesaStkRequest {
+  id String @id @default(uuid()) @db.Uuid
+
+  /// Correlates the request to the eventual callback.
+  /// This is what we send to Safaricom as `MerchantRequestID`.
+  merchantRequestId String @unique
+
+  /// Safaricom's correlation id from the STK Push response.
+  /// Present once the initial request succeeds.
+  checkoutRequestId String? @unique
+
+  /// The Payment row we create in PENDING state.
+  paymentId String @unique @db.Uuid
+
+  /// Loan this STK push is for.
+  loanId String @db.Uuid
+
+  /// Phone in international format (2547...).
+  phone String
+
+  /// Amount requested (decimal to match the KES precision).
+  amount Decimal @db.Decimal(18, 2)
+
+  /// What we sent to Safaricom, echoed back on the callback.
+  accountReference String?
+
+  /// Raw request payload for support / audit.
+  requestBody Json
+
+  /// Raw callback body when it arrives.
+  callbackBody Json?
+
+  /// Safaricom's ResultCode on the callback.
+  resultCode Int?
+
+  /// Safaricom's ResultDesc on the callback.
+  resultDesc String?
+
+  /// When the callback landed.
+  callbackReceivedAt DateTime?
+
+  /// Set once reconciled (either by callback or by the reconciliation job).
+  reconciledAt DateTime?
+
+  status MpesaStkStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  loan    Loan    @relation(fields: [loanId], references: [id])
+
+  @@index([loanId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 // ============================================================

@@ -69,6 +69,7 @@ export const ModelName = {
   Document: 'Document',
   Notification: 'Notification',
   SystemConfig: 'SystemConfig',
+  MpesaStkRequest: 'MpesaStkRequest',
   AuditLog: 'AuditLog'
 } as const
 
@@ -435,6 +436,29 @@ export const SystemConfigScalarFieldEnum = {
 export type SystemConfigScalarFieldEnum = (typeof SystemConfigScalarFieldEnum)[keyof typeof SystemConfigScalarFieldEnum]
 
 
+export const MpesaStkRequestScalarFieldEnum = {
+  id: 'id',
+  merchantRequestId: 'merchantRequestId',
+  checkoutRequestId: 'checkoutRequestId',
+  paymentId: 'paymentId',
+  loanId: 'loanId',
+  phone: 'phone',
+  amount: 'amount',
+  accountReference: 'accountReference',
+  requestBody: 'requestBody',
+  callbackBody: 'callbackBody',
+  resultCode: 'resultCode',
+  resultDesc: 'resultDesc',
+  callbackReceivedAt: 'callbackReceivedAt',
+  reconciledAt: 'reconciledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MpesaStkRequestScalarFieldEnum = (typeof MpesaStkRequestScalarFieldEnum)[keyof typeof MpesaStkRequestScalarFieldEnum]
+
+
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -466,6 +490,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

@@ -284,6 +284,7 @@ export type PaymentWhereInput = {
   metadata?: Prisma.JsonNullableFilter<"Payment">
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  mpesaStkRequest?: Prisma.XOR<Prisma.MpesaStkRequestNullableScalarRelationFilter, Prisma.MpesaStkRequestWhereInput> | null
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
   schedule?: Prisma.XOR<Prisma.RepaymentScheduleNullableScalarRelationFilter, Prisma.RepaymentScheduleWhereInput> | null
   transactions?: Prisma.LoanTransactionListRelationFilter
@@ -304,6 +305,7 @@ export type PaymentOrderByWithRelationInput = {
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  mpesaStkRequest?: Prisma.MpesaStkRequestOrderByWithRelationInput
   loan?: Prisma.LoanOrderByWithRelationInput
   schedule?: Prisma.RepaymentScheduleOrderByWithRelationInput
   transactions?: Prisma.LoanTransactionOrderByRelationAggregateInput
@@ -327,6 +329,7 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   metadata?: Prisma.JsonNullableFilter<"Payment">
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  mpesaStkRequest?: Prisma.XOR<Prisma.MpesaStkRequestNullableScalarRelationFilter, Prisma.MpesaStkRequestWhereInput> | null
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
   schedule?: Prisma.XOR<Prisma.RepaymentScheduleNullableScalarRelationFilter, Prisma.RepaymentScheduleWhereInput> | null
   transactions?: Prisma.LoanTransactionListRelationFilter
@@ -387,6 +390,7 @@ export type PaymentCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestCreateNestedOneWithoutPaymentInput
   loan: Prisma.LoanCreateNestedOneWithoutPaymentsInput
   schedule?: Prisma.RepaymentScheduleCreateNestedOneWithoutPaymentsInput
   transactions?: Prisma.LoanTransactionCreateNestedManyWithoutPaymentInput
@@ -407,6 +411,7 @@ export type PaymentUncheckedCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedCreateNestedOneWithoutPaymentInput
   transactions?: Prisma.LoanTransactionUncheckedCreateNestedManyWithoutPaymentInput
 }
 
@@ -423,6 +428,7 @@ export type PaymentUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUpdateOneWithoutPaymentNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutPaymentsNestedInput
   schedule?: Prisma.RepaymentScheduleUpdateOneWithoutPaymentsNestedInput
   transactions?: Prisma.LoanTransactionUpdateManyWithoutPaymentNestedInput
@@ -443,6 +449,7 @@ export type PaymentUncheckedUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedUpdateOneWithoutPaymentNestedInput
   transactions?: Prisma.LoanTransactionUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
@@ -567,6 +574,11 @@ export type PaymentNullableScalarRelationFilter = {
   isNot?: Prisma.PaymentWhereInput | null
 }
 
+export type PaymentScalarRelationFilter = {
+  is?: Prisma.PaymentWhereInput
+  isNot?: Prisma.PaymentWhereInput
+}
+
 export type PaymentCreateNestedManyWithoutLoanInput = {
   create?: Prisma.XOR<Prisma.PaymentCreateWithoutLoanInput, Prisma.PaymentUncheckedCreateWithoutLoanInput> | Prisma.PaymentCreateWithoutLoanInput[] | Prisma.PaymentUncheckedCreateWithoutLoanInput[]
   connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutLoanInput | Prisma.PaymentCreateOrConnectWithoutLoanInput[]
@@ -675,6 +687,20 @@ export type PaymentUpdateOneWithoutTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PaymentUpdateToOneWithWhereWithoutTransactionsInput, Prisma.PaymentUpdateWithoutTransactionsInput>, Prisma.PaymentUncheckedUpdateWithoutTransactionsInput>
 }
 
+export type PaymentCreateNestedOneWithoutMpesaStkRequestInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedCreateWithoutMpesaStkRequestInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutMpesaStkRequestInput
+  connect?: Prisma.PaymentWhereUniqueInput
+}
+
+export type PaymentUpdateOneRequiredWithoutMpesaStkRequestNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedCreateWithoutMpesaStkRequestInput>
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutMpesaStkRequestInput
+  upsert?: Prisma.PaymentUpsertWithoutMpesaStkRequestInput
+  connect?: Prisma.PaymentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PaymentUpdateToOneWithWhereWithoutMpesaStkRequestInput, Prisma.PaymentUpdateWithoutMpesaStkRequestInput>, Prisma.PaymentUncheckedUpdateWithoutMpesaStkRequestInput>
+}
+
 export type PaymentCreateWithoutLoanInput = {
   id?: string
   paymentReference: string
@@ -688,6 +714,7 @@ export type PaymentCreateWithoutLoanInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestCreateNestedOneWithoutPaymentInput
   schedule?: Prisma.RepaymentScheduleCreateNestedOneWithoutPaymentsInput
   transactions?: Prisma.LoanTransactionCreateNestedManyWithoutPaymentInput
 }
@@ -706,6 +733,7 @@ export type PaymentUncheckedCreateWithoutLoanInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedCreateNestedOneWithoutPaymentInput
   transactions?: Prisma.LoanTransactionUncheckedCreateNestedManyWithoutPaymentInput
 }
 
@@ -768,6 +796,7 @@ export type PaymentCreateWithoutScheduleInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestCreateNestedOneWithoutPaymentInput
   loan: Prisma.LoanCreateNestedOneWithoutPaymentsInput
   transactions?: Prisma.LoanTransactionCreateNestedManyWithoutPaymentInput
 }
@@ -786,6 +815,7 @@ export type PaymentUncheckedCreateWithoutScheduleInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedCreateNestedOneWithoutPaymentInput
   transactions?: Prisma.LoanTransactionUncheckedCreateNestedManyWithoutPaymentInput
 }
 
@@ -828,6 +858,7 @@ export type PaymentCreateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestCreateNestedOneWithoutPaymentInput
   loan: Prisma.LoanCreateNestedOneWithoutPaymentsInput
   schedule?: Prisma.RepaymentScheduleCreateNestedOneWithoutPaymentsInput
 }
@@ -847,6 +878,7 @@ export type PaymentUncheckedCreateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedCreateNestedOneWithoutPaymentInput
 }
 
 export type PaymentCreateOrConnectWithoutTransactionsInput = {
@@ -878,6 +910,7 @@ export type PaymentUpdateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUpdateOneWithoutPaymentNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutPaymentsNestedInput
   schedule?: Prisma.RepaymentScheduleUpdateOneWithoutPaymentsNestedInput
 }
@@ -897,6 +930,95 @@ export type PaymentUncheckedUpdateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedUpdateOneWithoutPaymentNestedInput
+}
+
+export type PaymentCreateWithoutMpesaStkRequestInput = {
+  id?: string
+  paymentReference: string
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  paymentMethod: $Enums.PaymentMethod
+  transactionReference?: string | null
+  status?: $Enums.PaymentStatus
+  paymentDate?: Date | string | null
+  processedAt?: Date | string | null
+  failureReason?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  loan: Prisma.LoanCreateNestedOneWithoutPaymentsInput
+  schedule?: Prisma.RepaymentScheduleCreateNestedOneWithoutPaymentsInput
+  transactions?: Prisma.LoanTransactionCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentUncheckedCreateWithoutMpesaStkRequestInput = {
+  id?: string
+  paymentReference: string
+  loanId: string
+  scheduleId?: string | null
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  paymentMethod: $Enums.PaymentMethod
+  transactionReference?: string | null
+  status?: $Enums.PaymentStatus
+  paymentDate?: Date | string | null
+  processedAt?: Date | string | null
+  failureReason?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  transactions?: Prisma.LoanTransactionUncheckedCreateNestedManyWithoutPaymentInput
+}
+
+export type PaymentCreateOrConnectWithoutMpesaStkRequestInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedCreateWithoutMpesaStkRequestInput>
+}
+
+export type PaymentUpsertWithoutMpesaStkRequestInput = {
+  update: Prisma.XOR<Prisma.PaymentUpdateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedUpdateWithoutMpesaStkRequestInput>
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedCreateWithoutMpesaStkRequestInput>
+  where?: Prisma.PaymentWhereInput
+}
+
+export type PaymentUpdateToOneWithWhereWithoutMpesaStkRequestInput = {
+  where?: Prisma.PaymentWhereInput
+  data: Prisma.XOR<Prisma.PaymentUpdateWithoutMpesaStkRequestInput, Prisma.PaymentUncheckedUpdateWithoutMpesaStkRequestInput>
+}
+
+export type PaymentUpdateWithoutMpesaStkRequestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentReference?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  paymentMethod?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+  transactionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loan?: Prisma.LoanUpdateOneRequiredWithoutPaymentsNestedInput
+  schedule?: Prisma.RepaymentScheduleUpdateOneWithoutPaymentsNestedInput
+  transactions?: Prisma.LoanTransactionUpdateManyWithoutPaymentNestedInput
+}
+
+export type PaymentUncheckedUpdateWithoutMpesaStkRequestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  paymentReference?: Prisma.StringFieldUpdateOperationsInput | string
+  loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  paymentMethod?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+  transactionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  paymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactions?: Prisma.LoanTransactionUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
 export type PaymentCreateManyLoanInput = {
@@ -928,6 +1050,7 @@ export type PaymentUpdateWithoutLoanInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUpdateOneWithoutPaymentNestedInput
   schedule?: Prisma.RepaymentScheduleUpdateOneWithoutPaymentsNestedInput
   transactions?: Prisma.LoanTransactionUpdateManyWithoutPaymentNestedInput
 }
@@ -946,6 +1069,7 @@ export type PaymentUncheckedUpdateWithoutLoanInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedUpdateOneWithoutPaymentNestedInput
   transactions?: Prisma.LoanTransactionUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
@@ -994,6 +1118,7 @@ export type PaymentUpdateWithoutScheduleInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUpdateOneWithoutPaymentNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutPaymentsNestedInput
   transactions?: Prisma.LoanTransactionUpdateManyWithoutPaymentNestedInput
 }
@@ -1012,6 +1137,7 @@ export type PaymentUncheckedUpdateWithoutScheduleInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mpesaStkRequest?: Prisma.MpesaStkRequestUncheckedUpdateOneWithoutPaymentNestedInput
   transactions?: Prisma.LoanTransactionUncheckedUpdateManyWithoutPaymentNestedInput
 }
 
@@ -1077,6 +1203,7 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   metadata?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  mpesaStkRequest?: boolean | Prisma.Payment$mpesaStkRequestArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.Payment$scheduleArgs<ExtArgs>
   transactions?: boolean | Prisma.Payment$transactionsArgs<ExtArgs>
@@ -1140,6 +1267,7 @@ export type PaymentSelectScalar = {
 
 export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "paymentReference" | "loanId" | "scheduleId" | "amount" | "paymentMethod" | "transactionReference" | "status" | "paymentDate" | "processedAt" | "failureReason" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  mpesaStkRequest?: boolean | Prisma.Payment$mpesaStkRequestArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
   schedule?: boolean | Prisma.Payment$scheduleArgs<ExtArgs>
   transactions?: boolean | Prisma.Payment$transactionsArgs<ExtArgs>
@@ -1157,6 +1285,7 @@ export type PaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Payment"
   objects: {
+    mpesaStkRequest: Prisma.$MpesaStkRequestPayload<ExtArgs> | null
     loan: Prisma.$LoanPayload<ExtArgs>
     schedule: Prisma.$RepaymentSchedulePayload<ExtArgs> | null
     transactions: Prisma.$LoanTransactionPayload<ExtArgs>[]
@@ -1570,6 +1699,7 @@ readonly fields: PaymentFieldRefs;
  */
 export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  mpesaStkRequest<T extends Prisma.Payment$mpesaStkRequestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$mpesaStkRequestArgs<ExtArgs>>): Prisma.Prisma__MpesaStkRequestClient<runtime.Types.Result.GetResult<Prisma.$MpesaStkRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   loan<T extends Prisma.LoanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanDefaultArgs<ExtArgs>>): Prisma.Prisma__LoanClient<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   schedule<T extends Prisma.Payment$scheduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$scheduleArgs<ExtArgs>>): Prisma.Prisma__RepaymentScheduleClient<runtime.Types.Result.GetResult<Prisma.$RepaymentSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   transactions<T extends Prisma.Payment$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2014,6 +2144,25 @@ export type PaymentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Payments to delete.
    */
   limit?: number
+}
+
+/**
+ * Payment.mpesaStkRequest
+ */
+export type Payment$mpesaStkRequestArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MpesaStkRequest
+   */
+  select?: Prisma.MpesaStkRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MpesaStkRequest
+   */
+  omit?: Prisma.MpesaStkRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MpesaStkRequestInclude<ExtArgs> | null
+  where?: Prisma.MpesaStkRequestWhereInput
 }
 
 /**

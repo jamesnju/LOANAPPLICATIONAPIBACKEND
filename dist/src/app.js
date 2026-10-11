@@ -27,6 +27,7 @@ import collateralRoutes from './routes/collateral.routes.js';
 import documentRoutes from './routes/document.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import { startReconcilePaymentsJob } from './jobs/reconcilePayments.job.js';
 // ✅ Explicitly type the app
 const app = express();
 // ✅ CORS configuration with proper origin handling
@@ -95,7 +96,7 @@ app.use(`${apiPrefix}/admin/loan-applications`, adminLoanApplicationRoutes);
 app.use(`${apiPrefix}/loan-applications`, loanApplicationApprovalRoutes);
 app.use(`${apiPrefix}/loans`, loanRoutes);
 app.use(`${apiPrefix}/repayment-schedules`, repaymentScheduleRoutes);
-app.use(`${apiPrefix}/payments`, paymentRoutes);
+//app.use(`${apiPrefix}/payments`, paymentRoutes);
 app.use(`${apiPrefix}/loan-transactions`, loanTransactionRoutes);
 app.use(`${apiPrefix}/loan-status`, loanStatusRoutes);
 app.use(`${apiPrefix}/notifications`, notificationRoutes);
@@ -107,6 +108,8 @@ app.use(`${apiPrefix}/guarantors`, guarantorRoutes);
 app.use(`${apiPrefix}/collateral`, collateralRoutes);
 app.use(`${apiPrefix}/documents`, documentRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
+app.use(`${apiPrefix}/payments`, paymentRoutes);
+//app.use("/api/v1/payments", paymentRoutes);
 /*
  * 404 handler.
  */
@@ -156,5 +159,6 @@ if (env.NODE_ENV !== 'production') {
     };
     startLoanJobs();
     startServer();
+    startReconcilePaymentsJob();
 }
 //# sourceMappingURL=app.js.map

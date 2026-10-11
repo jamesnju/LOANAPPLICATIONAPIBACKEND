@@ -1,74 +1,46 @@
 import { z } from "zod";
 
-
-/*
+/* ============================================================
+ * INITIATE STK PUSH
  * ============================================================
- * PAYMENT SCHEMAS
- * ============================================================
+ * Called by the customer from the loan detail page.
  */
-
-
-/*
- * Payment ID
- *
- * Used when retrieving a specific payment.
- */
-export const paymentIdSchema = z.object({
-  id: z.string().uuid("Invalid payment ID"),
-});
-
-
-/*
- * Loan ID
- */
-export const paymentLoanIdSchema = z.object({
+export const initiateStkPushSchema = z.object({
   loanId: z.string().uuid("Invalid loan ID"),
-});
-
-
-/*
- * Create payment
- *
- * This records a completed repayment.
- *
- * Example:
- *
- * {
- *   "amount": 1000,
- *   "paymentMethod": "MPESA",
- *   "transactionReference": "QWE123ABC"
- * }
- */
-export const createPaymentSchema = z.object({
   amount: z
+    .coerce
     .number()
-    .positive("Payment amount must be greater than zero"),
-
-  paymentMethod: z.enum([
-    "MPESA",
-    "BANK_TRANSFER",
-    "CASH",
-    "CARD",
-    "MOBILE_MONEY",
-    "OTHER",
-  ]),
-
-  transactionReference: z
+    .positive("Amount must be greater than zero")
+    .max(1_000_000, "Amount is too large"),
+  phone: z
     .string()
     .trim()
-    .max(100)
-    .optional(),
-
-  scheduleId: z
-    .string()
-    .uuid("Invalid repayment schedule ID")
-    .optional(),
-
-  metadata: z
-    .record(z.string(), z.any())
-    .optional(),
+    .min(9)
+    .max(15),
 });
 
+/* ============================================================
+ * MANUAL PAYMENT
+ * ============================================================
+ * Finance/admin recording a payment made out-of-band
+ * (bank transfer, cash, cheque).
+ */
+export const manualPaymentSchema = z.object({
+  loanId: z.string().uuid("Invalid loan ID"),
+  amount: z.coerce.number().positive(),
+  paymentMethod: z.enum(["BANK_TRANSFER", "CASH", "CHEQUE", "OTHER"]),
+  transactionReference: z.string().trim().max(100).optional(),
+  comments: z.string().trim().max(2000).optional(),
+});
 
-export type CreatePaymentInput =
-  z.infer<typeof createPaymentSchema>;
+/* ============================================================
+ * LIST PAYMENTS
+ * ============================================================ */
+export const listPaymentsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  status: z
+    .enum(["PENDING", "COMPLETED", "FAILED", "REVERSED", "CANCELLED"])
+    .optional(),
+  loanId: z.string().uuid().optional(),
+});

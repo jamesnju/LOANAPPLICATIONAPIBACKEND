@@ -1,166 +1,247 @@
-import type {
-  Request,
-  Response,
-} from "express";
+import type { Request, Response } from "express";
 
 import {
-  createPayment,
-  getPaymentById,
-  getMyPayments,
-  getLoanPayments,
+  initiateLoanRepayment,
+  handleStkCallback,
+  type MpesaCallbackBody,
+  applyPaymentToLoan,
 } from "../services/payment.service.js";
 
 import {
-  createPaymentSchema,
+  initiateStkPushSchema,
+  manualPaymentSchema,
+  listPaymentsQuerySchema,
 } from "../schemas/payment.schema.js";
+import { prisma } from "../config/prisma.js";
+import { PaymentMethod, PaymentStatus } from "../generated/prisma/client.js";
 
-
-/*
+/* ============================================================
+ * POST /payments/mpesa/stk-push
  * ============================================================
- * CREATE PAYMENT
- * ============================================================
- */
+ * Customer initiates an STK Push for their loan.
+ * ============================================================ */
+export async function initiateStkPushController(req: Request, res: Response) {
+  try {
+    const customerId = req.user!.userId;
+    const input = initiateStkPushSchema.parse(req.body);
 
-export const createPaymentController =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
+    const result = await initiateLoanRepayment(customerId, input);
 
-    try {
-
-      const data =
-        createPaymentSchema.parse(req.body);
-
-
-      const result =
-        await createPayment(
-          req.user!.userId,
-          data,
-        );
-
-
-      return res.status(201).json({
-        success: true,
-
-        message:
-          "Payment recorded successfully",
-
-        data: result,
-      });
-
-    } catch (error: any) {
-
+    return res.status(202).json({
+      success: true,
+      message: "STK Push sent. Please enter your M-Pesa PIN.",
+      data: result,
+    });
+  } catch (err: any) {
+    if (err?.issues) {
       return res.status(400).json({
         success: false,
-        message: error.message,
+        message: err.issues[0]?.message ?? "Invalid request",
       });
     }
-  };
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to initiate STK Push",
+    });
+  }
+}
 
-
-/*
+/* ============================================================
+ * POST /payments/mpesa/callback
  * ============================================================
- * GET PAYMENT
+ * Public endpoint. Called by Safaricom. No authentication.
+ * Must always return 200, even on internal errors, to stop
+ * Safaricom from retrying the callback in a loop.
+ * ============================================================ */
+export async function mpesaCallbackController(req: Request, res: Response) {
+  try {
+    const body = req.body as MpesaCallbackBody;
+    await handleStkCallback(body);
+    return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+  } catch (err) {
+    console.error("[mpesaCallbackController]", err);
+    /* Always 200 — see comment above. We log and reconcile later. */
+    return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+  }
+}
+
+/* ============================================================
+ * GET /payments/me
  * ============================================================
- */
+ * Customer's own payments.
+ * ============================================================ */
+export async function listMyPaymentsController(req: Request, res: Response) {
+  try {
+    const userId = req.user!.userId;
 
-export const getPaymentController =
-  async (
-    req: Request<{ id: string }>,
-    res: Response,
-  ) => {
+    const payments = await prisma.payment.findMany({
+      where: { loan: { userId } },
+      include: {
+        loan: { select: { id: true, loanNumber: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    });
 
-    try {
+    return res.json({ success: true, data: payments });
+  } catch (err: any) {
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to load payments",
+    });
+  }
+}
 
-      const payment =
-        await getPaymentById(
-          req.params.id,
-          req.user!.userId,
-        );
+/* ============================================================
+ * GET /payments
+ * ============================================================
+ * Admin listing.
+ * ============================================================ */
+export async function listPaymentsController(req: Request, res: Response) {
+  try {
+    const { page, limit, status, loanId } = listPaymentsQuerySchema.parse(
+      req.query,
+    );
 
+    const where = {
+      ...(status && { status: status as PaymentStatus }),
+      ...(loanId && { loanId }),
+    };
 
-      return res.status(200).json({
-        success: true,
-        data: payment,
-      });
+    const [items, total] = await prisma.$transaction([
+      prisma.payment.findMany({
+        where,
+        include: {
+          loan: {
+            select: {
+              id: true,
+              loanNumber: true,
+              user: {
+                select: { firstName: true, lastName: true, email: true },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.payment.count({ where }),
+    ]);
 
-    } catch (error: any) {
-
+    return res.json({
+      success: true,
+      items,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (err: any) {
+    if (err?.issues) {
       return res.status(400).json({
         success: false,
-        message: error.message,
+        message: err.issues[0]?.message ?? "Invalid query",
       });
     }
-  };
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to list payments",
+    });
+  }
+}
 
-
-/*
+/* ============================================================
+ * POST /payments/manual
  * ============================================================
- * GET MY PAYMENTS
- * ============================================================
- */
+ * Admin records an out-of-band payment (bank transfer, cash…).
+ * ============================================================ */
+export async function manualPaymentController(req: Request, res: Response) {
+  try {
+    const adminId = req.user!.userId;
+    const input = manualPaymentSchema.parse(req.body);
 
-export const getMyPaymentsController =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
+    const loan = await prisma.loan.findUnique({
+      where: { id: input.loanId },
+      select: { id: true, userId: true, outstandingAmount: true },
+    });
+    if (!loan) {
+      return res.status(404).json({ success: false, message: "Loan not found" });
+    }
 
-    try {
+    const payment = await prisma.payment.create({
+      data: {
+        paymentReference: `PAY-MANUAL-${Date.now()}`,
+        loanId: input.loanId,
+        amount: input.amount,
+        paymentMethod: input.paymentMethod as PaymentMethod,
+        status: PaymentStatus.PENDING,
+        transactionReference: input.transactionReference ?? null,
+      },
+    });
 
-      const payments =
-        await getMyPayments(
-          req.user!.userId,
-        );
+    await applyPaymentToLoan(payment.id);
 
+    await prisma.auditLog.create({
+      data: {
+        userId: adminId,
+        action: "REPAY",
+        entity: "Payment",
+        entityId: payment.id,
+        description: `Manual payment recorded (${input.paymentMethod})`,
+        newValue: { amount: input.amount, loanId: input.loanId },
+      },
+    });
 
-      return res.status(200).json({
-        success: true,
-        data: payments,
-      });
-
-    } catch (error: any) {
-
+    return res.status(201).json({
+      success: true,
+      message: "Payment recorded",
+      data: { paymentId: payment.id },
+    });
+  } catch (err: any) {
+    if (err?.issues) {
       return res.status(400).json({
         success: false,
-        message: error.message,
+        message: err.issues[0]?.message ?? "Invalid request",
       });
     }
-  };
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to record payment",
+    });
+  }
+}
 
-
-/*
+/* ============================================================
+ * GET /payments/:id/status
  * ============================================================
- * GET LOAN PAYMENTS
- * ============================================================
- */
+ * Client polls this after initiating an STK Push to learn the
+ * outcome once the callback lands.
+ * ============================================================ */
+export async function getPaymentStatusController(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.userId;
 
-export const getLoanPaymentsController =
-  async (
-    req: Request<{ loanId: string }>,
-    res: Response,
-  ) => {
+    const payment = await prisma.payment.findFirst({
+      where: { id: String(id), loan: { userId } },
+      select: {
+        id: true,
+        status: true,
+        amount: true,
+        paymentReference: true,
+        transactionReference: true,
+        failureReason: true,
+        processedAt: true,
+      },
+    });
 
-    try {
-
-      const payments =
-        await getLoanPayments(
-          req.params.loanId,
-          req.user!.userId,
-        );
-
-
-      return res.status(200).json({
-        success: true,
-        data: payments,
-      });
-
-    } catch (error: any) {
-
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+    if (!payment) {
+      return res.status(404).json({ success: false, message: "Payment not found" });
     }
-  };
+
+    return res.json({ success: true, data: payment });
+  } catch (err: any) {
+    return res.status(400).json({
+      success: false,
+      message: err instanceof Error ? err.message : "Failed to fetch payment",
+    });
+  }
+}

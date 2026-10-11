@@ -1,75 +1,53 @@
 import { Router } from "express";
 
-import { authenticate } from "../middleware/auth.middleware.js";
-
 import {
-  createPaymentController,
-  getPaymentController,
-  getMyPaymentsController,
-  getLoanPaymentsController,
+  getPaymentStatusController,
+  initiateStkPushController,
+  listMyPaymentsController,
+  listPaymentsController,
+  manualPaymentController,
+  mpesaCallbackController,
 } from "../controllers/payment.controller.js";
-
+import { authenticate } from "../middleware/auth.middleware.js";
+import { authorize } from "../middleware/role.middleware.js";
 
 const router = Router();
 
-
-/*
+/* ============================================================
+ * CALLBACK — public, no auth
  * ============================================================
- * CUSTOMER PAYMENTS
- * ============================================================
- */
+ * MUST be registered before any `/:id` catch-all, otherwise
+ * Express will treat `/mpesa/callback` as matching `/:id` on
+ * a narrower path segment.
+ * ============================================================ */
+router.post("/mpesa/callback", mpesaCallbackController);
 
+/* ============================================================
+ * AUTHENTICATED
+ * ============================================================ */
+router.use(authenticate);
 
-/*
- * Create payment
- *
- * POST
- * /api/v1/payments
- */
-router.post(
+/* Customer initiates STK Push */
+router.post("/mpesa/stk-push", initiateStkPushController);
+
+/* Customer polls their own payment status */
+router.get("/:id/status", getPaymentStatusController);
+
+/* Customer views their own payments */
+router.get("/me", listMyPaymentsController);
+
+/* Admin lists all payments */
+router.get(
   "/",
-  authenticate,
-  createPaymentController,
+  authorize("SUPER_ADMIN", "ADMIN", "FINANCE_OFFICER"),
+  listPaymentsController,
 );
 
-
-/*
- * Get my payments
- *
- * GET
- * /api/v1/payments/me
- */
-router.get(
-  "/me",
-  authenticate,
-  getMyPaymentsController,
+/* Admin records a manual payment */
+router.post(
+  "/manual",
+  authorize("SUPER_ADMIN", "ADMIN", "FINANCE_OFFICER"),
+  manualPaymentController,
 );
-
-
-/*
- * Get payments for a loan
- *
- * GET
- * /api/v1/payments/loan/:loanId
- */
-router.get(
-  "/loan/:loanId",
-  authenticate,
-  getLoanPaymentsController,
-);
-
-
-/*
- * Get a specific payment
- *
- * GET
- * /api/v1/payments/:id
- */
-router.get(
-  "/:id",
-  authenticate,
-  getPaymentController,
-);
-
 
 export default router;

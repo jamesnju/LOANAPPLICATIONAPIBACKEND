@@ -51,7 +51,24 @@ const envSchema = z.object({
   CLOUDINARYAPIKEY: z.string().min(1),
 
   CLOUDINARYAPISECRET: z.string().min(1),
+/* ============================================================
+ * M-PESA (Daraja)
+ * ============================================================ */
+MPESA_ENV: z.enum(["sandbox", "production"]),
 
+MPESA_CONSUMER_KEY: z.string().min(1),
+
+MPESA_CONSUMER_SECRET: z.string().min(1),
+
+MPESA_SHORTCODE: z.string().min(1),
+
+MPESA_PASSKEY: z.string().min(1),
+
+MPESA_CALLBACK_URL: z.string().url(),
+
+MPESA_TRANSACTION_TYPE: z
+  .enum(["CustomerPayBillOnline", "CustomerBuyGoodsOnline"])
+  .default("CustomerPayBillOnline"),
   // ✅ Google OAuth
   GOOGLECLIENTID: z.string().min(1),
 

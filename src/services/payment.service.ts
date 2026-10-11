@@ -1,833 +1,554 @@
+import { randomUUID } from "node:crypto";
 
-import type {
-  CreatePaymentInput,
-} from "../schemas/payment.schema.js";
-
-import type {
-  Role,
-} from "../generated/prisma/enums.js";
-
-import { randomBytes } from "crypto";
 import { prisma } from "../config/prisma.js";
-import { notifyUser } from "./notification.service.js";
+import {
+  LoanStatus,
+  PaymentMethod,
+  PaymentStatus,
+  RepaymentStatus,
+  TransactionType,
+} from "../generated/prisma/client.js";
+
+import {
+  initiateStkPush,
+  normalisePhone,
+  queryStkStatus,
+} from "./mpesa.service.js";
 import { logAction } from "./auditLog.service.js";
+import { notifyUser } from "./notification.service.js";
 
+/* ============================================================
+ * HELPERS
+ * ============================================================ */
+function generatePaymentReference(): string {
+  const date = new Date();
+  const ymd =
+    date.getFullYear().toString() +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    String(date.getDate()).padStart(2, "0");
+  const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `PAY-${ymd}-${rand}`;
+}
 
-/*
+function generateTransactionNumber(): string {
+  const date = new Date();
+  const ymd =
+    date.getFullYear().toString() +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    String(date.getDate()).padStart(2, "0");
+  const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `TXN-${ymd}-${rand}`;
+}
+
+/* ============================================================
+ * INITIATE STK PUSH
  * ============================================================
- * PAYMENT SERVICE
- * ============================================================
- */
+ * 1. Validate the loan belongs to the caller and is repayable.
+ * 2. Create a Payment in PENDING.
+ * 3. Create an MpesaStkRequest in PENDING.
+ * 4. Call Safaricom.
+ * 5. Update the MpesaStkRequest with Safaricom's response ids.
+ * ============================================================ */
+export async function initiateLoanRepayment(
+  customerId: string,
+  input: { loanId: string; amount: number; phone: string },
+) {
+  const { loanId, amount, phone } = input;
 
+  /* ── 1. Loan must belong to the caller and be repayable ── */
+  const loan = await prisma.loan.findFirst({
+    where: { id: loanId, userId: customerId },
+    select: {
+      id: true,
+      loanNumber: true,
+      status: true,
+      outstandingAmount: true,
+      userId: true,
+    },
+  });
 
-/*
- * Staff roles.
- *
- * These are strings because Prisma 7 generates the
- * enum as a type in this project.
- */
-const STAFF_ROLES: Role[] = [
-  "SUPER_ADMIN",
-  "ADMIN",
-  "FINANCE_OFFICER",
-  "LOAN_OFFICER",
-  "SUPPORT",
-];
+  if (!loan) throw new Error("Loan not found");
 
+  const allowedStatuses: LoanStatus[] = [
+    LoanStatus.ACTIVE,
+    LoanStatus.PARTIALLY_PAID,
+    LoanStatus.OVERDUE,
+  ];
+  if (!allowedStatuses.includes(loan.status as LoanStatus)) {
+    throw new Error(
+      `This loan cannot receive payments (status: ${loan.status}).`,
+    );
+  }
 
-/*
- * ============================================================
- * GENERATE PAYMENT REFERENCE
- * ============================================================
- */
+  /* ── 2. Amount must not exceed the outstanding balance ── */
+  const outstanding = Number(loan.outstandingAmount);
+  if (amount > outstanding + 0.01) {
+    /* Small tolerance to allow "pay exactly the outstanding" without
+     * rounding complaints. 1 cent. */
+    throw new Error(
+      `Amount exceeds outstanding balance of KES ${outstanding.toLocaleString()}.`,
+    );
+  }
 
-const generatePaymentReference =
-  async (): Promise<string> => {
+  const normalisedPhone = normalisePhone(phone);
 
-    let reference = "";
+  /* ── 3. Create Payment + StkRequest atomically ── */
+  const merchantRequestId = `MR-${randomUUID()}`;
+  const paymentReference = generatePaymentReference();
 
-    let exists = true;
-
-    while (exists) {
-
-      const date = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .replace(/-/g, "");
-
-      const random =
-        randomBytes(3)
-          .toString("hex")
-          .toUpperCase();
-
-      reference =
-        `PAY-${date}-${random}`;
-
-
-      const existing =
-        await prisma.payment.findUnique({
-          where: {
-            paymentReference: reference,
-          },
-        });
-
-
-      exists = !!existing;
-    }
-
-
-    return reference;
-  };
-
-
-/*
- * ============================================================
- * GENERATE TRANSACTION NUMBER
- * ============================================================
- */
-
-const generateTransactionNumber =
-  async (): Promise<string> => {
-
-    let transactionNumber = "";
-
-    let exists = true;
-
-
-    while (exists) {
-
-      const date = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .replace(/-/g, "");
-
-      const random =
-        randomBytes(3)
-          .toString("hex")
-          .toUpperCase();
-
-
-      transactionNumber =
-        `TXN-${date}-${random}`;
-
-
-      const existing =
-        await prisma.loanTransaction.findUnique({
-          where: {
-            transactionNumber,
-          },
-        });
-
-
-      exists = !!existing;
-    }
-
-
-    return transactionNumber;
-  };
-
-
-/*
- * ============================================================
- * RECORD PAYMENT
- * ============================================================
- */
-
-export const createPayment = async (
-  userId: string,
-  input: CreatePaymentInput,
-) => {
-
-  /*
-   * ----------------------------------------------------------
-   * FIND USER
-   * ----------------------------------------------------------
-   */
-
-  const user =
-    await prisma.user.findUnique({
-      where: {
-        id: userId,
+  const { payment, stkRequest } = await prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.create({
+      data: {
+        paymentReference,
+        loanId,
+        amount,
+        paymentMethod: PaymentMethod.MPESA,
+        status: PaymentStatus.PENDING,
       },
     });
 
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * FIND REPAYMENT SCHEDULE
-   * ----------------------------------------------------------
-   */
-
-  let schedule;
-
-
-  /*
-   * If the customer supplied a schedule ID,
-   * use that specific schedule.
-   */
-
-  if (input.scheduleId) {
-
-    schedule =
-      await prisma.repaymentSchedule.findUnique({
-
-        where: {
-          id: input.scheduleId,
-        },
-
-        include: {
-          loan: true,
-        },
-      });
-
-  } else {
-
-    /*
-     * Otherwise find the customer's earliest
-     * outstanding repayment.
-     */
-
-    schedule =
-      await prisma.repaymentSchedule.findFirst({
-
-        where: {
-
-          loan: {
-            userId,
-          },
-
-          status: {
-            in: [
-              "PENDING",
-              "PARTIALLY_PAID",
-              "OVERDUE",
-            ],
-          },
-
-          outstandingAmount: {
-            gt: 0,
-          },
-        },
-
-        include: {
-          loan: true,
-        },
-
-        orderBy: {
-          dueDate: "asc",
-        },
-      });
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * CHECK SCHEDULE
-   * ----------------------------------------------------------
-   */
-
-  if (!schedule) {
-
-    throw new Error(
-      "No outstanding repayment schedule found",
-    );
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * CHECK OWNERSHIP
-   * ----------------------------------------------------------
-   */
-
-  const isStaff =
-    STAFF_ROLES.includes(
-      user.role,
-    );
-
-
-  if (
-    !isStaff &&
-    schedule.loan.userId !== userId
-  ) {
-
-    throw new Error(
-      "You are not authorized to make a payment for this loan",
-    );
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * CHECK LOAN STATUS
-   * ----------------------------------------------------------
-   */
-
-  if (
-    schedule.loan.status !== "ACTIVE" &&
-    schedule.loan.status !== "PARTIALLY_PAID" &&
-    schedule.loan.status !== "OVERDUE"
-  ) {
-
-    throw new Error(
-      "Payment cannot be made for this loan",
-    );
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * PREVENT OVERPAYMENT
-   * ----------------------------------------------------------
-   */
-
-  if (
-    schedule.outstandingAmount.lt(
-      input.amount,
-    )
-  ) {
-
-    throw new Error(
-      "Payment amount cannot be greater than the outstanding amount",
-    );
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * GENERATE REFERENCES
-   * ----------------------------------------------------------
-   */
-
-  const paymentReference =
-    await generatePaymentReference();
-
-
-  const transactionNumber =
-    await generateTransactionNumber();
-
-
-  /*
-   * ----------------------------------------------------------
-   * CALCULATE NEW SCHEDULE BALANCE
-   * ----------------------------------------------------------
-   */
-
-  const newScheduleAmountPaid =
-    schedule.amountPaid.add(
-      input.amount,
-    );
-
-
-  const newScheduleOutstanding =
-    schedule.outstandingAmount.sub(
-      input.amount,
-    );
-
-
-  /*
-   * ----------------------------------------------------------
-   * CALCULATE NEW LOAN BALANCE
-   * ----------------------------------------------------------
-   */
-
-  const newLoanAmountPaid =
-    schedule.loan.amountPaid.add(
-      input.amount,
-    );
-
-
-  const newLoanOutstanding =
-    schedule.loan.outstandingAmount.sub(
-      input.amount,
-    );
-
-
-  /*
-   * ----------------------------------------------------------
-   * DETERMINE SCHEDULE STATUS
-   * ----------------------------------------------------------
-   */
-
-  let scheduleStatus:
-    | "PARTIALLY_PAID"
-    | "PAID";
-
-
-  if (
-    newScheduleOutstanding.eq(0)
-  ) {
-
-    scheduleStatus =
-      "PAID";
-
-  } else {
-
-    scheduleStatus =
-      "PARTIALLY_PAID";
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * DETERMINE LOAN STATUS
-   * ----------------------------------------------------------
-   */
-
-  let loanStatus:
-    | "ACTIVE"
-    | "PARTIALLY_PAID"
-    | "FULLY_PAID";
-
-
-  if (
-    newLoanOutstanding.eq(0)
-  ) {
-
-    loanStatus =
-      "FULLY_PAID";
-
-  } else if (
-    newLoanAmountPaid.gt(0)
-  ) {
-
-    loanStatus =
-      "PARTIALLY_PAID";
-
-  } else {
-
-    loanStatus =
-      "ACTIVE";
-  }
-
-
-  /*
-   * ----------------------------------------------------------
-   * DATABASE TRANSACTION
-   * ----------------------------------------------------------
-   *
-   * Payment
-   * Schedule
-   * Loan
-   * Transaction
-   *
-   * are all updated together.
-   */
-
-  const result =
-    await prisma.$transaction(
-      async (tx) => {
-
-        /*
-         * ----------------------------------------------------
-         * CREATE PAYMENT
-         * ----------------------------------------------------
-         */
-
-        const payment =
-          await tx.payment.create({
-
-            data: {
-
-              paymentReference,
-
-              loanId:
-                schedule.loanId,
-
-              scheduleId:
-                schedule.id,
-
-              amount:
-                input.amount,
-
-              paymentMethod:
-                input.paymentMethod,
-
-              transactionReference:
-                input.transactionReference,
-
-              status:
-                "COMPLETED",
-
-              paymentDate:
-                new Date(),
-
-              processedAt:
-                new Date(),
-
-              metadata:
-                input.metadata,
-            },
-          });
-
-
-        /*
-         * ----------------------------------------------------
-         * UPDATE REPAYMENT SCHEDULE
-         * ----------------------------------------------------
-         */
-
-        const updatedSchedule =
-          await tx.repaymentSchedule.update({
-
-            where: {
-              id: schedule.id,
-            },
-
-            data: {
-
-              amountPaid:
-                newScheduleAmountPaid,
-
-              outstandingAmount:
-                newScheduleOutstanding,
-
-              status:
-                scheduleStatus,
-
-              paidAt:
-                scheduleStatus === "PAID"
-                  ? new Date()
-                  : null,
-            },
-          });
-
-
-        /*
-         * ----------------------------------------------------
-         * UPDATE LOAN
-         * ----------------------------------------------------
-         */
-
-        const updatedLoan =
-          await tx.loan.update({
-
-            where: {
-              id: schedule.loanId,
-            },
-
-            data: {
-
-              amountPaid:
-                newLoanAmountPaid,
-
-              outstandingAmount:
-                newLoanOutstanding,
-
-              status:
-                loanStatus,
-            },
-          });
-
-
-        /*
-         * ----------------------------------------------------
-         * CREATE LOAN TRANSACTION
-         * ----------------------------------------------------
-         */
-
-        const transaction =
-          await tx.loanTransaction.create({
-
-            data: {
-
-              transactionNumber,
-
-              loanId:
-                schedule.loanId,
-
-              paymentId:
-                payment.id,
-
-              type:
-                "REPAYMENT",
-
-              amount:
-                input.amount,
-
-              description:
-                "Loan repayment",
-
-              reference:
-                input.transactionReference ??
-                paymentReference,
-
-              balanceBefore:
-                schedule.loan.outstandingAmount,
-
-              balanceAfter:
-                newLoanOutstanding,
-            },
-          });
-
-
-        return {
-          payment,
-          schedule: updatedSchedule,
-          loan: updatedLoan,
-          transaction,
-        };
+    const stkRequest = await tx.mpesaStkRequest.create({
+      data: {
+        merchantRequestId,
+        paymentId: payment.id,
+        loanId,
+        phone: normalisedPhone,
+        amount,
+        accountReference: loan.loanNumber,
+        requestBody: {},
+        status: "PENDING",
       },
-    );
+    });
+
+    return { payment, stkRequest };
+  });
+
+  /* ── 4. Call Safaricom ── */
+  try {
+    const response = await initiateStkPush({
+      phone: normalisedPhone,
+      amount,
+      accountReference: loan.loanNumber,
+      transactionDesc: "Loan repayment",
+    });
+
+    /* ── 5. Store Safaricom's ids ── */
+    await prisma.mpesaStkRequest.update({
+      where: { id: stkRequest.id },
+      data: {
+        checkoutRequestId: response.CheckoutRequestID,
+        requestBody: response as unknown as object,
+      },
+    });
+
     await logAction({
-  userId,
-  action: "REPAY",
-  entity: "Payment",
-  entityId: result.payment.id,
-  description: `Payment of ${input.amount} recorded`,
-  newValue: {
-    amount: input.amount,
-    paymentMethod: input.paymentMethod,
-    loanId: schedule.loanId,
-  },
-});
-await notifyUser(
-  schedule.loan.userId,
-  "PAYMENT_RECEIVED",
-  "Payment received",
-  `We received KES ${input.amount.toLocaleString()} for loan ${schedule.loan.loanNumber}. Outstanding balance: KES ${Number(result.loan.outstandingAmount).toLocaleString()}.`,
-  {
-    loanId: schedule.loan.id,
-    paymentId: result.payment.id,
-    paymentReference: result.payment.paymentReference,
-  },
-);
-  return result;
-};
-
-
-/*
- * ============================================================
- * GET PAYMENT BY ID
- * ============================================================
- */
-
-export const getPaymentById = async (
-  paymentId: string,
-  userId: string,
-) => {
-
-  const payment =
-    await prisma.payment.findUnique({
-
-      where: {
-        id: paymentId,
+      userId: customerId,
+      action: "CREATE",
+      entity: "Payment",
+      entityId: payment.id,
+      description: `STK Push initiated for loan ${loan.loanNumber}`,
+      newValue: {
+        amount,
+        phone: normalisedPhone,
+        checkoutRequestId: response.CheckoutRequestID,
       },
+    });
 
-      include: {
-
-        loan: {
-          select: {
-
-            id: true,
-
-            loanNumber: true,
-
-            userId: true,
-
-            status: true,
-
-            principalAmount: true,
-
-            totalAmount: true,
-
-            amountPaid: true,
-
-            outstandingAmount: true,
-          },
+    return {
+      paymentId: payment.id,
+      checkoutRequestId: response.CheckoutRequestID,
+      customerMessage: response.CustomerMessage,
+    };
+  } catch (err) {
+    /* Safaricom rejected the request — mark both rows failed so
+     * the UI knows this attempt is dead. */
+    await prisma.$transaction([
+      prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: PaymentStatus.FAILED,
+          failureReason:
+            err instanceof Error ? err.message : "STK Push request failed",
         },
+      }),
+      prisma.mpesaStkRequest.update({
+        where: { id: stkRequest.id },
+        data: {
+          status: "FAILED",
+          resultDesc: err instanceof Error ? err.message : "STK Push request failed",
+        },
+      }),
+    ]);
 
-        schedule: true,
+    throw err;
+  }
+}
 
-        transactions: true,
+/* ============================================================
+ * APPLY PAYMENT TO LOAN
+ * ============================================================
+ * Called after a payment reaches COMPLETED (via STK callback or
+ * via admin manual entry).
+ *
+ * This is the atomic financial core: allocate the payment across
+ * the repayment schedule, update the loan's amountPaid and
+ * outstandingAmount, insert a LoanTransaction, and flip the loan
+ * status if it's now FULLY_PAID or PARTIALLY_PAID.
+ *
+ * Idempotency: the caller must pass a `paymentId`. If the
+ * Payment row's status is already COMPLETED, we return early.
+ * This lets callbacks be delivered more than once safely.
+ * ============================================================ */
+export async function applyPaymentToLoan(paymentId: string) {
+  return prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.findUnique({
+      where: { id: paymentId },
+      include: { loan: true },
+    });
+
+    if (!payment) throw new Error("Payment not found");
+    if (payment.status === PaymentStatus.COMPLETED) {
+      /* Already applied — nothing to do. */
+      return { payment, alreadyApplied: true as const };
+    }
+
+    const loan = payment.loan;
+    const amount = Number(payment.amount);
+    const previousPaid = Number(loan.amountPaid);
+    const previousOutstanding = Number(loan.outstandingAmount);
+    const newPaid = previousPaid + amount;
+    const newOutstanding = Math.max(0, previousOutstanding - amount);
+
+    /* ── Allocate across the schedule ── */
+    const schedule = await tx.repaymentSchedule.findMany({
+      where: { loanId: loan.id, status: { not: RepaymentStatus.PAID } },
+      orderBy: { installmentNumber: "asc" },
+    });
+
+    let remaining = amount;
+    for (const item of schedule) {
+      if (remaining <= 0) break;
+
+      const itemOutstanding =
+        Number(item.outstandingAmount) || Number(item.totalAmount);
+      const applied = Math.min(remaining, itemOutstanding);
+      const newItemPaid = Number(item.amountPaid) + applied;
+      const newItemOutstanding = Number(item.totalAmount) - newItemPaid;
+      const itemFullyPaid = newItemOutstanding <= 0.01;
+
+      await tx.repaymentSchedule.update({
+        where: { id: item.id },
+        data: {
+          amountPaid: newItemPaid,
+          outstandingAmount: Math.max(0, newItemOutstanding),
+          status: itemFullyPaid
+            ? RepaymentStatus.PAID
+            : RepaymentStatus.PARTIALLY_PAID,
+          paidAt: itemFullyPaid ? new Date() : item.paidAt,
+        },
+      });
+
+      remaining -= applied;
+    }
+
+    /* ── Loan status transition ── */
+    let newLoanStatus = loan.status;
+    if (newOutstanding <= 0.01) {
+      newLoanStatus = LoanStatus.FULLY_PAID;
+    } else if (newPaid > 0) {
+      newLoanStatus = LoanStatus.PARTIALLY_PAID;
+    }
+
+    /* ── Update the loan ── */
+    const updatedLoan = await tx.loan.update({
+      where: { id: loan.id },
+      data: {
+        amountPaid: newPaid,
+        outstandingAmount: newOutstanding,
+        status: newLoanStatus,
       },
     });
 
-
-  if (!payment) {
-    throw new Error("Payment not found");
-  }
-
-
-  const user =
-    await prisma.user.findUnique({
-
-      where: {
-        id: userId,
-      },
-
-      select: {
-        id: true,
-        role: true,
+    /* ── Mark the payment completed ── */
+    const updatedPayment = await tx.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: PaymentStatus.COMPLETED,
+        paymentDate: new Date(),
+        processedAt: new Date(),
       },
     });
 
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-
-  const isStaff =
-    STAFF_ROLES.includes(
-      user.role,
-    );
-
-
-  if (
-    !isStaff &&
-    payment.loan.userId !== userId
-  ) {
-
-    throw new Error(
-      "You are not authorized to view this payment",
-    );
-  }
-
-
-  return payment;
-};
-
-
-/*
- * ============================================================
- * GET MY PAYMENTS
- * ============================================================
- */
-
-export const getMyPayments = async (
-  userId: string,
-) => {
-
-  return prisma.payment.findMany({
-
-    where: {
-
-      loan: {
-        userId,
+    /* ── Ledger entry ── */
+    await tx.loanTransaction.create({
+      data: {
+        transactionNumber: generateTransactionNumber(),
+        loanId: loan.id,
+        paymentId: payment.id,
+        type: TransactionType.REPAYMENT,
+        amount,
+        description: `Repayment via ${payment.paymentMethod}`,
+        reference: payment.transactionReference ?? null,
+        balanceBefore: previousOutstanding,
+        balanceAfter: newOutstanding,
       },
-    },
+    });
 
+    return {
+      payment: updatedPayment,
+      loan: updatedLoan,
+      previousPaid,
+      newPaid,
+      previousOutstanding,
+      newOutstanding,
+      alreadyApplied: false as const,
+    };
+  });
+}
+
+/* ============================================================
+ * HANDLE STK CALLBACK
+ * ============================================================
+ * Called by the callback controller. Idempotent: safe to call
+ * multiple times with the same payload.
+ * ============================================================ */
+export interface MpesaCallbackBody {
+  Body: {
+    stkCallback: {
+      MerchantRequestID: string;
+      CheckoutRequestID: string;
+      ResultCode: number;
+      ResultDesc: string;
+      CallbackMetadata?: {
+        Item: Array<{ Name: string; Value?: string | number }>;
+      };
+    };
+  };
+}
+
+export async function handleStkCallback(body: MpesaCallbackBody) {
+  const cb = body.Body.stkCallback;
+
+  /* ── 1. Look up the request, plus its payment and loan ──
+   * Fetch the loan eagerly here so we have `userId` available
+   * on both the failure and success paths. */
+  const stk = await prisma.mpesaStkRequest.findUnique({
+    where: { checkoutRequestId: cb.CheckoutRequestID },
     include: {
-
+      payment: true,
       loan: {
         select: {
-
           id: true,
-
           loanNumber: true,
-
-          status: true,
+          userId: true,
+          outstandingAmount: true,
         },
       },
-
-      schedule: {
-
-        select: {
-
-          id: true,
-
-          installmentNumber: true,
-
-          dueDate: true,
-        },
-      },
-    },
-
-    orderBy: {
-      createdAt: "desc",
     },
   });
-};
 
+  if (!stk) {
+    console.warn(
+      "[handleStkCallback] unknown CheckoutRequestID:",
+      cb.CheckoutRequestID,
+    );
+    return { handled: false };
+  }
 
-/*
- * ============================================================
- * GET PAYMENTS FOR A LOAN
- * ============================================================
- */
+  /* ── 2. Idempotency guard ── */
+  if (stk.callbackReceivedAt) {
+    return { handled: true, alreadyProcessed: true };
+  }
 
-export const getLoanPayments = async (
-  loanId: string,
-  userId: string,
-) => {
+  /* ── 3. Persist the raw callback ── */
+  await prisma.mpesaStkRequest.update({
+    where: { id: stk.id },
+    data: {
+      callbackBody: body as unknown as object,
+      callbackReceivedAt: new Date(),
+      resultCode: cb.ResultCode,
+      resultDesc: cb.ResultDesc,
+    },
+  });
 
-  const loan =
-    await prisma.loan.findUnique({
+  /* ── 4. Failure path (ResultCode !== 0) ── */
+  if (cb.ResultCode !== 0) {
+    await prisma.$transaction([
+      prisma.mpesaStkRequest.update({
+        where: { id: stk.id },
+        data: { status: "FAILED", reconciledAt: new Date() },
+      }),
+      prisma.payment.update({
+        where: { id: stk.paymentId },
+        data: {
+          status: PaymentStatus.FAILED,
+          failureReason: cb.ResultDesc,
+        },
+      }),
+    ]);
 
-      where: {
-        id: loanId,
-      },
-
-      select: {
-
-        id: true,
-
-        userId: true,
+    await logAction({
+      /* ↓ correct source: the loan's owner */
+      userId: stk.loan.userId,
+      action: "REPAY",
+      entity: "Payment",
+      entityId: stk.paymentId,
+      description: `STK Push failed: ${cb.ResultDesc}`,
+      newValue: {
+        resultCode: cb.ResultCode,
+        checkoutRequestId: cb.CheckoutRequestID,
       },
     });
 
-
-  if (!loan) {
-    throw new Error("Loan not found");
+    return { handled: true, success: false, reason: cb.ResultDesc };
   }
 
+  /* ── 5. Success: extract metadata ── */
+  const items = cb.CallbackMetadata?.Item ?? [];
+  const receipt =
+    (items.find((i) => i.Name === "MpesaReceiptNumber")?.Value as string) ??
+    null;
 
-  const user =
-    await prisma.user.findUnique({
+  const paidAmount = Number(
+    items.find((i) => i.Name === "Amount")?.Value ?? stk.amount,
+  );
 
-      where: {
-        id: userId,
-      },
-
-      select: {
-        role: true,
-      },
+  if (Math.abs(paidAmount - Number(stk.amount)) > 0.01) {
+    console.error("[handleStkCallback] amount mismatch:", {
+      paidAmount,
+      expected: stk.amount,
+      checkoutRequestId: cb.CheckoutRequestID,
     });
-
-
-  if (!user) {
-    throw new Error("User not found");
   }
 
+  /* ── 6. Persist success + attach receipt to the Payment ── */
+  await prisma.$transaction([
+    prisma.mpesaStkRequest.update({
+      where: { id: stk.id },
+      data: { status: "SUCCESS", reconciledAt: new Date() },
+    }),
+    prisma.payment.update({
+      where: { id: stk.paymentId },
+      data: { transactionReference: receipt },
+    }),
+  ]);
 
-  const isStaff =
-    STAFF_ROLES.includes(
-      user.role,
-    );
+  /* ── 7. Apply the payment to the loan (idempotent) ── */
+  await applyPaymentToLoan(stk.paymentId);
 
+  /* ── 8. Notify the customer ── */
+  await notifyUser(
+    stk.loan.userId,
+    "PAYMENT_RECEIVED",
+    "Payment received",
+    `We've received KES ${Number(stk.amount).toLocaleString()} for loan ${stk.loan.loanNumber}. Outstanding balance: KES ${Number(stk.loan.outstandingAmount).toLocaleString()}.`,
+    {
+      loanId: stk.loan.id,
+      loanNumber: stk.loan.loanNumber,
+      paymentId: stk.paymentId,
+    },
+  );
 
-  if (
-    !isStaff &&
-    loan.userId !== userId
-  ) {
+  /* ── 9. Audit log ── */
+  await logAction({
+    userId: stk.loan.userId,
+    action: "REPAY",
+    entity: "Payment",
+    entityId: stk.paymentId,
+    description: `STK Push succeeded — receipt ${receipt ?? "—"}`,
+    newValue: {
+      checkoutRequestId: cb.CheckoutRequestID,
+      receipt,
+      amount: paidAmount,
+    },
+  });
 
-    throw new Error(
-      "You are not authorized to view these payments",
-    );
-  }
+  return { handled: true, success: true, receipt };
+}
 
+/* ============================================================
+ * RECONCILE STUCK REQUESTS
+ * ============================================================
+ * For STK Push requests older than N minutes that never got a
+ * callback (Safaricom outage, dropped delivery), query the
+ * status endpoint directly.
+ *
+ * Run this from a cron job every 2–5 minutes.
+ * ============================================================ */
+export async function reconcilePendingStkRequests() {
+  const cutoff = new Date(Date.now() - 5 * 60 * 1000); // 5 min
 
-  return prisma.payment.findMany({
-
+  const stuck = await prisma.mpesaStkRequest.findMany({
     where: {
-      loanId,
+      status: "PENDING",
+      createdAt: { lt: cutoff },
+      checkoutRequestId: { not: null },
+      callbackReceivedAt: null,
     },
-
-    include: {
-
-      schedule: true,
-
-      transactions: true,
-    },
-
-    orderBy: {
-      createdAt: "desc",
-    },
+    take: 50,
+    orderBy: { createdAt: "asc" },
   });
-};
+
+  let reconciled = 0;
+
+  for (const req of stuck) {
+    try {
+      const result = await queryStkStatus(req.checkoutRequestId!);
+
+      /* 1032 = "cancelled by user". 1037 = "timeout".
+       * 0 = success. Anything else is a failure. */
+      const resultCode = Number(result.ResultCode);
+
+      if (resultCode === 0) {
+        /* Success without callback. Fabricate a minimal callback
+         * and pass through the same handler so all the
+         * downstream bookkeeping is reused. */
+        await handleStkCallback({
+          Body: {
+            stkCallback: {
+              MerchantRequestID: req.merchantRequestId,
+              CheckoutRequestID: req.checkoutRequestId!,
+              ResultCode: 0,
+              ResultDesc: result.ResultDesc,
+            },
+          },
+        });
+      } else {
+        await prisma.mpesaStkRequest.update({
+          where: { id: req.id },
+          data: {
+            status:
+              resultCode === 1032
+                ? "CANCELLED"
+                : resultCode === 1037
+                  ? "TIMEOUT"
+                  : "FAILED",
+            resultCode,
+            resultDesc: result.ResultDesc,
+            reconciledAt: new Date(),
+          },
+        });
+        await prisma.payment.update({
+          where: { id: req.paymentId },
+          data: {
+            status:
+              resultCode === 1032
+                ? PaymentStatus.CANCELLED
+                : PaymentStatus.FAILED,
+            failureReason: result.ResultDesc,
+          },
+        });
+      }
+
+      reconciled++;
+    } catch (err) {
+      console.error(
+        "[reconcilePendingStkRequests] failed for",
+        req.checkoutRequestId,
+        err,
+      );
+    }
+  }
+
+  return { checked: stuck.length, reconciled };
+}

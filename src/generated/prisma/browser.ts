@@ -108,6 +108,11 @@ export type Notification = Prisma.NotificationModel
  */
 export type SystemConfig = Prisma.SystemConfigModel
 /**
+ * Model MpesaStkRequest
+ * 
+ */
+export type MpesaStkRequest = Prisma.MpesaStkRequestModel
+/**
  * Model AuditLog
  * 
  */
