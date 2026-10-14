@@ -8,10 +8,16 @@ import { PaymentStatus } from "../generated/prisma/client.js";
  * Customer initiates an STK Push for their loan.
  * ============================================================ */
 export async function initiateStkPushController(req, res) {
+    console.log("[stk] ─── REQUEST RECEIVED ───");
+    console.log("[stk] user:", req.user?.userId);
+    console.log("[stk] body:", req.body);
     try {
         const customerId = req.user.userId;
         const input = initiateStkPushSchema.parse(req.body);
         const result = await initiateLoanRepayment(customerId, input);
+        console.log("[stk] ─── RESPONSE SENT ───");
+        console.log("[stk] result:", result);
+        console.log("[stk] ──────────────────────");
         return res.status(202).json({
             success: true,
             message: "STK Push sent. Please enter your M-Pesa PIN.",
@@ -19,6 +25,9 @@ export async function initiateStkPushController(req, res) {
         });
     }
     catch (err) {
+        console.error("[stk] ─── ERROR ───");
+        console.error("[stk] error:", err);
+        console.error("[stk] ─────────────");
         if (err?.issues) {
             return res.status(400).json({
                 success: false,
@@ -39,17 +48,46 @@ export async function initiateStkPushController(req, res) {
  * Safaricom from retrying the callback in a loop.
  * ============================================================ */
 export async function mpesaCallbackController(req, res) {
+    console.log("════════════════════════════════════════════");
+    console.log("[mpesa-callback] INCOMING");
+    console.log("[mpesa-callback] headers.content-type:", req.headers["content-type"]);
+    console.log("[mpesa-callback] body:", JSON.stringify(req.body, null, 2));
+    console.log("════════════════════════════════════════════");
     try {
         const body = req.body;
-        await handleStkCallback(body);
+        if (!body?.Body?.stkCallback) {
+            console.error("[mpesa-callback] ❌ malformed body shape");
+            /* Return 200 so Safaricom doesn't retry. */
+            return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+        }
+        const result = await handleStkCallback(body);
+        console.log("[mpesa-callback] ✅ handled:", result);
         return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
     }
     catch (err) {
-        console.error("[mpesaCallbackController]", err);
-        /* Always 200 — see comment above. We log and reconcile later. */
+        console.error("════════════════════════════════════════════");
+        console.error("[mpesa-callback] ❌ THREW");
+        console.error("[mpesa-callback] err:", err);
+        if (err instanceof Error) {
+            console.error("[mpesa-callback] message:", err.message);
+            console.error("[mpesa-callback] stack:", err.stack);
+        }
+        console.error("════════════════════════════════════════════");
+        /* Always return 200 to Safaricom. */
         return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
     }
 }
+// export async function mpesaCallbackController(req: Request, res: Response) {
+//   try {
+//     const body = req.body as MpesaCallbackBody;
+//     await handleStkCallback(body);
+//     return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+//   } catch (err) {
+//     console.error("[mpesaCallbackController]", err);
+//     /* Always 200 — see comment above. We log and reconcile later. */
+//     return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" });
+//   }
+// }
 /* ============================================================
  * GET /payments/me
  * ============================================================

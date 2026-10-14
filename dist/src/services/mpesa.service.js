@@ -51,21 +51,26 @@ function darajaTimestamp(date = new Date()) {
 }
 export async function initiateStkPush(input) {
     const token = await getAccessToken();
+    console.log("[stk] token acquired, prefix:", token.slice(0, 20));
     const timestamp = darajaTimestamp();
+    console.log("[stk] timestamp (EAT):", timestamp);
     const password = Buffer.from(`${env.MPESA_SHORTCODE}${env.MPESA_PASSKEY}${timestamp}`).toString("base64");
+    console.log("[stk] password base64 prefix:", password.slice(0, 20));
     const payload = {
         BusinessShortCode: env.MPESA_SHORTCODE,
         Password: password,
         Timestamp: timestamp,
         TransactionType: env.MPESA_TRANSACTION_TYPE,
-        Amount: Math.round(input.amount), // Daraja requires an integer
-        PartyA: input.phone, // the paying customer
+        Amount: Math.round(input.amount),
+        PartyA: input.phone,
         PartyB: env.MPESA_SHORTCODE,
         PhoneNumber: input.phone,
         CallBackURL: env.MPESA_CALLBACK_URL,
         AccountReference: input.accountReference.slice(0, 12),
         TransactionDesc: input.transactionDesc.slice(0, 13),
     };
+    console.log("[stk] → POST", `${BASE}/mpesa/stkpush/v1/processrequest`);
+    console.log("[stk] payload:", JSON.stringify(payload, null, 2));
     const res = await fetch(`${BASE}/mpesa/stkpush/v1/processrequest`, {
         method: "POST",
         headers: {
@@ -74,11 +79,18 @@ export async function initiateStkPush(input) {
         },
         body: JSON.stringify(payload),
     });
-    const body = (await res.json());
-    /* Daraja returns 200 even on failure; the ResponseCode tells
-     * the real story ("0" = success). */
+    const rawBody = await res.text();
+    console.log("[stk] ← status:", res.status);
+    console.log("[stk] ← body:", rawBody);
+    let body;
+    try {
+        body = JSON.parse(rawBody);
+    }
+    catch {
+        throw new Error(`Safaricom returned non-JSON: ${rawBody}`);
+    }
     if (!res.ok || body.ResponseCode !== "0") {
-        throw new Error(`STK Push failed: ${body.ResponseCode ?? res.status} ${body.ResponseDescription ?? "Unknown error"}`);
+        throw new Error(`STK Push failed: ${body.ResponseCode ?? res.status} ${body.errorMessage ?? body.ResponseDescription ?? "Unknown error"}`);
     }
     return body;
 }
