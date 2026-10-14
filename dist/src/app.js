@@ -28,6 +28,10 @@ import documentRoutes from './routes/document.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import { startReconcilePaymentsJob } from './jobs/reconcilePayments.job.js';
+import opsRoutes from './routes/ops.routes.js';
+import adminAnalyticsRoutes from './routes/adminAnalytics.routes.js';
+import reconciliationRoutes from './routes/reconciliation.routes.js';
+import customerReportRoutes from './routes/customerReport.routes.js';
 // ✅ Explicitly type the app
 const app = express();
 // ✅ CORS configuration with proper origin handling
@@ -109,6 +113,10 @@ app.use(`${apiPrefix}/collateral`, collateralRoutes);
 app.use(`${apiPrefix}/documents`, documentRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/payments`, paymentRoutes);
+app.use(`${apiPrefix}/ops`, opsRoutes);
+app.use(`${apiPrefix}/admin/analytics`, adminAnalyticsRoutes);
+app.use(`${apiPrefix}/admin/reconciliation`, reconciliationRoutes);
+app.use(`${apiPrefix}/me/reports`, customerReportRoutes);
 //app.use("/api/v1/payments", paymentRoutes);
 /*
  * 404 handler.
