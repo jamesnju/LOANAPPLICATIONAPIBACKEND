@@ -56,7 +56,7 @@ export async function sendVerificationEmail(
     to: email,
 
     subject:
-      "Verify your Loan Platform account",
+      "Verify your PesaMaishaCapital account",
 
     text:
       `Your verification code is ${otp}. ` +
@@ -70,7 +70,7 @@ export async function sendVerificationEmail(
         <body>
 
           <h2>
-            Verify your Loan Platform account
+            Verify your PesaMaishaCapital account
           </h2>
 
           <p>
@@ -146,7 +146,7 @@ export async function sendEmail(
 
           <p>
             Regards,<br />
-            Loan Platform
+           PesaMaishaCapital
           </p>
 
         </body>
@@ -196,7 +196,7 @@ export async function sendLoanNotificationEmail(
           </p>
 
           <p>
-            Loan Platform
+           PesaMaishaCapital
           </p>
         </body>
       </html>
@@ -239,7 +239,7 @@ export async function sendAccountLockedEmail(
           <p>
             If this wasn't you, please contact support immediately.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -270,7 +270,7 @@ export async function sendAccountUnlockedEmail(
             An administrator has unlocked your account.
             You can now log in again.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -288,7 +288,7 @@ export async function sendPasswordResetEmail(
   await transporter.sendMail({
     from: env.EMAIL_FROM,
     to: email,
-    subject: "Reset your Loan Platform password",
+    subject: "Reset your PesaMaishaCapital account password",
     text:
       `Hi ${firstName},\n\n` +
       `Your password reset code is: ${code}\n\n` +
@@ -308,7 +308,7 @@ export async function sendPasswordResetEmail(
             If you didn't request this, please ignore this email —
             your password will not change.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -348,7 +348,7 @@ export async function sendDisbursementReceiptEmail(opts: {
           </p>
           <p>Please find your receipt attached to this email.</p>
           <p>Repayment is due according to the schedule in your dashboard.</p>
-          <p>— PesaMaishaCapital</p>
+          <h3>— PesaMaishaCapital</h3>
         </body>
       </html>
     `,
