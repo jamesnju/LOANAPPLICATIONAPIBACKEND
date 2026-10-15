@@ -6,7 +6,7 @@ import { updateOverdueSchedules } from "../services/repaymentSchedule.service.js
  * JOB: mark overdue loans
  * ============================================================ */
 export async function runLoanOverdueJob() {
-    console.log("[JOB] Checking overdue loans...");
+    console.log("[JOB overdue-loans] starting at", new Date().toISOString());
     const now = new Date();
     const loans = await prisma.loan.findMany({
         where: {
@@ -15,16 +15,59 @@ export async function runLoanOverdueJob() {
             outstandingAmount: { gt: 0 },
         },
     });
-    for (const loan of loans) {
-        await prisma.loan.update({
-            where: { id: loan.id },
-            data: { status: "OVERDUE" },
+    console.log(`[JOB overdue-loans] found ${loans.length} candidate loans`);
+    if (loans.length === 0) {
+        /* Debug: what do the ACTIVE loans look like? */
+        const all = await prisma.loan.findMany({
+            where: { status: { in: ["ACTIVE", "PARTIALLY_PAID"] } },
+            select: { id: true, status: true, maturityDate: true, outstandingAmount: true },
+            take: 5,
         });
-        await notifyUser(loan.userId, "REPAYMENT_OVERDUE", "Loan repayment overdue", `Your loan ${loan.loanNumber} has passed its repayment date and still has an outstanding balance.`, { loanId: loan.id, loanNumber: loan.loanNumber });
+        console.log("[JOB overdue-loans] sample active loans:", JSON.stringify(all, null, 2));
     }
-    console.log(`[JOB] ${loans.length} overdue loans updated`);
-    return { updated: loans.length };
+    let notified = 0;
+    for (const loan of loans) {
+        try {
+            await prisma.loan.update({
+                where: { id: loan.id },
+                data: { status: "OVERDUE" },
+            });
+            await notifyUser(loan.userId, "REPAYMENT_OVERDUE", "Loan repayment overdue", `Your loan ${loan.loanNumber} has passed its repayment date and still has an outstanding balance.`, { loanId: loan.id, loanNumber: loan.loanNumber });
+            notified++;
+        }
+        catch (err) {
+            console.error(`[JOB overdue-loans] failed for loan ${loan.id}:`, err);
+        }
+    }
+    console.log(`[JOB overdue-loans] done — updated=${loans.length} notified=${notified}`);
+    return { updated: loans.length, notified };
 }
+// export async function runLoanOverdueJob() {
+//   console.log("[JOB] Checking overdue loans...");
+//   const now = new Date();
+//   const loans = await prisma.loan.findMany({
+//     where: {
+//       status: { in: ["ACTIVE", "PARTIALLY_PAID"] },
+//       maturityDate: { lt: now },
+//       outstandingAmount: { gt: 0 },
+//     },
+//   });
+//   for (const loan of loans) {
+//     await prisma.loan.update({
+//       where: { id: loan.id },
+//       data: { status: "OVERDUE" },
+//     });
+//     await notifyUser(
+//       loan.userId,
+//       "REPAYMENT_OVERDUE",
+//       "Loan repayment overdue",
+//       `Your loan ${loan.loanNumber} has passed its repayment date and still has an outstanding balance.`,
+//       { loanId: loan.id, loanNumber: loan.loanNumber },
+//     );
+//   }
+//   console.log(`[JOB] ${loans.length} overdue loans updated`);
+//   return { updated: loans.length };
+// }
 /* ============================================================
  * JOB: overdue repayment schedules
  * ============================================================ */
@@ -38,39 +81,160 @@ export async function runOverdueSchedulesJob() {
  * JOB: send repayment reminders (5 days before due)
  * ============================================================ */
 export async function runRepaymentRemindersJob() {
-    console.log("[JOB] Checking repayment reminders...");
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() + 5);
-    startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(startDate);
-    endDate.setHours(23, 59, 59, 999);
-    const schedules = await prisma.repaymentSchedule.findMany({
+    console.log("[JOB reminders] starting at", new Date().toISOString());
+    const HORIZON_DAYS = 7;
+    const rangeStart = new Date();
+    rangeStart.setHours(0, 0, 0, 0);
+    const rangeEnd = new Date(rangeStart);
+    rangeEnd.setDate(rangeEnd.getDate() + HORIZON_DAYS);
+    rangeEnd.setHours(23, 59, 59, 999);
+    console.log(`[JOB reminders] window: ${rangeStart.toISOString()} → ${rangeEnd.toISOString()}`);
+    /* Query on Loan.maturityDate — the field the customer sees. */
+    const loans = await prisma.loan.findMany({
         where: {
-            dueDate: { gte: startDate, lte: endDate },
+            status: { in: ["ACTIVE", "PARTIALLY_PAID"] },
             outstandingAmount: { gt: 0 },
-            status: { in: ["PENDING", "PARTIALLY_PAID"] },
+            maturityDate: { gte: rangeStart, lte: rangeEnd },
         },
-        include: {
-            loan: {
-                select: {
-                    id: true,
-                    loanNumber: true,
-                    userId: true,
-                    outstandingAmount: true,
-                },
-            },
+        select: {
+            id: true,
+            loanNumber: true,
+            userId: true,
+            maturityDate: true,
+            outstandingAmount: true,
         },
     });
-    for (const schedule of schedules) {
-        await notifyUser(schedule.loan.userId, "REPAYMENT_DUE", "Loan repayment reminder", `Your loan ${schedule.loan.loanNumber} repayment is due in 5 days.`, {
-            loanId: schedule.loan.id,
-            scheduleId: schedule.id,
-            dueDate: schedule.dueDate,
+    console.log(`[JOB reminders] found ${loans.length} loans due within ${HORIZON_DAYS} days`);
+    let sent = 0;
+    for (const loan of loans) {
+        /* Idempotency — one reminder per loan per day. */
+        const alreadySentToday = await prisma.notification.findFirst({
+            where: {
+                userId: loan.userId,
+                type: "REPAYMENT_DUE",
+                createdAt: { gte: rangeStart },
+                metadata: {
+                    path: ["loanId"],
+                    equals: loan.id,
+                },
+            },
         });
+        if (alreadySentToday) {
+            console.log(`[JOB reminders] already sent today for ${loan.loanNumber}, skipping`);
+            continue;
+        }
+        const daysLeft = Math.ceil((loan.maturityDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        const label = daysLeft <= 0
+            ? "due today"
+            : daysLeft === 1
+                ? "due tomorrow"
+                : `due in ${daysLeft} days`;
+        try {
+            await notifyUser(loan.userId, "REPAYMENT_DUE", daysLeft <= 0
+                ? "Loan repayment due today"
+                : `Loan repayment ${label}`, `Your loan ${loan.loanNumber} is ${label} (maturity: ${loan.maturityDate.toLocaleDateString()}). Outstanding balance: KES ${Number(loan.outstandingAmount).toLocaleString()}. Please ensure your M-Pesa has sufficient funds.`, {
+                loanId: loan.id,
+                loanNumber: loan.loanNumber,
+                dueDate: loan.maturityDate.toISOString(),
+                daysLeft,
+            });
+            sent++;
+        }
+        catch (err) {
+            console.error(`[JOB reminders] failed to notify for loan ${loan.loanNumber}:`, err);
+        }
     }
-    console.log(`[JOB] ${schedules.length} repayment reminders created`);
-    return { sent: schedules.length };
+    console.log(`[JOB reminders] done — sent=${sent}`);
+    return { sent };
 }
+// export async function runRepaymentRemindersJob() {
+//   console.log("[JOB reminders] starting at", new Date().toISOString());
+//   const startDate = new Date();
+//   startDate.setDate(startDate.getDate() + 5);
+//   startDate.setHours(0, 0, 0, 0);
+//   const endDate = new Date(startDate);
+//   endDate.setHours(23, 59, 59, 999);
+//   console.log("[JOB reminders] window:", startDate.toISOString(), "→", endDate.toISOString());
+//   const schedules = await prisma.repaymentSchedule.findMany({
+//     where: {
+//       dueDate: { gte: startDate, lte: endDate },
+//       outstandingAmount: { gt: 0 },
+//       status: { in: ["PENDING", "PARTIALLY_PAID"] },
+//     },
+//     include: {
+//       loan: {
+//         select: {
+//           id: true,
+//           loanNumber: true,
+//           userId: true,
+//           outstandingAmount: true,
+//         },
+//       },
+//     },
+//   });
+//   console.log(`[JOB reminders] found ${schedules.length} due schedules`);
+//   let sent = 0;
+//   for (const schedule of schedules) {
+//     try {
+//       await notifyUser(
+//         schedule.loan.userId,
+//         "REPAYMENT_DUE",
+//         "Loan repayment reminder",
+//         `Your loan ${schedule.loan.loanNumber} repayment is due in 5 days.`,
+//         {
+//           loanId: schedule.loan.id,
+//           scheduleId: schedule.id,
+//           dueDate: schedule.dueDate,
+//         },
+//       );
+//       sent++;
+//     } catch (err) {
+//       console.error(`[JOB reminders] failed for schedule ${schedule.id}:`, err);
+//     }
+//   }
+//   console.log(`[JOB reminders] done — sent=${sent}`);
+//   return { sent };
+// }
+// export async function runRepaymentRemindersJob() {
+//   console.log("[JOB] Checking repayment reminders...");
+//   const startDate = new Date();
+//   startDate.setDate(startDate.getDate() + 5);
+//   startDate.setHours(0, 0, 0, 0);
+//   const endDate = new Date(startDate);
+//   endDate.setHours(23, 59, 59, 999);
+//   const schedules = await prisma.repaymentSchedule.findMany({
+//     where: {
+//       dueDate: { gte: startDate, lte: endDate },
+//       outstandingAmount: { gt: 0 },
+//       status: { in: ["PENDING", "PARTIALLY_PAID"] },
+//     },
+//     include: {
+//       loan: {
+//         select: {
+//           id: true,
+//           loanNumber: true,
+//           userId: true,
+//           outstandingAmount: true,
+//         },
+//       },
+//     },
+//   });
+//   for (const schedule of schedules) {
+//     await notifyUser(
+//       schedule.loan.userId,
+//       "REPAYMENT_DUE",
+//       "Loan repayment reminder",
+//       `Your loan ${schedule.loan.loanNumber} repayment is due in 5 days.`,
+//       {
+//         loanId: schedule.loan.id,
+//         scheduleId: schedule.id,
+//         dueDate: schedule.dueDate,
+//       },
+//     );
+//   }
+//   console.log(`[JOB] ${schedules.length} repayment reminders created`);
+//   return { sent: schedules.length };
+// }
 /* ============================================================
  * Local dev only — schedule via node-cron.
  *
