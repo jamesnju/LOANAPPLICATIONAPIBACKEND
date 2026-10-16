@@ -1,6 +1,6 @@
 import { idParamSchema } from "../schemas/kyc.schema.js";
 import { createLoanApplicationSchema, loanApplicationQuerySchema, cancelLoanApplicationSchema } from "../schemas/loanApplication.schema.js";
-import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication, getMyDraftApplication, deleteDraftApplication } from "../services/loanApplication.service.js";
+import { createLoanApplication, getCustomerLoanApplications, getCustomerLoanApplication, cancelLoanApplication, submitLoanApplication, getMyDraftApplication, deleteDraftApplication, checkEligibilityToApply } from "../services/loanApplication.service.js";
 function getUserId(req) {
     const user = req.user;
     if (!user?.userId) {
@@ -146,6 +146,19 @@ export async function deleteDraftApplicationController(req, res) {
         return res.status(400).json({
             success: false,
             message: err instanceof Error ? err.message : "Delete failed",
+        });
+    }
+}
+export async function checkEligibilityController(req, res) {
+    try {
+        const userId = req.user.userId;
+        const result = await checkEligibilityToApply(userId);
+        return res.json({ success: true, data: result });
+    }
+    catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed",
         });
     }
 }

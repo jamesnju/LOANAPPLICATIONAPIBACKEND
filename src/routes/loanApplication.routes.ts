@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController, submitLoanApplicationController, getMyDraftApplicationController, deleteDraftApplicationController } from "../controllers/loanApplication.controller.js";
+import { createLoanApplicationController, getCustomerLoanApplicationsController, getCustomerLoanApplicationController, cancelLoanApplicationController, submitLoanApplicationController, getMyDraftApplicationController, deleteDraftApplicationController, checkEligibilityController } from "../controllers/loanApplication.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { authorize } from "../middleware/role.middleware.js";
 
@@ -44,5 +44,11 @@ router.delete(
   authenticate,
   authorize("CUSTOMER"),
   deleteDraftApplicationController,
+);
+router.get(
+  "/eligibility",
+  authenticate,
+  authorize("CUSTOMER"),
+  checkEligibilityController,
 );
 export default router;
