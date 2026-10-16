@@ -86,6 +86,8 @@ export const ModelName = {
     Notification: 'Notification',
     SystemConfig: 'SystemConfig',
     MpesaStkRequest: 'MpesaStkRequest',
+    ApplicationSignature: 'ApplicationSignature',
+    TermsDocument: 'TermsDocument',
     AuditLog: 'AuditLog'
 };
 /**
@@ -388,6 +390,37 @@ export const MpesaStkRequestScalarFieldEnum = {
     callbackReceivedAt: 'callbackReceivedAt',
     reconciledAt: 'reconciledAt',
     status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const ApplicationSignatureScalarFieldEnum = {
+    id: 'id',
+    applicationId: 'applicationId',
+    userId: 'userId',
+    documentHash: 'documentHash',
+    signedPayload: 'signedPayload',
+    method: 'method',
+    signatureData: 'signatureData',
+    agreedToTerms: 'agreedToTerms',
+    agreedToPrivacy: 'agreedToPrivacy',
+    agreedToDebit: 'agreedToDebit',
+    signedAt: 'signedAt',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    email: 'email',
+    termsVersion: 'termsVersion',
+    termsHash: 'termsHash',
+    createdAt: 'createdAt'
+};
+export const TermsDocumentScalarFieldEnum = {
+    id: 'id',
+    version: 'version',
+    label: 'label',
+    body: 'body',
+    isPublished: 'isPublished',
+    contentHash: 'contentHash',
+    editedById: 'editedById',
+    publishedAt: 'publishedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

@@ -23,6 +23,39 @@ export async function verifyEmailConnection() {
     await transporter.verify();
     console.log("✅ Gmail SMTP connection successful");
 }
+export async function sendSignedApplicationEmail(opts) {
+    await transporter.sendMail({
+        from: env.EMAIL_FROM,
+        to: opts.to,
+        subject: `Your signed loan application — ${opts.applicationNumber}`,
+        text: `Hi ${opts.firstName},\n\n` +
+            `Your signed loan application ${opts.applicationNumber} is attached.\n\n` +
+            `Keep this document — it is your record of the terms you agreed to.\n\n` +
+            `— PesaMaishaCapital`,
+        html: `
+      <!DOCTYPE html>
+      <html><body>
+        <h2>Your signed application</h2>
+        <p>Hi ${opts.firstName},</p>
+        <p>
+          Your signed loan application <strong>${opts.applicationNumber}</strong>
+          is attached to this email.
+        </p>
+        <p>
+          Keep this document — it is your record of the terms you agreed to.
+        </p>
+        <p>— PesaMaishaCapital</p>
+      </body></html>
+    `,
+        attachments: [
+            {
+                filename: `Application-${opts.applicationNumber}.pdf`,
+                content: opts.pdf,
+                contentType: "application/pdf",
+            },
+        ],
+    });
+}
 /*
  * ============================================================
  * SEND ACCOUNT VERIFICATION EMAIL
@@ -34,7 +67,7 @@ export async function sendVerificationEmail(email, otp) {
     await transporter.sendMail({
         from: env.EMAIL_FROM,
         to: email,
-        subject: "Verify your Loan Platform account",
+        subject: "Verify your PesaMaishaCapital account",
         text: `Your verification code is ${otp}. ` +
             `This code expires in ` +
             `${env.OTP_EXPIRES_IN_MINUTES} minutes.`,
@@ -45,7 +78,7 @@ export async function sendVerificationEmail(email, otp) {
         <body>
 
           <h2>
-            Verify your Loan Platform account
+            Verify your PesaMaishaCapital account
           </h2>
 
           <p>
@@ -109,7 +142,7 @@ export async function sendEmail(email, subject, message) {
 
           <p>
             Regards,<br />
-            Loan Platform
+           PesaMaishaCapital
           </p>
 
         </body>
@@ -152,7 +185,7 @@ export async function sendLoanNotificationEmail(email, title, message) {
           </p>
 
           <p>
-            Loan Platform
+           PesaMaishaCapital
           </p>
         </body>
       </html>
@@ -189,7 +222,7 @@ export async function sendAccountLockedEmail(email, firstName, lockedUntil) {
           <p>
             If this wasn't you, please contact support immediately.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -215,7 +248,7 @@ export async function sendAccountUnlockedEmail(email, firstName) {
             An administrator has unlocked your account.
             You can now log in again.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -228,7 +261,7 @@ export async function sendPasswordResetEmail(email, firstName, code, ttlMinutes)
     await transporter.sendMail({
         from: env.EMAIL_FROM,
         to: email,
-        subject: "Reset your Loan Platform password",
+        subject: "Reset your PesaMaishaCapital account password",
         text: `Hi ${firstName},\n\n` +
             `Your password reset code is: ${code}\n\n` +
             `This code expires in ${ttlMinutes} minutes.\n\n` +
@@ -247,7 +280,7 @@ export async function sendPasswordResetEmail(email, firstName, code, ttlMinutes)
             If you didn't request this, please ignore this email —
             your password will not change.
           </p>
-          <p>— Loan Platform</p>
+          <p>— PesaMaishaCapital</p>
         </body>
       </html>
     `,
@@ -279,7 +312,7 @@ export async function sendDisbursementReceiptEmail(opts) {
           </p>
           <p>Please find your receipt attached to this email.</p>
           <p>Repayment is due according to the schedule in your dashboard.</p>
-          <p>— PesaMaishaCapital</p>
+          <h3>— PesaMaishaCapital</h3>
         </body>
       </html>
     `,

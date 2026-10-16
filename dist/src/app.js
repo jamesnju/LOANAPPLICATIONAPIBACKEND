@@ -32,6 +32,8 @@ import opsRoutes from './routes/ops.routes.js';
 import adminAnalyticsRoutes from './routes/adminAnalytics.routes.js';
 import reconciliationRoutes from './routes/reconciliation.routes.js';
 import customerReportRoutes from './routes/customerReport.routes.js';
+import applicationSignatureRoutes from './routes/applicationSignature.routes.js';
+import termsRoutes from './routes/terms.routes.js';
 // ✅ Explicitly type the app
 const app = express();
 // ✅ CORS configuration with proper origin handling
@@ -117,6 +119,8 @@ app.use(`${apiPrefix}/ops`, opsRoutes);
 app.use(`${apiPrefix}/admin/analytics`, adminAnalyticsRoutes);
 app.use(`${apiPrefix}/admin/reconciliation`, reconciliationRoutes);
 app.use(`${apiPrefix}/me/reports`, customerReportRoutes);
+app.use(`${apiPrefix}/signatures`, applicationSignatureRoutes);
+app.use(`${apiPrefix}/terms`, termsRoutes);
 //app.use("/api/v1/payments", paymentRoutes);
 /*
  * 404 handler.

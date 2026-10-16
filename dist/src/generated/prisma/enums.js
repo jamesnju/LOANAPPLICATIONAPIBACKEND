@@ -17,6 +17,11 @@ export const OtpPurpose = {
     PHONE_VERIFICATION: 'PHONE_VERIFICATION',
     EMAIL_VERIFICATION: 'EMAIL_VERIFICATION'
 };
+export const SignatureMethod = {
+    TYPED_NAME: 'TYPED_NAME',
+    DRAWN: 'DRAWN',
+    OTP_CONFIRMED: 'OTP_CONFIRMED'
+};
 export const UserStatus = {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',

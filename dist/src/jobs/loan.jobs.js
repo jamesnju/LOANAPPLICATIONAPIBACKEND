@@ -15,16 +15,7 @@ export async function runLoanOverdueJob() {
             outstandingAmount: { gt: 0 },
         },
     });
-    console.log(`[JOB overdue-loans] found ${loans.length} candidate loans`);
-    if (loans.length === 0) {
-        /* Debug: what do the ACTIVE loans look like? */
-        const all = await prisma.loan.findMany({
-            where: { status: { in: ["ACTIVE", "PARTIALLY_PAID"] } },
-            select: { id: true, status: true, maturityDate: true, outstandingAmount: true },
-            take: 5,
-        });
-        console.log("[JOB overdue-loans] sample active loans:", JSON.stringify(all, null, 2));
-    }
+    console.log(`[JOB overdue-loans] found ${loans.length} overdue loans`);
     let notified = 0;
     for (const loan of loans) {
         try {
@@ -32,42 +23,26 @@ export async function runLoanOverdueJob() {
                 where: { id: loan.id },
                 data: { status: "OVERDUE" },
             });
-            await notifyUser(loan.userId, "REPAYMENT_OVERDUE", "Loan repayment overdue", `Your loan ${loan.loanNumber} has passed its repayment date and still has an outstanding balance.`, { loanId: loan.id, loanNumber: loan.loanNumber });
+            const outstanding = Number(loan.outstandingAmount).toLocaleString("en-KE");
+            const daysOverdue = loan.maturityDate
+                ? Math.floor((now.getTime() - loan.maturityDate.getTime()) / (1000 * 60 * 60 * 24))
+                : 0;
+            await notifyUser(loan.userId, "REPAYMENT_OVERDUE", "Loan repayment overdue", `Your loan ${loan.loanNumber} is now ${daysOverdue} day${daysOverdue === 1 ? "" : "s"} overdue. Outstanding balance: KES ${outstanding}. Please make a payment as soon as possible to avoid penalties.`, {
+                loanId: loan.id,
+                loanNumber: loan.loanNumber,
+                outstandingAmount: Number(loan.outstandingAmount),
+                daysOverdue,
+                maturityDate: loan.maturityDate?.toISOString(),
+            });
             notified++;
         }
         catch (err) {
-            console.error(`[JOB overdue-loans] failed for loan ${loan.id}:`, err);
+            console.error(`[JOB overdue-loans] failed for loan ${loan.loanNumber}:`, err);
         }
     }
     console.log(`[JOB overdue-loans] done — updated=${loans.length} notified=${notified}`);
     return { updated: loans.length, notified };
 }
-// export async function runLoanOverdueJob() {
-//   console.log("[JOB] Checking overdue loans...");
-//   const now = new Date();
-//   const loans = await prisma.loan.findMany({
-//     where: {
-//       status: { in: ["ACTIVE", "PARTIALLY_PAID"] },
-//       maturityDate: { lt: now },
-//       outstandingAmount: { gt: 0 },
-//     },
-//   });
-//   for (const loan of loans) {
-//     await prisma.loan.update({
-//       where: { id: loan.id },
-//       data: { status: "OVERDUE" },
-//     });
-//     await notifyUser(
-//       loan.userId,
-//       "REPAYMENT_OVERDUE",
-//       "Loan repayment overdue",
-//       `Your loan ${loan.loanNumber} has passed its repayment date and still has an outstanding balance.`,
-//       { loanId: loan.id, loanNumber: loan.loanNumber },
-//     );
-//   }
-//   console.log(`[JOB] ${loans.length} overdue loans updated`);
-//   return { updated: loans.length };
-// }
 /* ============================================================
  * JOB: overdue repayment schedules
  * ============================================================ */

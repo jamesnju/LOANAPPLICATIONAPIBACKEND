@@ -135,6 +135,19 @@ export async function createLoanApplication(userId, data) {
         },
         include: {
             loanProduct: true,
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    nationalId: true,
+                },
+            },
+            documents: true,
+            guarantors: { include: { documents: true } },
+            collateral: { include: { documents: true } },
         },
     });
 }
@@ -178,6 +191,16 @@ export async function getCustomerLoanApplication(userId, id) {
     return prisma.loanApplication.findFirst({
         where: { id, userId },
         include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    nationalId: true,
+                },
+            },
             loanProduct: true,
             approvals: {
                 orderBy: { createdAt: "desc" },
@@ -193,12 +216,9 @@ export async function getCustomerLoanApplication(userId, id) {
                 },
             },
             documents: true,
-            guarantors: {
-                include: { documents: true },
-            },
-            collateral: {
-                include: { documents: true },
-            },
+            guarantors: { include: { documents: true } },
+            collateral: { include: { documents: true } },
+            signature: true,
         },
     });
 }
@@ -448,13 +468,14 @@ export async function getAdminLoanApplication(id) {
             guarantors: { include: { documents: true } },
             collateral: { include: { documents: true } },
             loan: true,
+            signature: true, // ← the fix
         },
     });
     if (!app)
         return null;
-    // ── Fetch every document tied to this application via any of the three
-    //    FK columns (applicationId / guarantorId / collateralId) so nothing
-    //    gets hidden if it was linked loosely.
+    /* Merge any documents tied to this application through guarantor or
+     * collateral relations into the top-level documents array so nothing
+     * gets hidden if it was linked loosely. */
     const allDocs = await prisma.document.findMany({
         where: {
             OR: [
@@ -465,14 +486,11 @@ export async function getAdminLoanApplication(id) {
         },
         orderBy: { createdAt: "desc" },
     });
-    // Overwrite the nested `documents` with the full set. Guarantors and
-    // collateral already include their own nested documents via the include
-    // above, so those stay intact.
     app.documents = allDocs;
     return app;
 }
 // export async function getAdminLoanApplication(id: string) {
-//   return prisma.loanApplication.findUnique({
+//   const app = await prisma.loanApplication.findUnique({
 //     where: { id },
 //     include: {
 //       user: {
@@ -494,12 +512,7 @@ export async function getAdminLoanApplication(id) {
 //       approvals: {
 //         include: {
 //           approver: {
-//             select: {
-//               id: true,
-//               firstName: true,
-//               lastName: true,
-//               email: true,
-//             },
+//             select: { id: true, firstName: true, lastName: true, email: true },
 //           },
 //         },
 //         orderBy: { createdAt: "desc" },
@@ -508,8 +521,28 @@ export async function getAdminLoanApplication(id) {
 //       guarantors: { include: { documents: true } },
 //       collateral: { include: { documents: true } },
 //       loan: true,
+//       signature: true, 
 //     },
 //   });
+//   if (!app) return null;
+//   // ── Fetch every document tied to this application via any of the three
+//   //    FK columns (applicationId / guarantorId / collateralId) so nothing
+//   //    gets hidden if it was linked loosely.
+//   const allDocs = await prisma.document.findMany({
+//     where: {
+//       OR: [
+//         { applicationId: app.id },
+//         { guarantor: { applicationId: app.id } },
+//         { collateral: { applicationId: app.id } },
+//       ],
+//     },
+//     orderBy: { createdAt: "desc" },
+//   });
+//   // Overwrite the nested `documents` with the full set. Guarantors and
+//   // collateral already include their own nested documents via the include
+//   // above, so those stay intact.
+//   (app as any).documents = allDocs;
+//   return app;
 // }
 /*
  * ============================================================
@@ -635,6 +668,16 @@ export async function getMyDraftApplication(userId) {
         },
         orderBy: { updatedAt: "desc" },
         include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    nationalId: true,
+                },
+            },
             loanProduct: true,
             documents: true,
             guarantors: { include: { documents: true } },
