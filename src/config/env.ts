@@ -30,7 +30,13 @@ const envSchema = z.object({
     .number()
     .default(5),
 
-  EMAIL_FROM: z.string().email(),
+  EMAIL_FROM: z
+  .string()
+  .min(1, "EMAIL_FROM is required")
+  .refine(
+    (v) => /^.+<[^@\s]+@[^@\s]+\.[^@\s]+>$/.test(v) || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v),
+    "EMAIL_FROM must be a valid email or 'Name <email>' format",
+  ),
 
   SMTP_HOST: z.string().min(1),
 
@@ -51,24 +57,29 @@ const envSchema = z.object({
   CLOUDINARYAPIKEY: z.string().min(1),
 
   CLOUDINARYAPISECRET: z.string().min(1),
-/* ============================================================
- * M-PESA (Daraja)
- * ============================================================ */
-MPESA_ENV: z.enum(["sandbox", "production"]),
+  PUBLIC_FRONTEND_URL: z.string().url().default("https://pesamaishacapital.vercel.app"),
+  LOGO_URL: z.string().url().default("https://pesamaishacapital.vercel.app/logos/logo.png"),
+  SUPPORT_EMAIL: z.string().email().default("support@pesamaishacapital.co.ke"),
+  SUPPORT_PHONE: z.string().default("+254 700 747 874"),
+  COMPANY_NAME: z.string().default("PesaMaishaCapital"),
+  /* ============================================================
+   * M-PESA (Daraja)
+   * ============================================================ */
+  MPESA_ENV: z.enum(["sandbox", "production"]),
 
-MPESA_CONSUMER_KEY: z.string().min(1),
+  MPESA_CONSUMER_KEY: z.string().min(1),
 
-MPESA_CONSUMER_SECRET: z.string().min(1),
+  MPESA_CONSUMER_SECRET: z.string().min(1),
 
-MPESA_SHORTCODE: z.string().min(1),
+  MPESA_SHORTCODE: z.string().min(1),
 
-MPESA_PASSKEY: z.string().min(1),
+  MPESA_PASSKEY: z.string().min(1),
 
-MPESA_CALLBACK_URL: z.string().url(),
+  MPESA_CALLBACK_URL: z.string().url(),
 
-MPESA_TRANSACTION_TYPE: z
-  .enum(["CustomerPayBillOnline", "CustomerBuyGoodsOnline"])
-  .default("CustomerPayBillOnline"),
+  MPESA_TRANSACTION_TYPE: z
+    .enum(["CustomerPayBillOnline", "CustomerBuyGoodsOnline"])
+    .default("CustomerPayBillOnline"),
   // ✅ Google OAuth
   GOOGLECLIENTID: z.string().min(1),
 

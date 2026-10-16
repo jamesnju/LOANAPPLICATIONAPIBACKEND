@@ -23,6 +23,7 @@ import {
 
 import { prisma } from "../config/prisma.js";
 import { uploadBufferToStorage } from "../services/storage.service.js";
+import { getLogoBuffer } from "../utils/logo.js";
 import { renderDisbursementReceipt } from "../services/receipt.service.js";
 
 /* ============================================================
@@ -447,6 +448,7 @@ export async function downloadLoanReceiptController(
         phone: "+254 700 747 874",
         email: "support@pesamaishacapital.co.ke",
       },
+        logoBuffer: getLogoBuffer(),
     });
 
     /* If the client disconnects mid-stream, destroy the doc so

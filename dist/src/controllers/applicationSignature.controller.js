@@ -1,9 +1,9 @@
 import { signApplication, verifySignature, getApplicationSignature, } from "../services/applicationSignature.service.js";
 import { signApplicationSchema, verifySignatureQuerySchema, } from "../schemas/applicationSignature.schema.js";
 import { prisma } from "../config/prisma.js";
-import { renderApplicationPdf } from "../utils/applicationPdf.js";
-import { renderUnsignedApplicationPdf } from "../utils/pdfReport.js";
+import { renderApplicationPdf, renderUnsignedApplicationPdf, } from "../utils/applicationPdf.js";
 import { fetchImageBuffers } from "../utils/fetchImage.js";
+import { getLogoBuffer } from "../utils/logo.js";
 /* ============================================================
  * CLIENT IP HELPER
  * ============================================================ */
@@ -25,12 +25,8 @@ export async function signApplicationController(req, res) {
         const input = signApplicationSchema.parse(req.body);
         /* ── Normalize consent fields ────────────────────────────
          * The Zod schema returns `true` (literal) for these fields,
-         * but the service accepts plain `boolean`. Depending on the
-         * schema shape, the inferred type may be `true | undefined`,
-         * which is not assignable to `boolean`. The strict `=== true`
-         * comparisons collapse any value into a clean boolean.
-         * Anything not strictly `true` becomes `false`, which the
-         * service rejects with a proper error message. */
+         * but the service accepts plain `boolean`. The strict `=== true`
+         * comparisons collapse any value into a clean boolean. */
         const result = await signApplication(applicationId, userId, {
             method: input.method,
             signatureData: input.signatureData,
@@ -45,14 +41,12 @@ export async function signApplicationController(req, res) {
         return res.json({ success: true, data: result });
     }
     catch (error) {
-        /* Zod validation error */
         if (error?.issues) {
             return res.status(400).json({
                 success: false,
                 message: error.issues[0]?.message ?? "Invalid request",
             });
         }
-        /* Domain error from signApplication */
         return res.status(400).json({
             success: false,
             message: error instanceof Error ? error.message : "Failed to sign",
@@ -63,8 +57,6 @@ export async function signApplicationController(req, res) {
  * GET /signatures/:id/signature
  * ============================================================
  * Fetch the signature record (if any) for an application.
- * Used by the read-only detail page and the admin review page
- * to show the signed state.
  * ============================================================ */
 export async function getSignatureController(req, res) {
     try {
@@ -90,14 +82,14 @@ export async function getSignatureController(req, res) {
  * ============================================================
  * Download the application PDF.
  *
- * - If the application is signed, produces the signed PDF with
- *   the signature block, hash, and audit trail.
- * - If not yet signed, produces the unsigned application PDF
- *   with a "NOT YET SIGNED" watermark so it can't be passed off
- *   as a finalized document.
+ * - Signed application → full PDF with images, terms, signature,
+ *   and integrity hash.
+ * - Unsigned application → same layout plus a diagonal "UNSIGNED"
+ *   watermark and a notice.
  *
- * Access: the owner of the application (or any admin, checked in
- * the service via a role filter).
+ * Both include the PesaMaishaCapital logo in the header.
+ *
+ * Access: the owner of the application, or any admin.
  * ============================================================ */
 export async function getApplicationPdfController(req, res) {
     try {
@@ -111,7 +103,7 @@ export async function getApplicationPdfController(req, res) {
             "FINANCE_OFFICER",
             "SUPPORT",
         ].includes(userRole);
-        /* ── Load application with all relations, including documents ── */
+        /* ── Load application with all relations ── */
         const application = await prisma.loanApplication.findFirst({
             where: isAdmin ? { id: applicationId } : { id: applicationId, userId },
             include: {
@@ -147,8 +139,7 @@ export async function getApplicationPdfController(req, res) {
                 imageUrls.push(d.fileUrl);
             }
         }
-        /* Also check KYC documents, in case the ID was uploaded during
-         * KYC instead of during the application. */
+        /* KYC documents — some customers upload IDs during KYC instead */
         if (application.user.kyc?.documents) {
             for (const d of application.user.kyc.documents) {
                 if (d.fileUrl && /image\//.test(d.mimeType ?? "")) {
@@ -176,7 +167,9 @@ export async function getApplicationPdfController(req, res) {
         }
         /* ── Fetch all images in parallel ── */
         const imageBuffers = await fetchImageBuffers(imageUrls);
-        /* ── Build signature-with-terms as before ── */
+        /* ── Load the logo once and pass it to the renderer ── */
+        const logoBuffer = getLogoBuffer();
+        /* ── Attach the terms body to the signature ── */
         let signatureWithTerms = application.signature;
         if (application.signature?.termsVersion) {
             const terms = await prisma.termsDocument.findFirst({
@@ -189,17 +182,23 @@ export async function getApplicationPdfController(req, res) {
                 termsLabel: terms?.label ?? null,
             };
         }
-        /* ── Render ── */
+        /* ── Render the PDF ── */
         const doc = signatureWithTerms
             ? renderApplicationPdf({
                 application,
                 signature: signatureWithTerms,
                 hash: signatureWithTerms.documentHash,
                 imageBuffers,
+                logoBuffer,
             })
-            : renderUnsignedApplicationPdf({ application, imageBuffers });
-        res.setHeader("Content-Type", "application/pdf");
+            : renderUnsignedApplicationPdf({
+                application,
+                imageBuffers,
+                logoBuffer,
+            });
+        /* ── Stream to the response ── */
         const filename = `Application-${application.applicationNumber}${application.signature ? "-signed" : ""}.pdf`;
+        res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
         doc.pipe(res);
     }
@@ -231,50 +230,6 @@ export async function verifySignatureController(req, res) {
         return res.status(400).json({
             success: false,
             message: error instanceof Error ? error.message : "Failed to verify",
-        });
-    }
-}
-/* ============================================================
- * GET /signatures/:id/pdf
- * ============================================================
- * Stream the signed application PDF to the customer.
- * ============================================================ */
-export async function getSignedApplicationPdfController(req, res) {
-    try {
-        const applicationId = String(req.params.id);
-        const userId = req.user.userId;
-        /* Load the application with the relations the PDF needs. */
-        const application = await prisma.loanApplication.findFirst({
-            where: { id: applicationId, userId },
-            include: {
-                user: true,
-                loanProduct: true,
-            },
-        });
-        if (!application) {
-            return res
-                .status(404)
-                .json({ success: false, message: "Application not found" });
-        }
-        const signature = await getApplicationSignature(applicationId, userId);
-        if (!signature) {
-            return res
-                .status(400)
-                .json({ success: false, message: "Application not signed yet" });
-        }
-        const doc = renderApplicationPdf({
-            application,
-            signature,
-            hash: signature.documentHash,
-        });
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `inline; filename="Application-${application.applicationNumber}.pdf"`);
-        doc.pipe(res);
-    }
-    catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: error instanceof Error ? error.message : "Failed",
         });
     }
 }

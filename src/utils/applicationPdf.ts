@@ -1,14 +1,16 @@
+// src/utils/applicationPdf.ts
 import PDFDocument from "pdfkit";
+import { drawPdfHeader, PDF_BRAND } from "./logo.js";
 
 /* ============================================================
  * THEME
  * ============================================================ */
 const THEME = {
-  primary: "#16a34a",
-  text: "#0f172a",
-  muted: "#64748b",
-  border: "#e2e8f0",
-  surface: "#f8fafc",
+  primary: PDF_BRAND.teal,
+  text: PDF_BRAND.text,
+  muted: PDF_BRAND.muted,
+  border: PDF_BRAND.border,
+  surface: PDF_BRAND.surface,
 };
 
 /* ============================================================
@@ -19,23 +21,22 @@ export interface ApplicationPdfInput {
   signature: any;
   hash: string;
   imageBuffers?: Map<string, Buffer>;
+  logoBuffer?: Buffer | null;
 }
-/* ============================================================
- * RENDER — unsigned application
- * ============================================================
- * Same layout as the signed version, minus:
- *   - Signature block
- *   - Integrity hash
- *   - Terms & Conditions text
- *
- * Adds a diagonal "UNSIGNED" watermark so nobody mistakes it
- * for an executed agreement.
- * ============================================================ */
-export function renderUnsignedApplicationPdf(input: {
+
+export interface UnsignedApplicationPdfInput {
   application: any;
   imageBuffers?: Map<string, Buffer>;
-}): PDFKit.PDFDocument {
-  const { application, imageBuffers } = input;
+  logoBuffer?: Buffer | null;
+}
+
+/* ============================================================
+ * RENDER — UNSIGNED APPLICATION
+ * ============================================================ */
+export function renderUnsignedApplicationPdf(
+  input: UnsignedApplicationPdfInput,
+): PDFKit.PDFDocument {
+  const { application, imageBuffers, logoBuffer } = input;
 
   const doc = new PDFDocument({
     size: "A4",
@@ -47,26 +48,13 @@ export function renderUnsignedApplicationPdf(input: {
     },
   });
 
-  const pageWidth =
-    doc.page.width - doc.page.margins.left - doc.page.margins.right;
-  const left = doc.page.margins.left;
-  const right = doc.page.width - doc.page.margins.right;
-
-  let y = 40;
-
-  /* ── Header band ── */
-  doc.rect(left, y, pageWidth, 60).fill(THEME.primary);
-  doc
-    .fillColor("#ffffff")
-    .fontSize(18)
-    .font("Helvetica-Bold")
-    .text("PesaMaishaCapital", left + 16, y + 16);
-  doc
-    .fontSize(10)
-    .font("Helvetica")
-    .text("Loan Application (unsigned)", left + 16, y + 40);
-
-  y += 80;
+  /* ── Header band with logo ── */
+  const header = drawPdfHeader(doc, {
+    subtitle: "Loan Application (Unsigned)",
+    logoBuffer,
+  });
+  const { pageWidth, left, right } = header;
+  let y = header.y;
 
   /* ── Status pill ── */
   const statusLabel = `STATUS: ${application.status}`;
@@ -418,13 +406,15 @@ export function renderUnsignedApplicationPdf(input: {
   doc.end();
   return doc;
 }
+
 /* ============================================================
- * RENDER — signed application
+ * RENDER — SIGNED APPLICATION
  * ============================================================ */
 export function renderApplicationPdf(
   input: ApplicationPdfInput,
 ): PDFKit.PDFDocument {
-  const { application, signature, hash } = input;
+  const { application, signature, hash, imageBuffers, logoBuffer } = input;
+
   const doc = new PDFDocument({
     size: "A4",
     margin: 50,
@@ -435,26 +425,13 @@ export function renderApplicationPdf(
     },
   });
 
-  const pageWidth =
-    doc.page.width - doc.page.margins.left - doc.page.margins.right;
-  const left = doc.page.margins.left;
-  const right = doc.page.width - doc.page.margins.right;
-
-  let y = 40;
-
-  /* ── Header band ── */
-  doc.rect(left, y, pageWidth, 60).fill(THEME.primary);
-  doc
-    .fillColor("#ffffff")
-    .fontSize(18)
-    .font("Helvetica-Bold")
-    .text("PesaMaishaCapital", left + 16, y + 16);
-  doc
-    .fontSize(10)
-    .font("Helvetica")
-    .text("Signed Loan Application", left + 16, y + 40);
-
-  y += 80;
+  /* ── Header band with logo ── */
+  const header = drawPdfHeader(doc, {
+    subtitle: "Signed Loan Application",
+    logoBuffer,
+  });
+  const { pageWidth, left, right } = header;
+  let y = header.y;
 
   /* ── Meta row ── */
   doc
@@ -515,7 +492,7 @@ export function renderApplicationPdf(
     y += 8;
   };
 
-  /* ── Section helper: image section header ── */
+  /* ── Image section header ── */
   const imageSectionHeader = (title: string) => {
     if (y > doc.page.height - 220) {
       doc.addPage();
@@ -530,16 +507,10 @@ export function renderApplicationPdf(
     y += 32;
   };
 
-  /* ── Section helper: two-column image row ── */
+  /* ── Two-column image row ── */
   const imageRow = (
-    leftItem: {
-      label: string;
-      url?: string | null;
-    },
-    rightItem?: {
-      label: string;
-      url?: string | null;
-    },
+    leftItem: { label: string; url?: string | null },
+    rightItem?: { label: string; url?: string | null },
   ) => {
     const gap = 16;
     const boxWidth = (pageWidth - gap) / 2;
@@ -557,7 +528,7 @@ export function renderApplicationPdf(
       height: boxHeight,
       label: leftItem.label,
       url: leftItem.url,
-      imageBuffers: input.imageBuffers,
+      imageBuffers,
     });
 
     if (rightItem) {
@@ -568,7 +539,7 @@ export function renderApplicationPdf(
         height: boxHeight,
         label: rightItem.label,
         url: rightItem.url,
-        imageBuffers: input.imageBuffers,
+        imageBuffers,
       });
     }
 
@@ -640,7 +611,6 @@ export function renderApplicationPdf(
 
   /* ── Guarantors ── */
   if (application.guarantors?.length) {
-    /* Text summary */
     const rows: [string, string][] = [];
     application.guarantors.forEach((g: any, i: number) => {
       rows.push([`Guarantor ${i + 1}`, `${g.firstName} ${g.lastName}`]);
@@ -660,7 +630,6 @@ export function renderApplicationPdf(
     });
     section("Guarantors", rows);
 
-    /* ID images, one row per guarantor */
     application.guarantors.forEach((g: any, i: number) => {
       const front = g.documents?.find(
         (d: any) =>
@@ -685,7 +654,6 @@ export function renderApplicationPdf(
 
   /* ── Collateral ── */
   if (application.collateral?.length) {
-    /* Text summary */
     const rows: [string, string][] = [];
     application.collateral.forEach((c: any, i: number) => {
       rows.push([
@@ -702,7 +670,6 @@ export function renderApplicationPdf(
     });
     section("Collateral", rows);
 
-    /* Photos, one row per item */
     application.collateral.forEach((c: any, i: number) => {
       const photos = (c.documents ?? []).filter(
         (d: any) => d.fileUrl && /image\//.test(d.mimeType ?? ""),
@@ -714,7 +681,6 @@ export function renderApplicationPdf(
         `Collateral ${i + 1} — ${c.description.slice(0, 60)}`,
       );
 
-      /* Up to 2 photos per row, stack more if the item has many */
       for (let j = 0; j < photos.length; j += 2) {
         const first = photos[j];
         const second = photos[j + 1];
@@ -851,7 +817,7 @@ export function renderApplicationPdf(
 }
 
 /* ============================================================
- * RENDER — buffer
+ * RENDER — BUFFER
  * ============================================================ */
 export function renderApplicationPdfToBuffer(
   input: ApplicationPdfInput,

@@ -4,6 +4,7 @@ import { applicationIdSchema, disburseLoanSchema, loanIdSchema, } from "../schem
 import { DocumentType, } from "../generated/prisma/enums.js";
 import { prisma } from "../config/prisma.js";
 import { uploadBufferToStorage } from "../services/storage.service.js";
+import { getLogoBuffer } from "../utils/logo.js";
 import { renderDisbursementReceipt } from "../services/receipt.service.js";
 /* ============================================================
  * GET ADMIN LOANS
@@ -348,6 +349,7 @@ export async function downloadLoanReceiptController(req, res) {
                 phone: "+254 700 747 874",
                 email: "support@pesamaishacapital.co.ke",
             },
+            logoBuffer: getLogoBuffer(),
         });
         /* If the client disconnects mid-stream, destroy the doc so
          * PDFKit stops generating pages we'll never send. */

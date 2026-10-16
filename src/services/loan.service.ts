@@ -11,6 +11,7 @@ import { notifyUser } from "./notification.service.js";
 import { logAction } from "./auditLog.service.js";
 import { renderReceiptToBuffer } from "./receipt.service.js";
 import { sendDisbursementReceiptEmail } from "./email.service.js";
+import { getLogoBuffer } from "../utils/logo.js";
 
 /*
  * ============================================================
@@ -602,6 +603,7 @@ export async function disburseLoan(
           phone: "+254 700 747 874",
           email: "support@pesamaishacapital.co.ke",
         },
+         logoBuffer: getLogoBuffer(),  
       });
 
       await sendDisbursementReceiptEmail({
@@ -620,196 +622,7 @@ export async function disburseLoan(
   return result;
 }
 
-// export async function disburseLoan(
-//   loanId: string,
-//   financeUserId: string,
-//   paymentMethod: PaymentMethod,
-//   transactionReference?: string,
-//   comments?: string,
-// ) {
-//   /* ------------------------------------------------------------
-//    * 1. Load the loan and the finance user.
-//    * ------------------------------------------------------------ */
-//   const loan = await prisma.loan.findUnique({
-//     where: { id: loanId },
-//   });
 
-//   if (!loan) throw new Error("Loan not found");
-
-//   if (loan.status !== LoanStatus.PENDING_DISBURSEMENT) {
-//     throw new Error(
-//       `Only loans pending disbursement can be disbursed. Current status: ${loan.status}`,
-//     );
-//   }
-
-//   const financeUser = await prisma.user.findUnique({
-//     where: { id: financeUserId },
-//     select: {
-//       id: true,
-//       firstName: true,
-//       lastName: true,
-//       email: true,
-//       role: true,
-//     },
-//   });
-
-//   if (!financeUser) throw new Error("Finance user not found");
-
-//   if (
-//     financeUser.role !== Role.FINANCE_OFFICER &&
-//     financeUser.role !== Role.ADMIN &&
-//     financeUser.role !== Role.SUPER_ADMIN
-//   ) {
-//     throw new Error("You are not authorized to disburse loans");
-//   }
-
-//   /* ------------------------------------------------------------
-//    * 2. Compute dates.
-//    * ------------------------------------------------------------ */
-//   const disbursedAt = new Date();
-//   const maturityDate = new Date(disbursedAt);
-//   maturityDate.setDate(maturityDate.getDate() + loan.repaymentDays);
-
-//   /* ------------------------------------------------------------
-//    * 3. Atomic transaction — ONLY the DB writes go here.
-//    *
-//    *    Audit logging, notifications and email happen AFTER the
-//    *    transaction commits. Previously they were called inside
-//    *    the callback using the global `prisma` client, which meant
-//    *    a later rollback would leave a "Loan disbursed" audit
-//    *    entry and notification for a loan that never actually
-//    *    disbursed.
-//    * ------------------------------------------------------------ */
-//   const result = await prisma.$transaction(async (tx) => {
-//     const updatedLoan = await tx.loan.update({
-//       where: { id: loanId },
-//       data: {
-//         status: LoanStatus.ACTIVE,
-//         disbursedAt,
-//         maturityDate,
-//       },
-//       include: {
-//         user: {
-//           select: {
-//             id: true,
-//             firstName: true,
-//             lastName: true,
-//             email: true,
-//             phone: true,
-//           },
-//         },
-//         loanProduct: true,
-//         application: true,
-//       },
-//     });
-
-//     const transaction = await tx.loanTransaction.create({
-//       data: {
-//         transactionNumber: generateTransactionNumber(),
-//         loanId,
-//         type: TransactionType.DISBURSEMENT,
-//         amount: loan.principalAmount,
-//         description: comments ?? "Loan disbursed successfully",
-//         reference: transactionReference ?? null,
-//         balanceBefore: 0,
-//         balanceAfter: loan.outstandingAmount,
-//       },
-//     });
-
-//     return { loan: updatedLoan, transaction };
-//   });
-
-//   /* ------------------------------------------------------------
-//    * 4. Post-commit side effects.
-//    *
-//    *    None of these can roll back the disbursement, and none of
-//    *    them should block the HTTP response — the finance officer's
-//    *    UI returns as soon as the transaction commits. Failures
-//    *    are logged but never surfaced as a disbursement failure.
-//    * ------------------------------------------------------------ */
-
-//   /* 4a. Audit log. */
-//   logAction({
-//     userId: financeUserId,
-//     action: "DISBURSE",
-//     entity: "Loan",
-//     entityId: loanId,
-//     description: `Loan disbursed via ${paymentMethod}`,
-//     newValue: {
-//       status: "ACTIVE",
-//       disbursedAt,
-//       transactionReference: transactionReference ?? null,
-//     },
-//   }).catch((err) => console.error("[disburseLoan] audit log failed:", err));
-
-//   /* 4b. In-app notification. */
-//   notifyUser(
-//     result.loan.userId,
-//     "LOAN_DISBURSED",
-//     "Loan disbursed",
-//     `Your loan ${result.loan.loanNumber} of KES ${Number(
-//       result.loan.totalAmount,
-//     ).toLocaleString()} has been disbursed.`,
-//     {
-//       loanId: result.loan.id,
-//       loanNumber: result.loan.loanNumber,
-//     },
-//   ).catch((err) =>
-//     console.error("[disburseLoan] notification failed:", err),
-//   );
-
-//   /* 4c. Receipt email — generate PDF in memory and send.
-//    *     No storage; regenerated on demand if the user asks again. */
-//   (async () => {
-//     try {
-//       const pdf = await renderReceiptToBuffer({
-//         loan: {
-//           ...result.loan,
-//           loanProduct: result.loan.loanProduct ?? null,
-//         },
-//         customer: {
-//           id: result.loan.user.id,
-//           firstName: result.loan.user.firstName,
-//           lastName: result.loan.user.lastName,
-//           email: result.loan.user.email,
-//           phone: result.loan.user.phone ?? null,
-//           nationalId: null, // not selected on the loan.user include; see note below
-//         },
-//         disbursedBy: {
-//           firstName: financeUser.firstName,
-//           lastName: financeUser.lastName,
-//           email: financeUser.email,
-//         },
-//         transaction: {
-//           transactionNumber: result.transaction.transactionNumber,
-//           reference: result.transaction.reference,
-//           description: result.transaction.description,
-//           createdAt: result.transaction.createdAt,
-//         },
-//         company: {
-//           name: "PesaMaishaCapital",
-//           phone: "+254 700 747 874",
-//           email: "support@pesamaishacapital.co.ke",
-//         },
-//       });
-
-//       await sendDisbursementReceiptEmail({
-//         to: result.loan.user.email,
-//         firstName: result.loan.user.firstName,
-//         loanNumber: result.loan.loanNumber,
-//         totalAmount: Number(result.loan.totalAmount),
-//         pdf,
-//       });
-//     } catch (err) {
-//       console.error("[disburseLoan] receipt email failed:", err);
-//     }
-//   })();
-
-//   /* ------------------------------------------------------------
-//    * 5. Return — same shape as before, so callers don't change.
-//    * ------------------------------------------------------------ */
-//   return result;
-// }
 
 
 

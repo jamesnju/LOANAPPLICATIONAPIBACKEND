@@ -2,8 +2,9 @@ import { reportDateQuerySchema } from "../schemas/report.schema.js";
 import { getLoanPortfolioReport, getPaymentReport, getOverdueLoanReport, getApplicationReport, } from "../services/report.service.js";
 import { toCsv } from "../utils/csv.js";
 import { renderReportPdf } from "../utils/pdfReport.js";
+import { getLogoBuffer } from "../utils/logo.js";
 /* ============================================================
- * HELPERS
+ * RESPONSE HELPERS
  * ============================================================ */
 function sendCsv(res, filename, rows, columns) {
     const csv = toCsv(rows, columns);
@@ -38,12 +39,18 @@ export async function exportLoanPortfolioController(req, res) {
             Outstanding: Number(l.outstandingAmount),
             Paid: Number(l.amountPaid),
             Status: l.status,
-            DisbursedAt: l.disbursedAt ? l.disbursedAt.toISOString().slice(0, 10) : "",
-            MaturityDate: l.maturityDate ? l.maturityDate.toISOString().slice(0, 10) : "",
+            DisbursedAt: l.disbursedAt
+                ? l.disbursedAt.toISOString().slice(0, 10)
+                : "",
+            MaturityDate: l.maturityDate
+                ? l.maturityDate.toISOString().slice(0, 10)
+                : "",
         }));
         if (format === "pdf") {
             const doc = renderReportPdf({
                 title: "Loan Portfolio Report",
+                subtitle: "All loans on the platform",
+                logoBuffer: getLogoBuffer(),
                 columns: [
                     { header: "Loan #", key: "LoanNumber", width: 10 },
                     { header: "Customer", key: "Customer", width: 15 },
@@ -59,15 +66,21 @@ export async function exportLoanPortfolioController(req, res) {
                     { label: "Total Loans", value: String(flat.length) },
                     {
                         label: "Total Principal",
-                        value: `KES ${flat.reduce((s, r) => s + r.Principal, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.Principal, 0)
+                            .toLocaleString()}`,
                     },
                     {
                         label: "Total Outstanding",
-                        value: `KES ${flat.reduce((s, r) => s + r.Outstanding, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.Outstanding, 0)
+                            .toLocaleString()}`,
                     },
                     {
                         label: "Total Collected",
-                        value: `KES ${flat.reduce((s, r) => s + r.Paid, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.Paid, 0)
+                            .toLocaleString()}`,
                     },
                 ],
             });
@@ -107,6 +120,8 @@ export async function exportPaymentsController(req, res) {
         if (format === "pdf") {
             const doc = renderReportPdf({
                 title: "Payment Report",
+                subtitle: "All completed payments",
+                logoBuffer: getLogoBuffer(),
                 columns: [
                     { header: "Reference", key: "Reference", width: 15 },
                     { header: "Loan #", key: "Loan", width: 12 },
@@ -121,7 +136,9 @@ export async function exportPaymentsController(req, res) {
                     { label: "Payments", value: String(flat.length) },
                     {
                         label: "Total",
-                        value: `KES ${flat.reduce((s, r) => s + r.Amount, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.Amount, 0)
+                            .toLocaleString()}`,
                     },
                 ],
             });
@@ -149,7 +166,9 @@ export async function exportOverdueController(req, res) {
             Phone: l.user.phone ?? "",
             Product: l.loanProduct.name,
             Outstanding: Number(l.outstandingAmount),
-            MaturityDate: l.maturityDate ? l.maturityDate.toISOString().slice(0, 10) : "",
+            MaturityDate: l.maturityDate
+                ? l.maturityDate.toISOString().slice(0, 10)
+                : "",
             DaysOverdue: l.maturityDate
                 ? Math.floor((Date.now() - l.maturityDate.getTime()) / 86400000)
                 : 0,
@@ -157,6 +176,8 @@ export async function exportOverdueController(req, res) {
         if (format === "pdf") {
             const doc = renderReportPdf({
                 title: "Overdue Loans Report",
+                subtitle: "Loans past their maturity date",
+                logoBuffer: getLogoBuffer(),
                 columns: [
                     { header: "Loan #", key: "LoanNumber", width: 12 },
                     { header: "Customer", key: "Customer", width: 18 },
@@ -171,7 +192,9 @@ export async function exportOverdueController(req, res) {
                     { label: "Overdue Loans", value: String(flat.length) },
                     {
                         label: "Total Overdue",
-                        value: `KES ${flat.reduce((s, r) => s + r.Outstanding, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.Outstanding, 0)
+                            .toLocaleString()}`,
                     },
                 ],
             });
@@ -206,11 +229,15 @@ export async function exportApplicationsController(req, res) {
             RequestedAmount: Number(a.requestedAmount),
             RequestedDays: a.requestedDays,
             Status: a.status,
-            SubmittedAt: a.submittedAt ? a.submittedAt.toISOString().slice(0, 10) : "",
+            SubmittedAt: a.submittedAt
+                ? a.submittedAt.toISOString().slice(0, 10)
+                : "",
         }));
         if (format === "pdf") {
             const doc = renderReportPdf({
                 title: "Application Report",
+                subtitle: "All loan applications",
+                logoBuffer: getLogoBuffer(),
                 columns: [
                     { header: "App #", key: "ApplicationNumber", width: 12 },
                     { header: "Customer", key: "Customer", width: 15 },
@@ -225,7 +252,9 @@ export async function exportApplicationsController(req, res) {
                     { label: "Applications", value: String(flat.length) },
                     {
                         label: "Total Requested",
-                        value: `KES ${flat.reduce((s, r) => s + r.RequestedAmount, 0).toLocaleString()}`,
+                        value: `KES ${flat
+                            .reduce((s, r) => s + r.RequestedAmount, 0)
+                            .toLocaleString()}`,
                     },
                 ],
             });

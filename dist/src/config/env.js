@@ -20,7 +20,10 @@ const envSchema = z.object({
     OTP_MAX_ATTEMPTS: z.coerce
         .number()
         .default(5),
-    EMAIL_FROM: z.string().email(),
+    EMAIL_FROM: z
+        .string()
+        .min(1, "EMAIL_FROM is required")
+        .refine((v) => /^.+<[^@\s]+@[^@\s]+\.[^@\s]+>$/.test(v) || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v), "EMAIL_FROM must be a valid email or 'Name <email>' format"),
     SMTP_HOST: z.string().min(1),
     SMTP_PORT: z.coerce
         .number()
@@ -33,6 +36,11 @@ const envSchema = z.object({
     CLOUDINARYCLOUDNAME: z.string().min(1),
     CLOUDINARYAPIKEY: z.string().min(1),
     CLOUDINARYAPISECRET: z.string().min(1),
+    PUBLIC_FRONTEND_URL: z.string().url().default("https://pesamaishacapital.vercel.app"),
+    LOGO_URL: z.string().url().default("https://pesamaishacapital.vercel.app/logos/logo.png"),
+    SUPPORT_EMAIL: z.string().email().default("support@pesamaishacapital.co.ke"),
+    SUPPORT_PHONE: z.string().default("+254 700 747 874"),
+    COMPANY_NAME: z.string().default("PesaMaishaCapital"),
     /* ============================================================
      * M-PESA (Daraja)
      * ============================================================ */
