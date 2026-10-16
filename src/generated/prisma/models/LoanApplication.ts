@@ -332,6 +332,7 @@ export type LoanApplicationWhereInput = {
   rejectionReason?: Prisma.StringNullableFilter<"LoanApplication"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LoanApplication"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LoanApplication"> | Date | string
+  signature?: Prisma.XOR<Prisma.ApplicationSignatureNullableScalarRelationFilter, Prisma.ApplicationSignatureWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   loanProduct?: Prisma.XOR<Prisma.LoanProductScalarRelationFilter, Prisma.LoanProductWhereInput>
   loan?: Prisma.XOR<Prisma.LoanNullableScalarRelationFilter, Prisma.LoanWhereInput> | null
@@ -360,6 +361,7 @@ export type LoanApplicationOrderByWithRelationInput = {
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  signature?: Prisma.ApplicationSignatureOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   loanProduct?: Prisma.LoanProductOrderByWithRelationInput
   loan?: Prisma.LoanOrderByWithRelationInput
@@ -391,6 +393,7 @@ export type LoanApplicationWhereUniqueInput = Prisma.AtLeast<{
   rejectionReason?: Prisma.StringNullableFilter<"LoanApplication"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LoanApplication"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LoanApplication"> | Date | string
+  signature?: Prisma.XOR<Prisma.ApplicationSignatureNullableScalarRelationFilter, Prisma.ApplicationSignatureWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   loanProduct?: Prisma.XOR<Prisma.LoanProductScalarRelationFilter, Prisma.LoanProductWhereInput>
   loan?: Prisma.XOR<Prisma.LoanNullableScalarRelationFilter, Prisma.LoanWhereInput> | null
@@ -467,6 +470,7 @@ export type LoanApplicationCreateInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
@@ -495,6 +499,7 @@ export type LoanApplicationUncheckedCreateInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
@@ -519,6 +524,7 @@ export type LoanApplicationUpdateInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
@@ -547,6 +553,7 @@ export type LoanApplicationUncheckedUpdateInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
@@ -872,6 +879,20 @@ export type LoanApplicationUpdateOneWithoutDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LoanApplicationUpdateToOneWithWhereWithoutDocumentsInput, Prisma.LoanApplicationUpdateWithoutDocumentsInput>, Prisma.LoanApplicationUncheckedUpdateWithoutDocumentsInput>
 }
 
+export type LoanApplicationCreateNestedOneWithoutSignatureInput = {
+  create?: Prisma.XOR<Prisma.LoanApplicationCreateWithoutSignatureInput, Prisma.LoanApplicationUncheckedCreateWithoutSignatureInput>
+  connectOrCreate?: Prisma.LoanApplicationCreateOrConnectWithoutSignatureInput
+  connect?: Prisma.LoanApplicationWhereUniqueInput
+}
+
+export type LoanApplicationUpdateOneRequiredWithoutSignatureNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanApplicationCreateWithoutSignatureInput, Prisma.LoanApplicationUncheckedCreateWithoutSignatureInput>
+  connectOrCreate?: Prisma.LoanApplicationCreateOrConnectWithoutSignatureInput
+  upsert?: Prisma.LoanApplicationUpsertWithoutSignatureInput
+  connect?: Prisma.LoanApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanApplicationUpdateToOneWithWhereWithoutSignatureInput, Prisma.LoanApplicationUpdateWithoutSignatureInput>, Prisma.LoanApplicationUncheckedUpdateWithoutSignatureInput>
+}
+
 export type LoanApplicationCreateWithoutUserInput = {
   id?: string
   applicationNumber: string
@@ -889,6 +910,7 @@ export type LoanApplicationCreateWithoutUserInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorCreateNestedManyWithoutApplicationInput
@@ -915,6 +937,7 @@ export type LoanApplicationUncheckedCreateWithoutUserInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
@@ -989,6 +1012,7 @@ export type LoanApplicationCreateWithoutLoanProductInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorCreateNestedManyWithoutApplicationInput
@@ -1015,6 +1039,7 @@ export type LoanApplicationUncheckedCreateWithoutLoanProductInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
@@ -1065,6 +1090,7 @@ export type LoanApplicationCreateWithoutLoanInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   guarantors?: Prisma.GuarantorCreateNestedManyWithoutApplicationInput
@@ -1092,6 +1118,7 @@ export type LoanApplicationUncheckedCreateWithoutLoanInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutApplicationInput
@@ -1131,6 +1158,7 @@ export type LoanApplicationUpdateWithoutLoanInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   guarantors?: Prisma.GuarantorUpdateManyWithoutApplicationNestedInput
@@ -1158,6 +1186,7 @@ export type LoanApplicationUncheckedUpdateWithoutLoanInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1181,6 +1210,7 @@ export type LoanApplicationCreateWithoutApprovalsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
@@ -1208,6 +1238,7 @@ export type LoanApplicationUncheckedCreateWithoutApprovalsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
@@ -1247,6 +1278,7 @@ export type LoanApplicationUpdateWithoutApprovalsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
@@ -1274,6 +1306,7 @@ export type LoanApplicationUncheckedUpdateWithoutApprovalsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1297,6 +1330,7 @@ export type LoanApplicationCreateWithoutGuarantorsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
@@ -1324,6 +1358,7 @@ export type LoanApplicationUncheckedCreateWithoutGuarantorsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutApplicationInput
@@ -1363,6 +1398,7 @@ export type LoanApplicationUpdateWithoutGuarantorsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
@@ -1390,6 +1426,7 @@ export type LoanApplicationUncheckedUpdateWithoutGuarantorsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1413,6 +1450,7 @@ export type LoanApplicationCreateWithoutCollateralInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
@@ -1440,6 +1478,7 @@ export type LoanApplicationUncheckedCreateWithoutCollateralInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutApplicationInput
@@ -1479,6 +1518,7 @@ export type LoanApplicationUpdateWithoutCollateralInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
@@ -1506,6 +1546,7 @@ export type LoanApplicationUncheckedUpdateWithoutCollateralInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1529,6 +1570,7 @@ export type LoanApplicationCreateWithoutDocumentsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureCreateNestedOneWithoutApplicationInput
   user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
   loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
   loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
@@ -1556,6 +1598,7 @@ export type LoanApplicationUncheckedCreateWithoutDocumentsInput = {
   rejectionReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedCreateNestedOneWithoutApplicationInput
   loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
   guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
   collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
@@ -1595,6 +1638,7 @@ export type LoanApplicationUpdateWithoutDocumentsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
@@ -1622,9 +1666,130 @@ export type LoanApplicationUncheckedUpdateWithoutDocumentsInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApplicationNestedInput
+}
+
+export type LoanApplicationCreateWithoutSignatureInput = {
+  id?: string
+  applicationNumber: string
+  requestedAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  requestedDays: number
+  interestRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  processingFee?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  purpose?: string | null
+  description?: string | null
+  status?: $Enums.ApplicationStatus
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutLoanApplicationsInput
+  loanProduct: Prisma.LoanProductCreateNestedOneWithoutApplicationsInput
+  loan?: Prisma.LoanCreateNestedOneWithoutApplicationInput
+  guarantors?: Prisma.GuarantorCreateNestedManyWithoutApplicationInput
+  collateral?: Prisma.CollateralCreateNestedManyWithoutApplicationInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutApplicationInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApplicationInput
+}
+
+export type LoanApplicationUncheckedCreateWithoutSignatureInput = {
+  id?: string
+  applicationNumber: string
+  userId: string
+  loanProductId: string
+  requestedAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  requestedDays: number
+  interestRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  processingFee?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  purpose?: string | null
+  description?: string | null
+  status?: $Enums.ApplicationStatus
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  loan?: Prisma.LoanUncheckedCreateNestedOneWithoutApplicationInput
+  guarantors?: Prisma.GuarantorUncheckedCreateNestedManyWithoutApplicationInput
+  collateral?: Prisma.CollateralUncheckedCreateNestedManyWithoutApplicationInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutApplicationInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApplicationInput
+}
+
+export type LoanApplicationCreateOrConnectWithoutSignatureInput = {
+  where: Prisma.LoanApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.LoanApplicationCreateWithoutSignatureInput, Prisma.LoanApplicationUncheckedCreateWithoutSignatureInput>
+}
+
+export type LoanApplicationUpsertWithoutSignatureInput = {
+  update: Prisma.XOR<Prisma.LoanApplicationUpdateWithoutSignatureInput, Prisma.LoanApplicationUncheckedUpdateWithoutSignatureInput>
+  create: Prisma.XOR<Prisma.LoanApplicationCreateWithoutSignatureInput, Prisma.LoanApplicationUncheckedCreateWithoutSignatureInput>
+  where?: Prisma.LoanApplicationWhereInput
+}
+
+export type LoanApplicationUpdateToOneWithWhereWithoutSignatureInput = {
+  where?: Prisma.LoanApplicationWhereInput
+  data: Prisma.XOR<Prisma.LoanApplicationUpdateWithoutSignatureInput, Prisma.LoanApplicationUncheckedUpdateWithoutSignatureInput>
+}
+
+export type LoanApplicationUpdateWithoutSignatureInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  requestedDays?: Prisma.IntFieldUpdateOperationsInput | number
+  interestRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  processingFee?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
+  loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
+  loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
+  guarantors?: Prisma.GuarantorUpdateManyWithoutApplicationNestedInput
+  collateral?: Prisma.CollateralUpdateManyWithoutApplicationNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutApplicationNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApplicationNestedInput
+}
+
+export type LoanApplicationUncheckedUpdateWithoutSignatureInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  loanProductId?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  requestedDays?: Prisma.IntFieldUpdateOperationsInput | number
+  interestRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  processingFee?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
+  guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
+  collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutApplicationNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
@@ -1665,6 +1830,7 @@ export type LoanApplicationUpdateWithoutUserInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   loanProduct?: Prisma.LoanProductUpdateOneRequiredWithoutApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUpdateManyWithoutApplicationNestedInput
@@ -1691,6 +1857,7 @@ export type LoanApplicationUncheckedUpdateWithoutUserInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1755,6 +1922,7 @@ export type LoanApplicationUpdateWithoutLoanProductInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUpdateOneWithoutApplicationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutLoanApplicationsNestedInput
   loan?: Prisma.LoanUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUpdateManyWithoutApplicationNestedInput
@@ -1781,6 +1949,7 @@ export type LoanApplicationUncheckedUpdateWithoutLoanProductInput = {
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signature?: Prisma.ApplicationSignatureUncheckedUpdateOneWithoutApplicationNestedInput
   loan?: Prisma.LoanUncheckedUpdateOneWithoutApplicationNestedInput
   guarantors?: Prisma.GuarantorUncheckedUpdateManyWithoutApplicationNestedInput
   collateral?: Prisma.CollateralUncheckedUpdateManyWithoutApplicationNestedInput
@@ -1885,6 +2054,7 @@ export type LoanApplicationSelect<ExtArgs extends runtime.Types.Extensions.Inter
   rejectionReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  signature?: boolean | Prisma.LoanApplication$signatureArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   loanProduct?: boolean | Prisma.LoanProductDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanApplication$loanArgs<ExtArgs>
@@ -1964,6 +2134,7 @@ export type LoanApplicationSelectScalar = {
 
 export type LoanApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicationNumber" | "userId" | "loanProductId" | "requestedAmount" | "requestedDays" | "interestRate" | "processingFee" | "purpose" | "description" | "status" | "submittedAt" | "reviewedAt" | "approvedAt" | "rejectedAt" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["loanApplication"]>
 export type LoanApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  signature?: boolean | Prisma.LoanApplication$signatureArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   loanProduct?: boolean | Prisma.LoanProductDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanApplication$loanArgs<ExtArgs>
@@ -1985,6 +2156,7 @@ export type LoanApplicationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type $LoanApplicationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LoanApplication"
   objects: {
+    signature: Prisma.$ApplicationSignaturePayload<ExtArgs> | null
     user: Prisma.$UserPayload<ExtArgs>
     loanProduct: Prisma.$LoanProductPayload<ExtArgs>
     loan: Prisma.$LoanPayload<ExtArgs> | null
@@ -2406,6 +2578,7 @@ readonly fields: LoanApplicationFieldRefs;
  */
 export interface Prisma__LoanApplicationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  signature<T extends Prisma.LoanApplication$signatureArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanApplication$signatureArgs<ExtArgs>>): Prisma.Prisma__ApplicationSignatureClient<runtime.Types.Result.GetResult<Prisma.$ApplicationSignaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loanProduct<T extends Prisma.LoanProductDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanProductDefaultArgs<ExtArgs>>): Prisma.Prisma__LoanProductClient<runtime.Types.Result.GetResult<Prisma.$LoanProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loan<T extends Prisma.LoanApplication$loanArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanApplication$loanArgs<ExtArgs>>): Prisma.Prisma__LoanClient<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2858,6 +3031,25 @@ export type LoanApplicationDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many LoanApplications to delete.
    */
   limit?: number
+}
+
+/**
+ * LoanApplication.signature
+ */
+export type LoanApplication$signatureArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApplicationSignature
+   */
+  select?: Prisma.ApplicationSignatureSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ApplicationSignature
+   */
+  omit?: Prisma.ApplicationSignatureOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationSignatureInclude<ExtArgs> | null
+  where?: Prisma.ApplicationSignatureWhereInput
 }
 
 /**

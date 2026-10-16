@@ -70,6 +70,8 @@ export const ModelName = {
   Notification: 'Notification',
   SystemConfig: 'SystemConfig',
   MpesaStkRequest: 'MpesaStkRequest',
+  ApplicationSignature: 'ApplicationSignature',
+  TermsDocument: 'TermsDocument',
   AuditLog: 'AuditLog'
 } as const
 
@@ -457,6 +459,45 @@ export const MpesaStkRequestScalarFieldEnum = {
 } as const
 
 export type MpesaStkRequestScalarFieldEnum = (typeof MpesaStkRequestScalarFieldEnum)[keyof typeof MpesaStkRequestScalarFieldEnum]
+
+
+export const ApplicationSignatureScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  documentHash: 'documentHash',
+  signedPayload: 'signedPayload',
+  method: 'method',
+  signatureData: 'signatureData',
+  agreedToTerms: 'agreedToTerms',
+  agreedToPrivacy: 'agreedToPrivacy',
+  agreedToDebit: 'agreedToDebit',
+  signedAt: 'signedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  email: 'email',
+  termsVersion: 'termsVersion',
+  termsHash: 'termsHash',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationSignatureScalarFieldEnum = (typeof ApplicationSignatureScalarFieldEnum)[keyof typeof ApplicationSignatureScalarFieldEnum]
+
+
+export const TermsDocumentScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  label: 'label',
+  body: 'body',
+  isPublished: 'isPublished',
+  contentHash: 'contentHash',
+  editedById: 'editedById',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TermsDocumentScalarFieldEnum = (typeof TermsDocumentScalarFieldEnum)[keyof typeof TermsDocumentScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

@@ -383,6 +383,8 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   approvals?: Prisma.LoanApprovalListRelationFilter
+  signatures?: Prisma.ApplicationSignatureListRelationFilter
+  editedTerms?: Prisma.TermsDocumentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -421,6 +423,8 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   approvals?: Prisma.LoanApprovalOrderByRelationAggregateInput
+  signatures?: Prisma.ApplicationSignatureOrderByRelationAggregateInput
+  editedTerms?: Prisma.TermsDocumentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -462,6 +466,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   approvals?: Prisma.LoanApprovalListRelationFilter
+  signatures?: Prisma.ApplicationSignatureListRelationFilter
+  editedTerms?: Prisma.TermsDocumentListRelationFilter
 }, "id" | "email" | "phone" | "googleId" | "nationalId">
 
 export type UserOrderByWithAggregationInput = {
@@ -562,6 +568,8 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -600,6 +608,8 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserUpdateInput = {
@@ -638,6 +648,8 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -676,6 +688,8 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1054,6 +1068,36 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
+export type UserCreateNestedOneWithoutSignaturesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSignaturesInput, Prisma.UserUncheckedCreateWithoutSignaturesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSignaturesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSignaturesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSignaturesInput, Prisma.UserUncheckedCreateWithoutSignaturesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSignaturesInput
+  upsert?: Prisma.UserUpsertWithoutSignaturesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSignaturesInput, Prisma.UserUpdateWithoutSignaturesInput>, Prisma.UserUncheckedUpdateWithoutSignaturesInput>
+}
+
+export type UserCreateNestedOneWithoutEditedTermsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEditedTermsInput, Prisma.UserUncheckedCreateWithoutEditedTermsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEditedTermsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutEditedTermsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEditedTermsInput, Prisma.UserUncheckedCreateWithoutEditedTermsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEditedTermsInput
+  upsert?: Prisma.UserUpsertWithoutEditedTermsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEditedTermsInput, Prisma.UserUpdateWithoutEditedTermsInput>, Prisma.UserUncheckedUpdateWithoutEditedTermsInput>
+}
+
 export type UserCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
@@ -1105,6 +1149,8 @@ export type UserCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -1142,6 +1188,8 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1195,6 +1243,8 @@ export type UserUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1232,6 +1282,8 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutOtpCodesInput = {
@@ -1269,6 +1321,8 @@ export type UserCreateWithoutOtpCodesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutOtpCodesInput = {
@@ -1306,6 +1360,8 @@ export type UserUncheckedCreateWithoutOtpCodesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutOtpCodesInput = {
@@ -1359,6 +1415,8 @@ export type UserUpdateWithoutOtpCodesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOtpCodesInput = {
@@ -1396,6 +1454,8 @@ export type UserUncheckedUpdateWithoutOtpCodesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutKycInput = {
@@ -1433,6 +1493,8 @@ export type UserCreateWithoutKycInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutKycInput = {
@@ -1470,6 +1532,8 @@ export type UserUncheckedCreateWithoutKycInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutKycInput = {
@@ -1523,6 +1587,8 @@ export type UserUpdateWithoutKycInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutKycInput = {
@@ -1560,6 +1626,8 @@ export type UserUncheckedUpdateWithoutKycInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutKycReviewsInput = {
@@ -1597,6 +1665,8 @@ export type UserCreateWithoutKycReviewsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutKycReviewsInput = {
@@ -1634,6 +1704,8 @@ export type UserUncheckedCreateWithoutKycReviewsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutKycReviewsInput = {
@@ -1687,6 +1759,8 @@ export type UserUpdateWithoutKycReviewsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutKycReviewsInput = {
@@ -1724,6 +1798,8 @@ export type UserUncheckedUpdateWithoutKycReviewsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutLoanApplicationsInput = {
@@ -1761,6 +1837,8 @@ export type UserCreateWithoutLoanApplicationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutLoanApplicationsInput = {
@@ -1798,6 +1876,8 @@ export type UserUncheckedCreateWithoutLoanApplicationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutLoanApplicationsInput = {
@@ -1851,6 +1931,8 @@ export type UserUpdateWithoutLoanApplicationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
@@ -1888,6 +1970,8 @@ export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutLoansInput = {
@@ -1925,6 +2009,8 @@ export type UserCreateWithoutLoansInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutLoansInput = {
@@ -1962,6 +2048,8 @@ export type UserUncheckedCreateWithoutLoansInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutLoansInput = {
@@ -2015,6 +2103,8 @@ export type UserUpdateWithoutLoansInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLoansInput = {
@@ -2052,6 +2142,8 @@ export type UserUncheckedUpdateWithoutLoansInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -2089,6 +2181,8 @@ export type UserCreateWithoutApprovalsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -2126,6 +2220,8 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -2179,6 +2275,8 @@ export type UserUpdateWithoutApprovalsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -2216,6 +2314,8 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutGuarantorInput = {
@@ -2253,6 +2353,8 @@ export type UserCreateWithoutGuarantorInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutGuarantorInput = {
@@ -2290,6 +2392,8 @@ export type UserUncheckedCreateWithoutGuarantorInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutGuarantorInput = {
@@ -2343,6 +2447,8 @@ export type UserUpdateWithoutGuarantorInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGuarantorInput = {
@@ -2380,6 +2486,8 @@ export type UserUncheckedUpdateWithoutGuarantorInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutDocumentsInput = {
@@ -2417,6 +2525,8 @@ export type UserCreateWithoutDocumentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -2454,6 +2564,8 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -2507,6 +2619,8 @@ export type UserUpdateWithoutDocumentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -2544,6 +2658,8 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2581,6 +2697,8 @@ export type UserCreateWithoutNotificationsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2618,6 +2736,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2671,6 +2791,8 @@ export type UserUpdateWithoutNotificationsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2708,6 +2830,352 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
+}
+
+export type UserCreateWithoutSignaturesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  googleId?: string | null
+  avatarUrl?: string | null
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
+}
+
+export type UserUncheckedCreateWithoutSignaturesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  googleId?: string | null
+  avatarUrl?: string | null
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
+}
+
+export type UserCreateOrConnectWithoutSignaturesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSignaturesInput, Prisma.UserUncheckedCreateWithoutSignaturesInput>
+}
+
+export type UserUpsertWithoutSignaturesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSignaturesInput, Prisma.UserUncheckedUpdateWithoutSignaturesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSignaturesInput, Prisma.UserUncheckedCreateWithoutSignaturesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSignaturesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSignaturesInput, Prisma.UserUncheckedUpdateWithoutSignaturesInput>
+}
+
+export type UserUpdateWithoutSignaturesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSignaturesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
+}
+
+export type UserCreateWithoutEditedTermsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  googleId?: string | null
+  avatarUrl?: string | null
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutEditedTermsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  googleId?: string | null
+  avatarUrl?: string | null
+  nationalId?: string | null
+  dateOfBirth?: Date | string | null
+  gender?: $Enums.Gender | null
+  employmentType?: $Enums.EmploymentType | null
+  employerName?: string | null
+  monthlyIncome?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: $Enums.Role
+  status?: $Enums.UserStatus
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  lastFailedLoginAt?: Date | string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  kyc?: Prisma.KycUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  otpCodes?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  kycReviews?: Prisma.KycReviewUncheckedCreateNestedManyWithoutReviewerInput
+  loanApplications?: Prisma.LoanApplicationUncheckedCreateNestedManyWithoutUserInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutUserInput
+  guarantor?: Prisma.GuarantorUncheckedCreateNestedManyWithoutUserInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutEditedTermsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEditedTermsInput, Prisma.UserUncheckedCreateWithoutEditedTermsInput>
+}
+
+export type UserUpsertWithoutEditedTermsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEditedTermsInput, Prisma.UserUncheckedUpdateWithoutEditedTermsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEditedTermsInput, Prisma.UserUncheckedCreateWithoutEditedTermsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEditedTermsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEditedTermsInput, Prisma.UserUncheckedUpdateWithoutEditedTermsInput>
+}
+
+export type UserUpdateWithoutEditedTermsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEditedTermsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+  employmentType?: Prisma.NullableEnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType | null
+  employerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyIncome?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kyc?: Prisma.KycUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  otpCodes?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  kycReviews?: Prisma.KycReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  loanApplications?: Prisma.LoanApplicationUncheckedUpdateManyWithoutUserNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutUserNestedInput
+  guarantor?: Prisma.GuarantorUncheckedUpdateManyWithoutUserNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -2745,6 +3213,8 @@ export type UserCreateWithoutAuditLogsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentCreateNestedManyWithoutEditorInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -2782,6 +3252,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   approvals?: Prisma.LoanApprovalUncheckedCreateNestedManyWithoutApproverInput
+  signatures?: Prisma.ApplicationSignatureUncheckedCreateNestedManyWithoutUserInput
+  editedTerms?: Prisma.TermsDocumentUncheckedCreateNestedManyWithoutEditorInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2835,6 +3307,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUpdateManyWithoutEditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2872,6 +3346,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   approvals?: Prisma.LoanApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  signatures?: Prisma.ApplicationSignatureUncheckedUpdateManyWithoutUserNestedInput
+  editedTerms?: Prisma.TermsDocumentUncheckedUpdateManyWithoutEditorNestedInput
 }
 
 
@@ -2890,6 +3366,8 @@ export type UserCountOutputType = {
   notifications: number
   auditLogs: number
   approvals: number
+  signatures: number
+  editedTerms: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2903,6 +3381,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   approvals?: boolean | UserCountOutputTypeCountApprovalsArgs
+  signatures?: boolean | UserCountOutputTypeCountSignaturesArgs
+  editedTerms?: boolean | UserCountOutputTypeCountEditedTermsArgs
 }
 
 /**
@@ -2985,6 +3465,20 @@ export type UserCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.LoanApprovalWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSignaturesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApplicationSignatureWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEditedTermsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TermsDocumentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3022,6 +3516,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
+  signatures?: boolean | Prisma.User$signaturesArgs<ExtArgs>
+  editedTerms?: boolean | Prisma.User$editedTermsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3119,6 +3615,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
+  signatures?: boolean | Prisma.User$signaturesArgs<ExtArgs>
+  editedTerms?: boolean | Prisma.User$editedTermsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3138,6 +3636,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     approvals: Prisma.$LoanApprovalPayload<ExtArgs>[]
+    signatures: Prisma.$ApplicationSignaturePayload<ExtArgs>[]
+    editedTerms: Prisma.$TermsDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3569,6 +4069,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvals<T extends Prisma.User$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  signatures<T extends Prisma.User$signaturesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$signaturesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationSignaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  editedTerms<T extends Prisma.User$editedTermsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$editedTermsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TermsDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4271,6 +4773,54 @@ export type User$approvalsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.LoanApprovalScalarFieldEnum | Prisma.LoanApprovalScalarFieldEnum[]
+}
+
+/**
+ * User.signatures
+ */
+export type User$signaturesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApplicationSignature
+   */
+  select?: Prisma.ApplicationSignatureSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ApplicationSignature
+   */
+  omit?: Prisma.ApplicationSignatureOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationSignatureInclude<ExtArgs> | null
+  where?: Prisma.ApplicationSignatureWhereInput
+  orderBy?: Prisma.ApplicationSignatureOrderByWithRelationInput | Prisma.ApplicationSignatureOrderByWithRelationInput[]
+  cursor?: Prisma.ApplicationSignatureWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApplicationSignatureScalarFieldEnum | Prisma.ApplicationSignatureScalarFieldEnum[]
+}
+
+/**
+ * User.editedTerms
+ */
+export type User$editedTermsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TermsDocument
+   */
+  select?: Prisma.TermsDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TermsDocument
+   */
+  omit?: Prisma.TermsDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TermsDocumentInclude<ExtArgs> | null
+  where?: Prisma.TermsDocumentWhereInput
+  orderBy?: Prisma.TermsDocumentOrderByWithRelationInput | Prisma.TermsDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.TermsDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TermsDocumentScalarFieldEnum | Prisma.TermsDocumentScalarFieldEnum[]
 }
 
 /**

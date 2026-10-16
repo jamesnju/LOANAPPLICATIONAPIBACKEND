@@ -27,6 +27,15 @@ export const OtpPurpose = {
 export type OtpPurpose = (typeof OtpPurpose)[keyof typeof OtpPurpose]
 
 
+export const SignatureMethod = {
+  TYPED_NAME: 'TYPED_NAME',
+  DRAWN: 'DRAWN',
+  OTP_CONFIRMED: 'OTP_CONFIRMED'
+} as const
+
+export type SignatureMethod = (typeof SignatureMethod)[keyof typeof SignatureMethod]
+
+
 export const UserStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',

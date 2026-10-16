@@ -36,6 +36,45 @@ export async function verifyEmailConnection(): Promise<void> {
   );
 }
 
+export async function sendSignedApplicationEmail(opts: {
+  to: string;
+  firstName: string;
+  applicationNumber: string;
+  pdf: Buffer;
+}) {
+  await transporter.sendMail({
+    from: env.EMAIL_FROM,
+    to: opts.to,
+    subject: `Your signed loan application — ${opts.applicationNumber}`,
+    text:
+      `Hi ${opts.firstName},\n\n` +
+      `Your signed loan application ${opts.applicationNumber} is attached.\n\n` +
+      `Keep this document — it is your record of the terms you agreed to.\n\n` +
+      `— PesaMaishaCapital`,
+    html: `
+      <!DOCTYPE html>
+      <html><body>
+        <h2>Your signed application</h2>
+        <p>Hi ${opts.firstName},</p>
+        <p>
+          Your signed loan application <strong>${opts.applicationNumber}</strong>
+          is attached to this email.
+        </p>
+        <p>
+          Keep this document — it is your record of the terms you agreed to.
+        </p>
+        <p>— PesaMaishaCapital</p>
+      </body></html>
+    `,
+    attachments: [
+      {
+        filename: `Application-${opts.applicationNumber}.pdf`,
+        content: opts.pdf,
+        contentType: "application/pdf",
+      },
+    ],
+  });
+}
 
 /*
  * ============================================================

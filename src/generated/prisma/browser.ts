@@ -113,6 +113,16 @@ export type SystemConfig = Prisma.SystemConfigModel
  */
 export type MpesaStkRequest = Prisma.MpesaStkRequestModel
 /**
+ * Model ApplicationSignature
+ * 
+ */
+export type ApplicationSignature = Prisma.ApplicationSignatureModel
+/**
+ * Model TermsDocument
+ * 
+ */
+export type TermsDocument = Prisma.TermsDocumentModel
+/**
  * Model AuditLog
  * 
  */

@@ -786,6 +786,23 @@ export type EnumMpesaStkStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMpesaStkStatusFilter<$PrismaModel>
 }
 
+export type EnumSignatureMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignatureMethod | Prisma.EnumSignatureMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel> | $Enums.SignatureMethod
+}
+
+export type EnumSignatureMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignatureMethod | Prisma.EnumSignatureMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignatureMethodWithAggregatesFilter<$PrismaModel> | $Enums.SignatureMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel>
+}
+
 export type EnumAuditActionFilter<$PrismaModel = never> = {
   equals?: $Enums.AuditAction | Prisma.EnumAuditActionFieldRefInput<$PrismaModel>
   in?: $Enums.AuditAction[] | Prisma.ListEnumAuditActionFieldRefInput<$PrismaModel>
@@ -1528,6 +1545,23 @@ export type NestedEnumMpesaStkStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMpesaStkStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMpesaStkStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSignatureMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignatureMethod | Prisma.EnumSignatureMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel> | $Enums.SignatureMethod
+}
+
+export type NestedEnumSignatureMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignatureMethod | Prisma.EnumSignatureMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignatureMethod[] | Prisma.ListEnumSignatureMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignatureMethodWithAggregatesFilter<$PrismaModel> | $Enums.SignatureMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignatureMethodFilter<$PrismaModel>
 }
 
 export type NestedEnumAuditActionFilter<$PrismaModel = never> = {

@@ -416,6 +416,8 @@ export const ModelName = {
   Notification: 'Notification',
   SystemConfig: 'SystemConfig',
   MpesaStkRequest: 'MpesaStkRequest',
+  ApplicationSignature: 'ApplicationSignature',
+  TermsDocument: 'TermsDocument',
   AuditLog: 'AuditLog'
 } as const
 
@@ -432,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "otpCode" | "loanProduct" | "kyc" | "kycDocument" | "kycReview" | "loanApplication" | "loan" | "loanApproval" | "repaymentSchedule" | "payment" | "loanTransaction" | "guarantor" | "collateral" | "document" | "notification" | "systemConfig" | "mpesaStkRequest" | "auditLog"
+    modelProps: "user" | "refreshToken" | "otpCode" | "loanProduct" | "kyc" | "kycDocument" | "kycReview" | "loanApplication" | "loan" | "loanApproval" | "repaymentSchedule" | "payment" | "loanTransaction" | "guarantor" | "collateral" | "document" | "notification" | "systemConfig" | "mpesaStkRequest" | "applicationSignature" | "termsDocument" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1842,6 +1844,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ApplicationSignature: {
+      payload: Prisma.$ApplicationSignaturePayload<ExtArgs>
+      fields: Prisma.ApplicationSignatureFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApplicationSignatureFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApplicationSignatureFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        findFirst: {
+          args: Prisma.ApplicationSignatureFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApplicationSignatureFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        findMany: {
+          args: Prisma.ApplicationSignatureFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>[]
+        }
+        create: {
+          args: Prisma.ApplicationSignatureCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        createMany: {
+          args: Prisma.ApplicationSignatureCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApplicationSignatureCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>[]
+        }
+        delete: {
+          args: Prisma.ApplicationSignatureDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        update: {
+          args: Prisma.ApplicationSignatureUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        deleteMany: {
+          args: Prisma.ApplicationSignatureDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApplicationSignatureUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApplicationSignatureUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>[]
+        }
+        upsert: {
+          args: Prisma.ApplicationSignatureUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSignaturePayload>
+        }
+        aggregate: {
+          args: Prisma.ApplicationSignatureAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApplicationSignature>
+        }
+        groupBy: {
+          args: Prisma.ApplicationSignatureGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicationSignatureGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApplicationSignatureCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicationSignatureCountAggregateOutputType> | number
+        }
+      }
+    }
+    TermsDocument: {
+      payload: Prisma.$TermsDocumentPayload<ExtArgs>
+      fields: Prisma.TermsDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TermsDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TermsDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.TermsDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TermsDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.TermsDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.TermsDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.TermsDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TermsDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.TermsDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        update: {
+          args: Prisma.TermsDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.TermsDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TermsDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TermsDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.TermsDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TermsDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.TermsDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTermsDocument>
+        }
+        groupBy: {
+          args: Prisma.TermsDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TermsDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TermsDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TermsDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -2325,6 +2475,45 @@ export const MpesaStkRequestScalarFieldEnum = {
 export type MpesaStkRequestScalarFieldEnum = (typeof MpesaStkRequestScalarFieldEnum)[keyof typeof MpesaStkRequestScalarFieldEnum]
 
 
+export const ApplicationSignatureScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  documentHash: 'documentHash',
+  signedPayload: 'signedPayload',
+  method: 'method',
+  signatureData: 'signatureData',
+  agreedToTerms: 'agreedToTerms',
+  agreedToPrivacy: 'agreedToPrivacy',
+  agreedToDebit: 'agreedToDebit',
+  signedAt: 'signedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  email: 'email',
+  termsVersion: 'termsVersion',
+  termsHash: 'termsHash',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationSignatureScalarFieldEnum = (typeof ApplicationSignatureScalarFieldEnum)[keyof typeof ApplicationSignatureScalarFieldEnum]
+
+
+export const TermsDocumentScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  label: 'label',
+  body: 'body',
+  isPublished: 'isPublished',
+  contentHash: 'contentHash',
+  editedById: 'editedById',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TermsDocumentScalarFieldEnum = (typeof TermsDocumentScalarFieldEnum)[keyof typeof TermsDocumentScalarFieldEnum]
+
+
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2782,6 +2971,20 @@ export type ListEnumMpesaStkStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'SignatureMethod'
+ */
+export type EnumSignatureMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignatureMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'SignatureMethod[]'
+ */
+export type ListEnumSignatureMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignatureMethod[]'>
+    
+
+
+/**
  * Reference to a field of type 'AuditAction'
  */
 export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
@@ -2978,6 +3181,8 @@ export type GlobalOmitConfig = {
   notification?: Prisma.NotificationOmit
   systemConfig?: Prisma.SystemConfigOmit
   mpesaStkRequest?: Prisma.MpesaStkRequestOmit
+  applicationSignature?: Prisma.ApplicationSignatureOmit
+  termsDocument?: Prisma.TermsDocumentOmit
   auditLog?: Prisma.AuditLogOmit
 }
 

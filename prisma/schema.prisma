@@ -21,6 +21,11 @@ enum OtpPurpose {
   PHONE_VERIFICATION
   EMAIL_VERIFICATION
 }
+enum SignatureMethod {
+  TYPED_NAME
+  DRAWN
+  OTP_CONFIRMED
+}
 
 enum UserStatus {
   ACTIVE
@@ -272,6 +277,8 @@ model User {
   notifications    Notification[]
   auditLogs        AuditLog[]
   approvals        LoanApproval[]
+  signatures ApplicationSignature[]
+  editedTerms TermsDocument[]
 }
 
 // ============================================================
@@ -475,7 +482,7 @@ model LoanApplication {
 
   purpose     String?
   description String?
-
+  signature ApplicationSignature?
   status ApplicationStatus @default(DRAFT)
 
   submittedAt DateTime?
@@ -922,7 +929,78 @@ model MpesaStkRequest {
   @@index([status])
   @@index([createdAt])
 }
+model ApplicationSignature {
+  id String @id @default(uuid()) @db.Uuid
 
+  applicationId String @unique @db.Uuid
+  userId        String @db.Uuid
+
+  /// SHA-256 hash of the canonical signed payload.
+  documentHash String
+
+  /// Snapshot of the exact terms shown to the customer at signing time.
+  /// This is the immutable record of what they agreed to.
+  signedPayload Json
+
+  /// Signature method used.
+  method SignatureMethod @default(TYPED_NAME)
+
+  /// The typed name (if method = TYPED_NAME) or drawn signature data URL.
+  signatureData String?
+
+  /// Consent checkboxes
+  agreedToTerms   Boolean @default(false)
+  agreedToPrivacy Boolean @default(false)
+  agreedToDebit   Boolean @default(false)
+
+  /* Audit trail */
+  signedAt   DateTime @default(now())
+  ipAddress  String?
+  userAgent  String?
+  email      String?
+  termsVersion Int?
+  termsHash    String?
+  createdAt DateTime @default(now())
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([documentHash])
+}
+
+model TermsDocument {
+  id String @id @default(uuid()) @db.Uuid
+
+  /// Sequential version number. Increments on every save.
+  version Int
+
+  /// Short label for admin UI, e.g. "Q4 2026 Update".
+  label String
+
+  /// The full terms text (markdown or plain text).
+  body String @db.Text
+
+  /// Whether this version is the currently published one.
+  /// Exactly one version should have `isPublished: true`.
+  isPublished Boolean @default(false)
+
+  /// Hash of the body. Stored so signed PDFs can reference
+  /// "the exact text the customer agreed to" without duplicating it.
+  contentHash String
+
+  /// Who last edited this version.
+  editedById String? @db.Uuid
+
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  editor User? @relation(fields: [editedById], references: [id])
+
+  @@unique([version])
+  @@index([isPublished])
+}
 // ============================================================
 // AUDIT LOG
 // ============================================================
