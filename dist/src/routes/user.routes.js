@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { authorize } from "../middleware/role.middleware.js";
-import { changeMyPassword, createUser, deleteUser, getMyProfile, getUserApplications, getUserById, getUserLoans, getUsers, unlockAccount, updateMyProfile, updateUser, updateUserRole, updateUserStatus, } from "../controllers/user.controller.js";
+import { changeMyPassword, completeOnboarding, createUser, deleteUser, getMyProfile, getUserApplications, getUserById, getUserLoans, getUsers, unlockAccount, updateMyProfile, updateUser, updateUserRole, updateUserStatus, } from "../controllers/user.controller.js";
 const router = Router();
 router.use(authenticate);
 /* ============================================================
@@ -28,6 +28,7 @@ router.post("/:id/unlock", authorize("SUPER_ADMIN", "ADMIN"), unlockAccount);
 /* Relations */
 router.get("/:id/applications", authorize("SUPER_ADMIN", "ADMIN", "SUPPORT", "LOAN_OFFICER"), getUserApplications);
 router.get("/:id/loans", authorize("SUPER_ADMIN", "ADMIN", "SUPPORT", "LOAN_OFFICER", "FINANCE_OFFICER"), getUserLoans);
+router.post("/me/complete-onboarding", authorize("SUPER_ADMIN", "ADMIN", "CUSTOMER", "LOAN_OFFICER"), completeOnboarding);
 /* Delete */
 router.delete("/:id", authorize("SUPER_ADMIN"), deleteUser);
 export default router;

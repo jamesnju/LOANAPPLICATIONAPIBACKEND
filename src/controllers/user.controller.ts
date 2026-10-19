@@ -16,6 +16,7 @@ import {
 } from "../schemas/user.schema.js";
 
 import * as userService from "../services/user.service.js";
+import { prisma } from "../config/prisma.js";
 
 function getParam(
   value: string | string[] | undefined,
@@ -450,7 +451,20 @@ export async function changeMyPassword(req: Request, res: Response) {
     });
   }
 }
+export async function completeOnboarding(req: Request, res: Response) {
+  try {
+    const userId = req.user!.userId;
+    
+    await prisma.user.update({
+      where: { id: userId },
+      data: { hasSeenOnboarding: true },
+    });
 
+    res.json({ ok: true, message: "Onboarding completed" });
+  } catch (error: any) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
+}
 /*
  * ============================================================
  * POST /users/:id/unlock  (admin)

@@ -4,6 +4,7 @@ import { authorize } from "../middleware/role.middleware.js";
 
 import {
   changeMyPassword,
+  completeOnboarding,
   createUser,
   deleteUser,
   getMyProfile,
@@ -100,7 +101,7 @@ router.get(
   ),
   getUserLoans,
 );
-
+router.post("/me/complete-onboarding",   authorize("SUPER_ADMIN", "ADMIN", "CUSTOMER", "LOAN_OFFICER") , completeOnboarding);
 /* Delete */
 router.delete("/:id", authorize("SUPER_ADMIN"), deleteUser);
 

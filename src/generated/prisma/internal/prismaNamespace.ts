@@ -2127,6 +2127,7 @@ export const UserScalarFieldEnum = {
   lastFailedLoginAt: 'lastFailedLoginAt',
   emailVerified: 'emailVerified',
   phoneVerified: 'phoneVerified',
+  hasSeenOnboarding: 'hasSeenOnboarding',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

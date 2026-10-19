@@ -58,6 +58,7 @@ export type UserMinAggregateOutputType = {
   lastFailedLoginAt: Date | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
+  hasSeenOnboarding: boolean | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -85,6 +86,7 @@ export type UserMaxAggregateOutputType = {
   lastFailedLoginAt: Date | null
   emailVerified: boolean | null
   phoneVerified: boolean | null
+  hasSeenOnboarding: boolean | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -112,6 +114,7 @@ export type UserCountAggregateOutputType = {
   lastFailedLoginAt: number
   emailVerified: number
   phoneVerified: number
+  hasSeenOnboarding: number
   lastLoginAt: number
   createdAt: number
   updatedAt: number
@@ -151,6 +154,7 @@ export type UserMinAggregateInputType = {
   lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
+  hasSeenOnboarding?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -178,6 +182,7 @@ export type UserMaxAggregateInputType = {
   lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
+  hasSeenOnboarding?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -205,6 +210,7 @@ export type UserCountAggregateInputType = {
   lastFailedLoginAt?: true
   emailVerified?: true
   phoneVerified?: true
+  hasSeenOnboarding?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -319,6 +325,7 @@ export type UserGroupByOutputType = {
   lastFailedLoginAt: Date | null
   emailVerified: boolean
   phoneVerified: boolean
+  hasSeenOnboarding: boolean
   lastLoginAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -369,6 +376,7 @@ export type UserWhereInput = {
   lastFailedLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
+  hasSeenOnboarding?: Prisma.BoolFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -409,6 +417,7 @@ export type UserOrderByWithRelationInput = {
   lastFailedLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  hasSeenOnboarding?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -452,6 +461,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastFailedLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolFilter<"User"> | boolean
+  hasSeenOnboarding?: Prisma.BoolFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -492,6 +502,7 @@ export type UserOrderByWithAggregationInput = {
   lastFailedLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  hasSeenOnboarding?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -527,6 +538,7 @@ export type UserScalarWhereWithAggregatesInput = {
   lastFailedLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   phoneVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  hasSeenOnboarding?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -554,6 +566,7 @@ export type UserCreateInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -594,6 +607,7 @@ export type UserUncheckedCreateInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -634,6 +648,7 @@ export type UserUpdateInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -674,6 +689,7 @@ export type UserUncheckedUpdateInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,6 +730,7 @@ export type UserCreateManyInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -741,6 +758,7 @@ export type UserUpdateManyMutationInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -768,6 +786,7 @@ export type UserUncheckedUpdateManyInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -795,6 +814,7 @@ export type UserCountOrderByAggregateInput = {
   lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  hasSeenOnboarding?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -827,6 +847,7 @@ export type UserMaxOrderByAggregateInput = {
   lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  hasSeenOnboarding?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -854,6 +875,7 @@ export type UserMinOrderByAggregateInput = {
   lastFailedLoginAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   phoneVerified?: Prisma.SortOrder
+  hasSeenOnboarding?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1136,6 +1158,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1175,6 +1198,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1230,6 +1254,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1269,6 +1294,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1308,6 +1334,7 @@ export type UserCreateWithoutOtpCodesInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1347,6 +1374,7 @@ export type UserUncheckedCreateWithoutOtpCodesInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1402,6 +1430,7 @@ export type UserUpdateWithoutOtpCodesInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1441,6 +1470,7 @@ export type UserUncheckedUpdateWithoutOtpCodesInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1480,6 +1510,7 @@ export type UserCreateWithoutKycInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1519,6 +1550,7 @@ export type UserUncheckedCreateWithoutKycInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1574,6 +1606,7 @@ export type UserUpdateWithoutKycInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1613,6 +1646,7 @@ export type UserUncheckedUpdateWithoutKycInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1652,6 +1686,7 @@ export type UserCreateWithoutKycReviewsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1691,6 +1726,7 @@ export type UserUncheckedCreateWithoutKycReviewsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1746,6 +1782,7 @@ export type UserUpdateWithoutKycReviewsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1785,6 +1822,7 @@ export type UserUncheckedUpdateWithoutKycReviewsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1824,6 +1862,7 @@ export type UserCreateWithoutLoanApplicationsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1863,6 +1902,7 @@ export type UserUncheckedCreateWithoutLoanApplicationsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1918,6 +1958,7 @@ export type UserUpdateWithoutLoanApplicationsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1957,6 +1998,7 @@ export type UserUncheckedUpdateWithoutLoanApplicationsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1996,6 +2038,7 @@ export type UserCreateWithoutLoansInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2035,6 +2078,7 @@ export type UserUncheckedCreateWithoutLoansInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2090,6 +2134,7 @@ export type UserUpdateWithoutLoansInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2129,6 +2174,7 @@ export type UserUncheckedUpdateWithoutLoansInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2168,6 +2214,7 @@ export type UserCreateWithoutApprovalsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2207,6 +2254,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2262,6 +2310,7 @@ export type UserUpdateWithoutApprovalsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2301,6 +2350,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2340,6 +2390,7 @@ export type UserCreateWithoutGuarantorInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2379,6 +2430,7 @@ export type UserUncheckedCreateWithoutGuarantorInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2434,6 +2486,7 @@ export type UserUpdateWithoutGuarantorInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2473,6 +2526,7 @@ export type UserUncheckedUpdateWithoutGuarantorInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2512,6 +2566,7 @@ export type UserCreateWithoutDocumentsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2551,6 +2606,7 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2606,6 +2662,7 @@ export type UserUpdateWithoutDocumentsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2645,6 +2702,7 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2684,6 +2742,7 @@ export type UserCreateWithoutNotificationsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2723,6 +2782,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2778,6 +2838,7 @@ export type UserUpdateWithoutNotificationsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2817,6 +2878,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2856,6 +2918,7 @@ export type UserCreateWithoutSignaturesInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2895,6 +2958,7 @@ export type UserUncheckedCreateWithoutSignaturesInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2950,6 +3014,7 @@ export type UserUpdateWithoutSignaturesInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2989,6 +3054,7 @@ export type UserUncheckedUpdateWithoutSignaturesInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3028,6 +3094,7 @@ export type UserCreateWithoutEditedTermsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3067,6 +3134,7 @@ export type UserUncheckedCreateWithoutEditedTermsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3122,6 +3190,7 @@ export type UserUpdateWithoutEditedTermsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3161,6 +3230,7 @@ export type UserUncheckedUpdateWithoutEditedTermsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3200,6 +3270,7 @@ export type UserCreateWithoutAuditLogsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3239,6 +3310,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   lastFailedLoginAt?: Date | string | null
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3294,6 +3366,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3333,6 +3406,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   lastFailedLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasSeenOnboarding?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3502,6 +3576,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3543,6 +3618,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3570,6 +3646,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3597,12 +3674,13 @@ export type UserSelectScalar = {
   lastFailedLoginAt?: boolean
   emailVerified?: boolean
   phoneVerified?: boolean
+  hasSeenOnboarding?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "googleId" | "avatarUrl" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "failedLoginAttempts" | "lockedUntil" | "lastFailedLoginAt" | "emailVerified" | "phoneVerified" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "passwordHash" | "googleId" | "avatarUrl" | "nationalId" | "dateOfBirth" | "gender" | "employmentType" | "employerName" | "monthlyIncome" | "role" | "status" | "failedLoginAttempts" | "lockedUntil" | "lastFailedLoginAt" | "emailVerified" | "phoneVerified" | "hasSeenOnboarding" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   kyc?: boolean | Prisma.User$kycArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -3661,6 +3739,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lastFailedLoginAt: Date | null
     emailVerified: boolean
     phoneVerified: boolean
+    hasSeenOnboarding: boolean
     lastLoginAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -4121,6 +4200,7 @@ export interface UserFieldRefs {
   readonly lastFailedLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly phoneVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly hasSeenOnboarding: Prisma.FieldRef<"User", 'Boolean'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

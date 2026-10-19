@@ -146,6 +146,7 @@ export async function googleLoginUser(input) {
             avatarUrl: user.avatarUrl,
             kycStatus,
             kycCompleted,
+            hasSeenOnboarding: user.hasSeenOnboarding,
         },
     };
 }
@@ -591,6 +592,7 @@ export async function loginUser(identifier, password, context) {
             phoneVerified: user.phoneVerified,
             kycStatus,
             kycCompleted,
+            hasSeenOnboarding: user.hasSeenOnboarding,
         },
     };
 }

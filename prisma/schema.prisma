@@ -261,6 +261,7 @@ model User {
   lastFailedLoginAt   DateTime?
   emailVerified       Boolean    @default(false)
   phoneVerified       Boolean    @default(false)
+  hasSeenOnboarding   Boolean @default(false)
   kyc                 Kyc?
   lastLoginAt         DateTime?
 

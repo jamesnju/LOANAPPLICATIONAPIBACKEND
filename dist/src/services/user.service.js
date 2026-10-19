@@ -285,6 +285,7 @@ export async function getMyProfile(userId) {
             lastLoginAt: true,
             createdAt: true,
             updatedAt: true,
+            hasSeenOnboarding: true,
             kyc: {
                 select: {
                     nationality: true,

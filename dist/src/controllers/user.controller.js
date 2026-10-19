@@ -1,5 +1,6 @@
 import { changePasswordSchema, createUserSchema, unlockAccountSchema, updateProfileSchema, updateUserRoleSchema, updateUserSchema, updateUserStatusSchema, userIdSchema, userQuerySchema, } from "../schemas/user.schema.js";
 import * as userService from "../services/user.service.js";
+import { prisma } from "../config/prisma.js";
 function getParam(value) {
     if (!value)
         return null;
@@ -322,6 +323,19 @@ export async function changeMyPassword(req, res) {
             success: false,
             message: error instanceof Error ? error.message : "Failed to change password",
         });
+    }
+}
+export async function completeOnboarding(req, res) {
+    try {
+        const userId = req.user.userId;
+        await prisma.user.update({
+            where: { id: userId },
+            data: { hasSeenOnboarding: true },
+        });
+        res.json({ ok: true, message: "Onboarding completed" });
+    }
+    catch (error) {
+        res.status(500).json({ ok: false, error: error.message });
     }
 }
 /*
